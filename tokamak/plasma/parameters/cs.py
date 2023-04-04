@@ -10,7 +10,7 @@ class cs():
         if self.dependencies:
             for independ in self.dependencies:
                 if independ not in ps:
-                    raise IOError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
+                    raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
         return True
 
     def default(self, ps):

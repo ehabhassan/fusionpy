@@ -16,7 +16,7 @@ class rhos():
                     calc_omegai = omegai.omegai()
                     ps['omegai'] = calc_omegai(ps)
                 if independ not in ps:
-                    raise IOError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
+                    raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
         return True
 
     def default(self, ps):
