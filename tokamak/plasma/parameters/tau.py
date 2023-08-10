@@ -12,13 +12,15 @@ class tau():
                     raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
         return True
 
-    def default(self, ps):
+    def default(self, ps, ps_update=False):
         tau = (ps['te']/ps['ti'])*ps['zeff'] # units [None]
+        if ps_update:
+            ps['tau'] = tau
         return tau
 
-    def __call__(self, ps):
+    def __call__(self, ps, ps_update=False):
         self.checkdependencies(ps)
-        if self.model == 'default': return self.default(ps)
+        if self.model == 'default': return self.default(ps, ps_update)
 
 if __name__=='__main__':
     ps = {}

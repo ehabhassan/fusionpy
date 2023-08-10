@@ -16,6 +16,7 @@ class eta():
                         self.lne = calc_lne(ps)
                     else:
                         self.lne = ps['lne']
+
                 elif independ == 'lte':
                     if independ not in ps:
                         calc_lte = lte.lte()
@@ -24,13 +25,15 @@ class eta():
                         self.lte = ps['lte']
         return True
 
-    def default(self, ps):
+    def default(self, ps, ps_update=False):
         eta = self.lte/self.lne
+        if ps_update:
+            ps['eta'] = eta
         return eta
 
-    def __call__(self, ps):
+    def __call__(self, ps, ps_update=False):
         self.checkdependencies(ps)
-        if self.model == 'default': return self.default(ps)
+        if self.model == 'default': return self.default(ps, ps_update)
 
 if __name__=='__main__':
     ps = {}

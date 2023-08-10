@@ -1,5 +1,6 @@
 from plot.colors       import CRED, CEND
 from tokamak.constants import mp,e
+from iofiles.efit.bref import bref
 
 class omegai():
     def __init__(self, model='default'):
@@ -9,22 +10,28 @@ class omegai():
     def checkdependencies(self, ps):
         if self.dependencies:
             for independ in self.dependencies:
-                if independ in ['zi','mi']:
-                    if 'zi' not in ps: self.zi = 1.0
-                    else:              self.zi = ps['zi']
-                    if 'mi' not in ps: self.mi = mp
-                    else:              self.mi = ps['mi']
-                elif independ not in ps:
+               #if independ == "bt":
+               #    if "bt" in ps:
+               #        self.bt = ps['bt']
+               #    else:
+               #        calc_bref = bref()
+               #        self.bt = calc_bref(ps)
+               #elif independ not in ps:
+               #    raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
+                if independ not in ps:
                     raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
         return True
 
-    def default(self, ps):
-        omegai = e*self.zi*ps['bt']/self.mi # units [1/s]
+    def default(self, ps, ps_update=False):
+       #omegai = e*ps['zi']*self.bt/ps['mi'] # units [1/s]
+        omegai = e*ps['zi']*ps['bt']/ps['mi'] # units [1/s]
+        if ps_update:
+            ps['omegai'] = omegai
         return omegai
 
-    def __call__(self, ps):
+    def __call__(self, ps, ps_update=False):
         self.checkdependencies(ps)
-        if self.model == 'default': return self.default(ps)
+        if self.model == 'default': return self.default(ps, ps_update)
 
 if __name__=='__main__':
     ps = {}

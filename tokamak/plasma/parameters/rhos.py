@@ -1,5 +1,5 @@
-from plot.colors    import CRED, CEND
-from tokamak.plasma import cs, omegai
+from plot.colors               import CRED, CEND
+from tokamak.plasma.parameters import cs, omegai
 
 class rhos():
     def __init__(self, model='default'):
@@ -9,23 +9,34 @@ class rhos():
     def checkdependencies(self, ps):
         if self.dependencies:
             for independ in self.dependencies:
-                if 'te' in ps and 'mi' in ps:
-                    calc_cs = cs.cs()
-                    ps['cs'] = calc_cs(ps)
-                if 'bt' in ps and 'mi' in ps:
-                    calc_omegai = omegai.omegai()
-                    ps['omegai'] = calc_omegai(ps)
-                if independ not in ps:
-                    raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
+                if independ == 'cs':
+                    if 'cs' in ps:
+                        self.cs = ps['cs']
+                    elif 'te' in ps and 'mi' in ps:
+                        calc_cs = cs.cs()
+                        self.cs = calc_cs(ps)
+                    else:
+                        raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
+
+                elif independ == 'omegai':
+                    if 'omegai' in ps:
+                        self.omegai = ps['omegai']
+                    elif 'bt' in ps and 'mi' in ps:
+                        calc_omegai = omegai.omegai()
+                        self.omegai = calc_omegai(ps)
+                    else:
+                        raise ValueError(CRED + "DEPENDENT VARIABLE (%s) IS MISSING!" % independ + CEND)
         return True
 
-    def default(self, ps):
-        rhos = ps['cs']/ps['omegai'] # units [None]
+    def default(self, ps, ps_update=False):
+        rhos = self.cs/self.omegai # units [None]
+        if ps_update:
+            ps['rhos'] = rhos
         return rhos
 
-    def __call__(self, ps):
+    def __call__(self, ps, ps_update=False):
         self.checkdependencies(ps)
-        if self.model == 'default': return self.default(ps)
+        if self.model == 'default': return self.default(ps,ps_update)
 
 if __name__=='__main__':
     ps = {}
