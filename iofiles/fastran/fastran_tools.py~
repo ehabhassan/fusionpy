@@ -23,7 +23,7 @@ from scipy.interpolate               import CubicSpline
 from matplotlib.lines                import Line2D
 from matplotlib.backends.backend_pdf import PdfPages
 
-from iofiles.Namelist                import Namelist
+from Namelist import Namelist
 
 CEND    = '\033[0m'
 CRED    = '\33[31m'

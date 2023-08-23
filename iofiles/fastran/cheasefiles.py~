@@ -8,10 +8,10 @@ import sys
 import numpy       as npy
 import traceback   as traceback
 
-from Namelist            import Namelist
-from fastran_tools       import read_fastran_outputs
-from fastran.equilibrium import cheasetools
-from fastran.equilibrium import cheaseprofit
+from iofiles.fastran.Namelist import Namelist
+from fastran_tools            import read_fastran_outputs
+from fastran.equilibrium      import cheasetools
+from fastran.equilibrium      import cheaseprofit
 
 from scipy.optimize    import curve_fit
 from scipy.integrate   import trapz,simps

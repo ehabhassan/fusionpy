@@ -6,7 +6,7 @@ import sys
 import json
 import random
 import argparse
-#import efit_eqdsk
+import efit_eqdsk
 import subprocess
 
 from glob                            import glob
