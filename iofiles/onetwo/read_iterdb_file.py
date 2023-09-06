@@ -1,14 +1,15 @@
 import os
 import sys
 import numpy
+import netCDF4 as ncdf
 
 def get_iterdb_vars():
     onetwo = {}
     
-    onetwo['ishot']                    = {} 
-    onetwo['ishot']['data']            = None
-    onetwo['ishot']['unit']            = None
-    onetwo['ishot']['info']            = "Shot Number"
+    onetwo['shot']                    = {} 
+    onetwo['shot']['data']            = None
+    onetwo['shot']['unit']            = None
+    onetwo['shot']['info']            = "Shot Number"
 
     onetwo['Ipsign']                   = {} 
     onetwo['Ipsign']['data']           = None
@@ -25,10 +26,10 @@ def get_iterdb_vars():
     onetwo['time']['unit']             = None
     onetwo['time']['info']             = "Time At Which Data is Printed"
     
-    onetwo['tGCNMF']                   = {} 
-    onetwo['tGCNMF']['data']           = None
-    onetwo['tGCNMF']['unit']           = None
-    onetwo['tGCNMF']['info']           = "GCNMP Evolve Solution from Time to tGCNMF"
+    onetwo['tGCNMf']                   = {} 
+    onetwo['tGCNMf']['data']           = None
+    onetwo['tGCNMf']['unit']           = None
+    onetwo['tGCNMf']['info']           = "GCNMP Evolve Solution from Time to tGCNMf"
     
     onetwo['time_bc']                  = {} 
     onetwo['time_bc']['data']          = None
@@ -330,10 +331,10 @@ def get_iterdb_vars():
     onetwo['ene']['unit']              = "/m^3"
     onetwo['ene']['info']              = "Electron Density"
 
-    onetwo['p_flux_elec']              = {} 
-    onetwo['p_flux_elec']['data']      = None
-    onetwo['p_flux_elec']['unit']      = "1/m^2/s"
-    onetwo['p_flux_elec']['info']      = "Electron Particle Flux"
+    onetwo['p_flux_elct']              = {} 
+    onetwo['p_flux_elct']['data']      = None
+    onetwo['p_flux_elct']['unit']      = "1/m^2/s"
+    onetwo['p_flux_elct']['info']      = "Electron Particle Flux"
     
     onetwo['p_flux_ion']               = {} 
     onetwo['p_flux_ion']['data']       = None
@@ -347,7 +348,7 @@ def get_iterdb_vars():
 
     onetwo['p_flux']                   = {} 
     onetwo['p_flux']['data']           = None
-    onetwo['p_flux']['unit']           = 
+    onetwo['p_flux']['unit']           = "1/m^2/s"
     onetwo['p_flux']['info']           = "TThermal Ion Particle Flux"
     
     onetwo['p_flux_conv']              = {} 
@@ -395,10 +396,10 @@ def get_iterdb_vars():
     onetwo['rot_flux_conv']['unit']    = "kg/s^2"
     onetwo['rot_flux_conv']['info']    = "Convective Flux Associated with Toroidal Rotation"
     
-    onetwo['tglf_elect_p_flux']        = {} 
-    onetwo['tglf_elect_p_flux']['data']= None
-    onetwo['tglf_elect_p_flux']['unit']= "1/m^2/s"
-    onetwo['tglf_elect_p_flux']['info']= "TGLF Turbulent Electron Particle Flux"
+    onetwo['tglf_elct_p_flux']        = {} 
+    onetwo['tglf_elct_p_flux']['data']= None
+    onetwo['tglf_elct_p_flux']['unit']= "1/m^2/s"
+    onetwo['tglf_elct_p_flux']['info']= "TGLF Turbulent Electron Particle Flux"
     
     onetwo['tglf_ion_p_flux']          = {} 
     onetwo['tglf_ion_p_flux']['data']  = None
@@ -410,10 +411,10 @@ def get_iterdb_vars():
     onetwo['tglf_imp_p_flux']['unit']  = "1/m^2/s"
     onetwo['tglf_imp_p_flux']['info']  = "TGLF Turbulent Effective Impurity Particle Flux"
     
-    onetwo['tglf_elect_e_flux']        = {} 
-    onetwo['tglf_elect_e_flux']['data']= None
-    onetwo['tglf_elect_e_flux']['unit']= "J/m^2/s"
-    onetwo['tglf_elect_e_flux']['info']= "TGLF Turbulent Electron Energy Flux"
+    onetwo['tglf_elc_e_flux']        = {} 
+    onetwo['tglf_elc_e_flux']['data']= None
+    onetwo['tglf_elc_e_flux']['unit']= "J/m^2/s"
+    onetwo['tglf_elc_e_flux']['info']= "TGLF Turbulent Electron Energy Flux"
     
     onetwo['tglf_ion_e_flux']          = {} 
     onetwo['tglf_ion_e_flux']['data']  = None
@@ -425,10 +426,10 @@ def get_iterdb_vars():
     onetwo['tglf_imp_e_flux']['unit']  = "J/m^2/s"
     onetwo['tglf_imp_e_flux']['info']  = "TGLF Turbulent Effective Impurity Energy Flux"
     
-    onetwo['tglf_elect_m_flux']        = {} 
-    onetwo['tglf_elect_m_flux']['data']= None
-    onetwo['tglf_elect_m_flux']['unit']= "kg/s^2"
-    onetwo['tglf_elect_m_flux']['info']= "TGLF Turbulent Electron Momentum Flux"
+    onetwo['tglf_elc_m_flux']        = {} 
+    onetwo['tglf_elc_m_flux']['data']= None
+    onetwo['tglf_elc_m_flux']['unit']= "kg/s^2"
+    onetwo['tglf_elc_m_flux']['info']= "TGLF Turbulent Electron Momentum Flux"
     
     onetwo['tglf_ion_m_flux']          = {} 
     onetwo['tglf_ion_m_flux']['data']  = None
@@ -475,71 +476,1159 @@ def get_iterdb_vars():
     onetwo['sbcx']['unit']             = "#/m^3/s"
     onetwo['sbcx']['info']             = "Source of Fast Ions (and Theraml Neutrals) Due to Charge Exchange of Beam Neutrals with Thermal Ions"
 
-    onetwo['stource']                  = {} 
-    onetwo['stource']['data']          = None
-    onetwo['stource']['unit']          = "1/m^3/s"
-    onetwo['stource']['info']          = "Total Source Rate, d"
+    onetwo['stsource']                  = {} 
+    onetwo['stsource']['data']          = None
+    onetwo['stsource']['unit']          = "1/m^3/s"
+    onetwo['stsource']['info']          = "Total Source Rate, d"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['dudtsv']                = {} 
+    onetwo['dudtsv']['data']        = None
+    onetwo['dudtsv']['unit']        = "(1 or keV)/(m^3 sec)"
+    onetwo['dudtsv']['info']        = "s dot"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['enn']                = {} 
+    onetwo['enn']['data']        = None
+    onetwo['enn']['unit']        = "#/m^3"
+    onetwo['enn']['info']        = "neutral density, #/meter^3, species: d"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['ennw']                = {} 
+    onetwo['ennw']['data']        = None
+    onetwo['ennw']['unit']        = "#/m^3"
+    onetwo['ennw']['info']        = "neutral density,due to wall source , species: d"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['ennv']                = {} 
+    onetwo['ennv']['data']        = None
+    onetwo['ennv']['unit']        = "#/m^3"
+    onetwo['ennv']['info']        = "neutral density,due to volume  source , species: d"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['volsn']                = {} 
+    onetwo['volsn']['data']        = None
+    onetwo['volsn']['unit']        = "#/m^3/s"
+    onetwo['volsn']['info']        = "Source of neutrals"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['z']                = {} 
+    onetwo['z']['data']        = None
+    onetwo['z']['unit']        = None
+    onetwo['z']['info']        = "charge  z ,species : d c"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['zsq']                = {} 
+    onetwo['zsq']['data']        = None
+    onetwo['zsq']['unit']        = None
+    onetwo['zsq']['info']        = "charge  z ,species : d c"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['stfuse']                = {} 
+    onetwo['stfuse']['data']        = None
+    onetwo['stfuse']['unit']        = "#/m^2/s"
+    onetwo['stfuse']['info']        = "thermal fusion rate"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['sbfuse']                = {} 
+    onetwo['sbfuse']['data']        = None
+    onetwo['sbfuse']['unit']        = "#/m^2/s"
+    onetwo['sbfuse']['info']        = None
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['spellet']                = {} 
+    onetwo['spellet']['data']        = None
+    onetwo['spellet']['unit']        = "#/m^2/s"
+    onetwo['spellet']['info']        = "THERMAL ion source due to pellets"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['sbeame']                = {} 
+    onetwo['sbeame']['data']        = None
+    onetwo['sbeame']['unit']        = "#/m^2/s"
+    onetwo['sbeame']['info']        = "beam electron source"
     
-    onetwo['']                = {} 
-    onetwo['']['data']        = None
-    onetwo['']['unit']        = None
-    onetwo['']['info']        = None
+    onetwo['sbeam']                = {} 
+    onetwo['sbeam']['data']        = None
+    onetwo['sbeam']['unit']        = "#/m^2/s"
+    onetwo['sbeam']['info']        = "beam ion source" 
     
+    onetwo['enbeam']                = {} 
+    onetwo['enbeam']['data']        = None
+    onetwo['enbeam']['unit']        = "#/m^2"
+    onetwo['enbeam']['info']        = "fast ion density"
+    
+    onetwo['curden']                = {} 
+    onetwo['curden']['data']        = None
+    onetwo['curden']['unit']        = "A/m^2"
+    onetwo['curden']['info']        = "total toroidal current density, <Jtor R0/R>"
+    
+    onetwo['curpar']                = {} 
+    onetwo['curpar']['data']        = None
+    onetwo['curpar']['unit']        = "A/m^2"
+    onetwo['curpar']['info']        = "total parallel current density, <J.B/Bt0>"
+    
+    onetwo['curohm']                = {} 
+    onetwo['curohm']['data']        = None
+    onetwo['curohm']['unit']        = "A/m^2"
+    onetwo['curohm']['info']        = "ohmic current density"
+    
+    onetwo['curboot']                = {} 
+    onetwo['curboot']['data']        = None
+    onetwo['curboot']['unit']        = "A/m^2"
+    onetwo['curboot']['info']        = "bootstrap current density"
+    
+    onetwo['curbeam']                = {} 
+    onetwo['curbeam']['data']        = None
+    onetwo['curbeam']['unit']        = "A/m^2"
+    onetwo['curbeam']['info']        = "beam driven  current density"
+    
+    onetwo['currf']                = {} 
+    onetwo['currf']['data']        = None
+    onetwo['currf']['unit']        = "A/m^2"
+    onetwo['currf']['info']        = "rf driven  current density"
+    
+    onetwo['etor']                = {} 
+    onetwo['etor']['data']        = None
+    onetwo['etor']['unit']        = "V/m"
+    onetwo['etor']['info']        = "toroidal electric field profile"
+    
+    onetwo['rbp']                = {} 
+    onetwo['rbp']['data']        = None
+    onetwo['rbp']['unit']        = "T.m"
+    onetwo['rbp']['info']        = "rho*bp0*fcap*gcap*hcap"
+    
+    onetwo['psivalnpsi']                = {} 
+    onetwo['psivalnpsi']['data']        = None
+    onetwo['psivalnpsi']['unit']        = "V.s/rad"
+    onetwo['psivalnpsi']['info']        = "psivalnpsi(npsi) grid, edge to magnetic axis"
+    
+    onetwo['ravgnpsi']                = {} 
+    onetwo['ravgnpsi']['data']        = None
+    onetwo['ravgnpsi']['unit']        = "m"
+    onetwo['ravgnpsi']['info']        = "ravg: <R> avg radius on mhd grid"
+    
+    onetwo['ravginpsi']                = {} 
+    onetwo['ravginpsi']['data']        = None
+    onetwo['ravginpsi']['unit']        = "1/m"
+    onetwo['ravginpsi']['info']        = "ravgi:<1/R> on mhd grid"
+    
+    onetwo['fpsinpsi']                = {} 
+    onetwo['fpsinpsi']['data']        = None
+    onetwo['fpsinpsi']['unit']        = "T.m"
+    onetwo['fpsinpsi']['info']        = "fpsi: f of psi (= R*Bt) on psivalnpsi(npsi) grid"
+    
+    onetwo['pprim']                = {} 
+    onetwo['pprim']['data']        = None
+    onetwo['pprim']['unit']        = "N/m^2/V/s"
+    onetwo['pprim']['info']        = "dp/dpsi on transport grid (A/m^3)"
+    
+    onetwo['ffprim']                = {} 
+    onetwo['ffprim']['data']        = None
+    onetwo['ffprim']['unit']        = "kg/A/s^2"
+    onetwo['ffprim']['info']        = "f*df/dpsi: on transport grid"
+    
+    onetwo['bp']                = {} 
+    onetwo['bp']['data']        = None
+    onetwo['bp']['unit']        = "T"
+    onetwo['bp']['info']        = "<Bp> : flux avg B poloidal on transport grid"
+    
+    onetwo['bprmaj']                = {} 
+    onetwo['bprmaj']['data']        = None
+    onetwo['bprmaj']['unit']        = "T"
+    onetwo['bprmaj']['info']        = "B poloidal on rmaj (and transport rho)  grid"
+    
+    onetwo['btotrmaj']                = {} 
+    onetwo['btotrmaj']['data']        = None
+    onetwo['btotrmaj']['unit']        = "T"
+    onetwo['btotrmaj']['info']        = "Btotal on transport rho grid"
+    
+    onetwo['zeff']                = {} 
+    onetwo['zeff']['data']        = None
+    onetwo['zeff']['unit']        = None
+    onetwo['zeff']['info']        = "Effective Charge"
+    
+    onetwo['vpol']                = {} 
+    onetwo['vpol']['data']        = None
+    onetwo['vpol']['unit']        = "m/s"
+    onetwo['vpol']['info']        = "Poloidal Velocity Profile"
+    
+    onetwo['vpol_nclass']                = {} 
+    onetwo['vpol_nclass']['data']        = None
+    onetwo['vpol_nclass']['unit']        = "m/s"
+    onetwo['vpol_nclass']['info']        = "poloidal velocity profile, forcebal Nclass model"
+    
+    onetwo['vpar']                = {} 
+    onetwo['vpar']['data']        = None
+    onetwo['vpar']['unit']        = "m/s"
+    onetwo['vpar']['info']        = "parallel velocity profile"
+    
+    onetwo['vpar_nclass']                = {} 
+    onetwo['vpar_nclass']['data']        = None
+    onetwo['vpar_nclass']['unit']        = "m/s"
+    onetwo['vpar_nclass']['info']        = "parallel velocity profile, forcebal Nclass model"
+    
+    onetwo['er_tot_nclass']                = {} 
+    onetwo['er_tot_nclass']['data']        = None
+    onetwo['er_tot_nclass']['unit']        = "V/m"
+    onetwo['er_tot_nclass']['info']        = "Nclass total radial electric field"
+    
+    onetwo['angrot']                = {} 
+    onetwo['angrot']['data']        = None
+    onetwo['angrot']['unit']        = "rad/s"
+    onetwo['angrot']['info']        = "angular rotation speed profile"
+    
+    onetwo['d']                = {} 
+    onetwo['d']['data']        = None
+    onetwo['d']['unit']        = None
+    onetwo['d']['info']        = "diffusion matrix(ntot,ntot,nj) , on half grid"
+    
+    onetwo['chieinv']                = {} 
+    onetwo['chieinv']['data']        = None
+    onetwo['chieinv']['unit']        = "m^2/s"
+    onetwo['chieinv']['info']        = "electron thermal diffusivity, on half grid"
+    
+    onetwo['chiinv']                = {} 
+    onetwo['chiinv']['data']        = None
+    onetwo['chiinv']['unit']        = "m^2/s"
+    onetwo['chiinv']['info']        = "ion thermal diffusivity, on half grid"
+    
+    onetwo['xkineo']                = {} 
+    onetwo['xkineo']['data']        = None
+    onetwo['xkineo']['unit']        = "1/m/s"
+    onetwo['xkineo']['info']        = "ion neoclassical thermal conductivity"
+    
+    onetwo['xkeneo']                = {} 
+    onetwo['xkeneo']['data']        = None
+    onetwo['xkeneo']['unit']        = "1/m/s"
+    onetwo['xkeneo']['info']        = "Electron neoclassical thermal conductivity"
+    
+    onetwo['dpedt']                = {} 
+    onetwo['dpedt']['data']        = None
+    onetwo['dpedt']['unit']        = "W/m^3"
+    onetwo['dpedt']['info']        = "1.5*dpedt, power density due to electron pressure"
+    
+    onetwo['dpidt']                = {} 
+    onetwo['dpidt']['data']        = None
+    onetwo['dpidt']['unit']        = "W/m^3"
+    onetwo['dpidt']['info']        = "1.5*dpidt, power density due to ion pressure"
+    
+    onetwo['qconde']                = {} 
+    onetwo['qconde']['data']        = None
+    onetwo['qconde']['unit']        = "W/m^3"
+    onetwo['qconde']['info']        = "Electron Conduction"
+    
+    onetwo['qcondi']                = {} 
+    onetwo['qcondi']['data']        = None
+    onetwo['qcondi']['unit']        = "W/m^3"
+    onetwo['qcondi']['info']        = "Ion Conduction"
+    
+    onetwo['qconve']                = {} 
+    onetwo['qconve']['data']        = None
+    onetwo['qconve']['unit']        = "W/m^3"
+    onetwo['qconve']['info']        = "Electron Convection"
+    
+    onetwo['qconvi']                = {} 
+    onetwo['qconvi']['data']        = None
+    onetwo['qconvi']['unit']        = "W/m^3"
+    onetwo['qconvi']['info']        = "Ion Convection"
+    
+    onetwo['qbeame']                = {} 
+    onetwo['qbeame']['data']        = None
+    onetwo['qbeame']['unit']        = "W/m^3"
+    onetwo['qbeame']['info']        = "power to electron from beam"
+    
+    onetwo['qbeami']                = {} 
+    onetwo['qbeami']['data']        = None
+    onetwo['qbeami']['unit']        = "W/m^3"
+    onetwo['qbeami']['info']        = "power to ion from beam"
+    
+    onetwo['qdelt']                = {} 
+    onetwo['qdelt']['data']        = None
+    onetwo['qdelt']['unit']        = "W/m^3"
+    onetwo['qdelt']['info']        = "Source of energy to electrons due to collisional energy exchange with thermal ions"
+    
+    onetwo['qexch']                = {} 
+    onetwo['qexch']['data']        = None
+    onetwo['qexch']['unit']        = "W/m^3"
+    onetwo['qexch']['info']        = "nomalous electron-ion energy exchange term"
+    
+    onetwo['qrfe']                = {} 
+    onetwo['qrfe']['data']        = None
+    onetwo['qrfe']['unit']        = "W/m^3"
+    onetwo['qrfe']['info']        = "RF Electron Heating"
+    
+    onetwo['qrfi']                = {} 
+    onetwo['qrfi']['data']        = None
+    onetwo['qrfi']['unit']        = "W/m^3"
+    onetwo['qrfi']['info']        = "RF Ion Heating"
+    
+    onetwo['qione']                = {} 
+    onetwo['qione']['data']        = None
+    onetwo['qione']['unit']        = "W/m^3"
+    onetwo['qione']['info']        = "electron power density due to recombination and impact ionization"
+    
+    onetwo['qioni']                = {} 
+    onetwo['qioni']['data']        = None
+    onetwo['qioni']['unit']        = "W/m^3"
+    onetwo['qioni']['info']        = "Ion power density due to recombination and impact ionization"
+    
+    onetwo['qcx']                = {} 
+    onetwo['qcx']['data']        = None
+    onetwo['qcx']['unit']        = "W/m^3"
+    onetwo['qcx']['info']        = "ion power density due to neutral-ion charge exchange"
+    
+    onetwo['qe2d']                = {} 
+    onetwo['qe2d']['data']        = None
+    onetwo['qe2d']['unit']        = "W/m^3"
+    onetwo['qe2d']['info']        = "2D electron heating"
+    
+    onetwo['qi2d']                = {} 
+    onetwo['qi2d']['data']        = None
+    onetwo['qi2d']['unit']        = "W/m^3"
+    onetwo['qi2d']['info']        = "2D Ion heating"
+    
+    onetwo['qfuse']                = {} 
+    onetwo['qfuse']['data']        = None
+    onetwo['qfuse']['unit']        = "W/m^3"
+    onetwo['qfuse']['info']        = "total fusion electron heating"
+    
+    onetwo['qfusi']                = {} 
+    onetwo['qfusi']['data']        = None
+    onetwo['qfusi']['unit']        = "W/m^3"
+    onetwo['qfusi']['info']        = "total fusion ion heating"
+    
+    onetwo['qbfuse']                = {} 
+    onetwo['qbfuse']['data']        = None
+    onetwo['qbfuse']['unit']        = "W/m^3"
+    onetwo['qbfuse']['info']        = "beam fusion electron heating"
+    
+    onetwo['qbfusi']                = {} 
+    onetwo['qbfusi']['data']        = None
+    onetwo['qbfusi']['unit']        = "W/m^3"
+    onetwo['qbfusi']['info']        = "beam fusion ion heating"
+    
+    onetwo['qmag']                = {} 
+    onetwo['qmag']['data']        = None
+    onetwo['qmag']['unit']        = "W/m^3"
+    onetwo['qmag']['info']        = "qmag electron heating"
+    
+    onetwo['qsawe']                = {} 
+    onetwo['qsawe']['data']        = None
+    onetwo['qsawe']['unit']        = "W/m^3"
+    onetwo['qsawe']['info']        = "sawtooth electron heating"
+    
+    onetwo['qsawi']                = {} 
+    onetwo['qsawi']['data']        = None
+    onetwo['qsawi']['unit']        = "W/m^3"
+    onetwo['qsawi']['info']        = "sawtooth ion heating"
+    
+    onetwo['qrad']                = {} 
+    onetwo['qrad']['data']        = None
+    onetwo['qrad']['unit']        = "W/m^3"
+    onetwo['qrad']['info']        = "radiated power density"
+    
+    onetwo['vpinch_nclass']                = {} 
+    onetwo['vpinch_nclass']['data']        = None
+    onetwo['vpinch_nclass']['unit']        = "m/s"
+    onetwo['vpinch_nclass']['info']        = "nclass derived pinch velocity: e,plus ion species"
+    
+    onetwo['brems_nions']                = {} 
+    onetwo['brems_nions']['data']        = None
+    onetwo['brems_nions']['unit']        = "W/m^3"
+    onetwo['brems_nions']['info']        = "radiative loss  species: d c"
+    
+    onetwo['cyclo_rad']                = {} 
+    onetwo['cyclo_rad']['data']        = None
+    onetwo['cyclo_rad']['unit']        = "W/m^3"
+    onetwo['cyclo_rad']['info']        = "cyclotron radiation"
+    
+    onetwo['omegale']                = {} 
+    onetwo['omegale']['data']        = None
+    onetwo['omegale']['unit']        = "W/m^3"
+    onetwo['omegale']['info']        = "beam electron energy correction due to rotation"
+    
+    onetwo['qomegapi']                = {} 
+    onetwo['qomegapi']['data']        = None
+    onetwo['qomegapi']['unit']        = "W/m^3"
+    onetwo['qomegapi']['info']        = "beam ion energy correction due to rotation"
+    
+    onetwo['qangce']                = {} 
+    onetwo['qangce']['data']        = None
+    onetwo['qangce']['unit']        = "W/m^3"
+    onetwo['qangce']['info']        = "beam ion energy correction due to rotation"
+    
+    onetwo['sprcxre']                = {} 
+    onetwo['sprcxre']['data']        = None
+    onetwo['sprcxre']['unit']        = "kg/m/s^2"
+    onetwo['sprcxre']['info']        = "Torque on ions as thermal ions are lost to charge exchange with fast neutral or recombination"
+
+    onetwo['sprcxree']                = {} 
+    onetwo['sprcxree']['data']        = None
+    onetwo['sprcxree']['unit']        = "W/m^3"
+    onetwo['sprcxree']['info']        = "beam ion energy correction due to rotation"
+
+    onetwo['spreimpe']                = {} 
+    onetwo['spreimpe']['data']        = None
+    onetwo['spreimpe']['unit']        = "W/m^3"
+    onetwo['spreimpe']['info']        = "beam ion energy correction due to rotation"
+
+    onetwo['pfuse_tot']                = {} 
+    onetwo['pfuse_tot']['data']        = None
+    onetwo['pfuse_tot']['unit']        = "W"
+    onetwo['pfuse_tot']['info']        = "total electron plus ion thermal fusion heating power"
+
+    onetwo['qrad_tot']                = {} 
+    onetwo['qrad_tot']['data']        = None
+    onetwo['qrad_tot']['unit']        = "W"
+    onetwo['qrad_tot']['info']        = "total electron power radiated from plasma"
+
+    onetwo['brems_tot']                = {} 
+    onetwo['brems_tot']['data']        = None
+    onetwo['brems_tot']['unit']        = "W"
+    onetwo['brems_tot']['info']        = "total electron radiated power due to ion species"
+
+    onetwo['qohm']                = {} 
+    onetwo['qohm']['data']        = None
+    onetwo['qohm']['unit']        = "W/m^3"
+    onetwo['qohm']['info']        = "(electron) ohmic power density"
+
+    onetwo['rmajavnpsi']                = {} 
+    onetwo['rmajavnpsi']['data']        = None
+    onetwo['rmajavnpsi']['unit']        = "m"
+    onetwo['rmajavnpsi']['info']        = "average major radius of each flux surface, meter, evaluated at elevation of magnetic axis"
+
+    onetwo['rminavnpsi']                = {} 
+    onetwo['rminavnpsi']['data']        = None
+    onetwo['rminavnpsi']['unit']        = "m"
+    onetwo['rminavnpsi']['info']        = "average minor radius of each flux surface, meter, evaluated at elevation of magnetic axis"
+
+    onetwo['psivolpnpsi']                = {} 
+    onetwo['psivolpnpsi']['data']        = None
+    onetwo['psivolpnpsi']['unit']        = "m^3"
+    onetwo['psivolpnpsi']['info']        = "volume of each flux surface"
+
+    onetwo['elongxnpsi']                = {} 
+    onetwo['elongxnpsi']['data']        = None
+    onetwo['elongxnpsi']['unit']        = None
+    onetwo['elongxnpsi']['info']        = "elongation of each flux surface"
+
+    onetwo['triangnpsi_u']                = {} 
+    onetwo['triangnpsi_u']['data']        = None
+    onetwo['triangnpsi_u']['unit']        = None
+    onetwo['triangnpsi_u']['info']        = "upper triangularity of each flux surface"
+
+    onetwo['triangnpsi_l']                = {} 
+    onetwo['triangnpsi_l']['data']        = None
+    onetwo['triangnpsi_l']['unit']        = None
+    onetwo['triangnpsi_l']['info']        = "lower triangularity of each flux surface"
+
+    onetwo['pindentnpsi']                = {} 
+    onetwo['pindentnpsi']['data']        = None
+    onetwo['pindentnpsi']['unit']        = None
+    onetwo['pindentnpsi']['info']        = "indentation of each flux surface"
+
+    onetwo['sfareanpsi']                = {} 
+    onetwo['sfareanpsi']['data']        = None
+    onetwo['sfareanpsi']['unit']        = "m^2"
+    onetwo['sfareanpsi']['info']        = "surface area of each flux surface, this is 4*pi*pi*R0*hcap*rho*<ABS(grad rho)>"
+
+    onetwo['cxareanpsi']                = {} 
+    onetwo['cxareanpsi']['data']        = None
+    onetwo['cxareanpsi']['unit']        = "m^2"
+    onetwo['cxareanpsi']['info']        = "cross-sectional area of each flux"
+
+    onetwo['grho1npsi']                = {} 
+    onetwo['grho1npsi']['data']        = None
+    onetwo['grho1npsi']['unit']        = None
+    onetwo['grho1npsi']['info']        = "flux surface average absolute grad rho"
+
+    onetwo['grho2npsi']                = {} 
+    onetwo['grho2npsi']['data']        = None
+    onetwo['grho2npsi']['unit']        = None
+    onetwo['grho2npsi']['info']        = "flux surface average (grad rho)**2"
+
+    onetwo['qpsinpsi']                = {} 
+    onetwo['qpsinpsi']['data']        = None
+    onetwo['qpsinpsi']['unit']        = None
+    onetwo['qpsinpsi']['info']        = "q on eqdsk psigrid"
+
+    onetwo['pressnpsi']                = {} 
+    onetwo['pressnpsi']['data']        = None
+    onetwo['pressnpsi']['unit']        = "N/m^2"
+    onetwo['pressnpsi']['info']        = "pressure on eqdsk psigrid"
+
+    onetwo['ffprimnpsi']                = {} 
+    onetwo['ffprimnpsi']['data']        = None
+    onetwo['ffprimnpsi']['unit']        = "kf/A/s^2"
+    onetwo['ffprimnpsi']['info']        = "ffprime  on eqdsk psigrid"
+
+    onetwo['pprimnpsi']                = {} 
+    onetwo['pprimnpsi']['data']        = None
+    onetwo['pprimnpsi']['unit']        = "A/m^3"
+    onetwo['pprimnpsi']['info']        = "pprime  on eqdsk psigrid"
+
+    onetwo['rplasbdry']                = {} 
+    onetwo['rplasbdry']['data']        = None
+    onetwo['rplasbdry']['unit']        = "m"
+    onetwo['rplasbdry']['info']        = "r points for plasma boundary"
+
+    onetwo['zplasbdry']                = {} 
+    onetwo['zplasbdry']['data']        = None
+    onetwo['zplasbdry']['unit']        = "m"
+    onetwo['zplasbdry']['info']        = "z points for plasma boundary"
+
+    onetwo['rlimiter']                = {} 
+    onetwo['rlimiter']['data']        = None
+    onetwo['rlimiter']['unit']        = "m"
+    onetwo['rlimiter']['info']        = "R points for limiter"
+
+    onetwo['zlimiter']                = {} 
+    onetwo['zlimiter']['data']        = None
+    onetwo['zlimiter']['unit']        = "m"
+    onetwo['zlimiter']['info']        = "Z points for limiter"
+
+    onetwo['storqueb']                = {} 
+    onetwo['storqueb']['data']        = None
+    onetwo['storqueb']['unit']        = "kg/m/s^2"
+    onetwo['storqueb']['info']        = "Torque due to beams (sprbeame+sprbeami+ssprcxl)"
+
+    onetwo['totcur_bc']                = {} 
+    onetwo['totcur_bc']['data']        = None
+    onetwo['totcur_bc']['unit']        = "A"
+    onetwo['totcur_bc']['info']        = "boundary condition total current at t = time"
+
+    onetwo['vloop_bc']                = {} 
+    onetwo['vloop_bc']['data']        = None
+    onetwo['vloop_bc']['unit']        = "V"
+    onetwo['vloop_bc']['info']        = "boundary condition loop voltage at t = time"
+
+    onetwo['fix_edge_te_bc']                = {} 
+    onetwo['fix_edge_te_bc']['data']        = None
+    onetwo['fix_edge_te_bc']['unit']        = None
+    onetwo['fix_edge_te_bc']['info']        = "te boundary condition rho flags at t = time"
+
+    onetwo['fix_edge_ti_bc']                = {} 
+    onetwo['fix_edge_ti_bc']['data']        = None
+    onetwo['fix_edge_ti_bc']['unit']        = None
+    onetwo['fix_edge_ti_bc']['info']        = "ti boundary condition rho flags at t = time"
+
+    onetwo['fix_edge_rot_bc']                = {} 
+    onetwo['fix_edge_rot_bc']['data']        = None
+    onetwo['fix_edge_rot_bc']['unit']        = None
+    onetwo['fix_edge_rot_bc']['info']        = "rot boundary condition rho flags at t = time"
+
+    onetwo['fix_edge_ni_bc']                = {} 
+    onetwo['fix_edge_ni_bc']['data']        = None
+    onetwo['fix_edge_ni_bc']['unit']        = None
+    onetwo['fix_edge_ni_bc']['info']        = " boundary condition rho flags at t = time"
+
+    onetwo['te_bc']                = {} 
+    onetwo['te_bc']['data']        = None
+    onetwo['te_bc']['unit']        = "keV"
+    onetwo['te_bc']['info']        = "boundary condition Te at t= time"
+
+    onetwo['ti_bc']                = {} 
+    onetwo['ti_bc']['data']        = None
+    onetwo['ti_bc']['unit']        = "keV"
+    onetwo['ti_bc']['info']        = "boundary condition Ti at t = time"
+
+    onetwo['ene_bc']                = {} 
+    onetwo['ene_bc']['data']        = None
+    onetwo['ene_bc']['unit']        = "#/m^3"
+    onetwo['ene_bc']['info']        = "bc profile: ene at t = time"
+
+    onetwo['zeff_bc']                = {} 
+    onetwo['zeff_bc']['data']        = None
+    onetwo['zeff_bc']['unit']        = None
+    onetwo['zeff_bc']['info']        = "bc profile: zeff at t = time"
+
+    onetwo['angrot_bc']                = {} 
+    onetwo['angrot_bc']['data']        = None
+    onetwo['angrot_bc']['unit']        = "rad/s"
+    onetwo['angrot_bc']['info']        = "angular rotation speed profile at t = time"
+
+    onetwo['wbeam']                = {} 
+    onetwo['wbeam']['data']        = None
+    onetwo['wbeam']['unit']        = "keV/m^3"
+    onetwo['wbeam']['info']        = "fast ion stored energy density"
+
+    onetwo['walp']                = {} 
+    onetwo['walp']['data']        = None
+    onetwo['walp']['unit']        = "keV/m^3"
+    onetwo['walp']['info']        = "fast alpha stored energy density"
+
+    onetwo['enalp']                = {} 
+    onetwo['enalp']['data']        = None
+    onetwo['enalp']['unit']        = "#/m^3"
+    onetwo['enalp']['info']        = "fast alpha density"
+
+    onetwo['eps']                = {} 
+    onetwo['eps']['data']        = None
+    onetwo['eps']['unit']        = None
+    onetwo['eps']['info']        = "horizontal inverse aspect ratio = (rmax-rmin)/(rmax+rmin)"
+
+    onetwo['rcap']                = {} 
+    onetwo['rcap']['data']        = None
+    onetwo['rcap']['unit']        = "m"
+    onetwo['rcap']['info']        = "<R>"
+
+    onetwo['rcapi']                = {} 
+    onetwo['rcapi']['data']        = None
+    onetwo['rcapi']['unit']        = "1/m"
+    onetwo['rcapi']['info']        = "<1/R>"
+
+    onetwo['r2cap']                = {} 
+    onetwo['r2cap']['data']        = None
+    onetwo['r2cap']['unit']        = None
+    onetwo['r2cap']['info']        = "<R0**2/R**2>"
+
+    onetwo['r2capi']                = {} 
+    onetwo['r2capi']['data']        = None
+    onetwo['r2capi']['unit']        = "m^2"
+    onetwo['r2capi']['info']        = "<R**2>"
+
+    onetwo['xhm2']                = {} 
+    onetwo['xhm2']['data']        = None
+    onetwo['xhm2']['unit']        = None
+    onetwo['xhm2']['info']        = "< (B total/ B axis)**2 > (=1 for circular plasmas)"
+
+    onetwo['xi11']                = {} 
+    onetwo['xi11']['data']        = None
+    onetwo['xi11']['unit']        = None
+    onetwo['xi11']['info']        = "( = 1.95 sqrt(eps)for circular plasmas)"
+
+    onetwo['xi33']                = {} 
+    onetwo['xi33']['data']        = None
+    onetwo['xi33']['unit']        = None
+    onetwo['xi33']['info']        = "( = 1.95 sqrt(eps)for circular plasmas)"
+
+    onetwo['xips']                = {} 
+    onetwo['xips']['data']        = None
+    onetwo['xips']['unit']        = None
+    onetwo['xips']['info']        = "<(Baxis/B)**2)> - 1./(<(B/Baxis)**2> )( = 2 eps**2 for circular plasmas)"
+
+    onetwo['dfdt']                = {} 
+    onetwo['dfdt']['data']        = None
+    onetwo['dfdt']['unit']        = "1/s"
+    onetwo['dfdt']['info']        = "(d/dt)Fcap"
+
+    onetwo['dgdt']                = {} 
+    onetwo['dgdt']['data']        = None
+    onetwo['dgdt']['unit']        = "1/s"
+    onetwo['dgdt']['info']        = "(d/dt)Gcap"
+
+    onetwo['dhdt']                = {} 
+    onetwo['dhdt']['data']        = None
+    onetwo['dhdt']['unit']        = "1/s"
+    onetwo['dhdt']['info']        = "(d/dt)Hcap"
+
+    onetwo['xnus']                = {} 
+    onetwo['xnus']['data']        = None
+    onetwo['xnus']['unit']        = None
+    onetwo['xnus']['info']        = "nu* ion collison/bounce freq, species: d c"
+
+    onetwo['xnuse']                = {} 
+    onetwo['xnuse']['data']        = None
+    onetwo['xnuse']['unit']        = None
+    onetwo['xnuse']['info']        = "nu*e  electron collison/bounce freq"
+
+    onetwo['ftrap']                = {} 
+    onetwo['ftrap']['data']        = None
+    onetwo['ftrap']['unit']        = None
+    onetwo['ftrap']['info']        = "electron trapped particle fraction"
+
+    onetwo['eta']                = {} 
+    onetwo['eta']['data']        = None
+    onetwo['eta']['unit']        = "Ohm.m"
+    onetwo['eta']['info']        = "resistivity"
+
+    onetwo['chiepc']                = {} 
+    onetwo['chiepc']['data']        = None
+    onetwo['chiepc']['unit']        = "m^2/s"
+    onetwo['chiepc']['info']        = "Electron Paleoclassical Diffusivity"
+
+    onetwo['neutr_ddn_th']                = {} 
+    onetwo['neutr_ddn_th']['data']        = None
+    onetwo['neutr_ddn_th']['unit']        = "#/m^3/s"
+    onetwo['neutr_ddn_th']['info']        = "thermal -thermal neutron rate"
+
+    onetwo['neutr_ddn_beam_thermal']                = {} 
+    onetwo['neutr_ddn_beam_thermal']['data']        = None
+    onetwo['neutr_ddn_beam_thermal']['unit']        = "#/m^3/s"
+    onetwo['neutr_ddn_beam_thermal']['info']        = "beam -thermal neutron rate"
+
+    onetwo['neutr_ddn_beam_beam']                = {} 
+    onetwo['neutr_ddn_beam_beam']['data']        = None
+    onetwo['neutr_ddn_beam_beam']['unit']        = "#/m^3/s"
+    onetwo['neutr_ddn_beam_beam']['info']        = "beam - beam neutron rate"
+
+    onetwo['neutr_ddn_knock']                = {} 
+    onetwo['neutr_ddn_knock']['data']        = None
+    onetwo['neutr_ddn_knock']['unit']        = "#/m^3/s"
+    onetwo['neutr_ddn_knock']['info']        = "knock on neutron rate"
+
+    onetwo['neutr_ddn_tot']                = {} 
+    onetwo['neutr_ddn_tot']['data']        = None
+    onetwo['neutr_ddn_tot']['unit']        = "#/m^3/s"
+    onetwo['neutr_ddn_tot']['info']        = "total neutron rate"
+
+    onetwo['total_neutr_ddn_th']                = {} 
+    onetwo['total_neutr_ddn_th']['data']        = None
+    onetwo['total_neutr_ddn_th']['unit']        = "1/s"
+    onetwo['total_neutr_ddn_th']['info']        = "total thermal-thermal neutron rate"
+
+    onetwo['total_neutr_ddn_beam_beam']                = {} 
+    onetwo['total_neutr_ddn_beam_beam']['data']        = None
+    onetwo['total_neutr_ddn_beam_beam']['unit']        = "1/s"
+    onetwo['total_neutr_ddn_beam_beam']['info']        = "total beam - beam neutron rate"
+
+    onetwo['total_neutr_ddn_beam_thermal']                = {} 
+    onetwo['total_neutr_ddn_beam_thermal']['data']        = None
+    onetwo['total_neutr_ddn_beam_thermal']['unit']        = "1/s"
+    onetwo['total_neutr_ddn_beam_thermal']['info']        = "total beam - thermal neutron rate"
+
+    onetwo['total_neutr_ddn_knock']                = {} 
+    onetwo['total_neutr_ddn_knock']['data']        = None
+    onetwo['total_neutr_ddn_knock']['unit']        = "1/s"
+    onetwo['total_neutr_ddn_knock']['info']        = "total knock on  neutron rate"
+
+    onetwo['total_neutr_ddn']                = {} 
+    onetwo['total_neutr_ddn']['data']        = None
+    onetwo['total_neutr_ddn']['unit']        = "1/s"
+    onetwo['total_neutr_ddn']['info']        = "total neutron rate"
+
+    onetwo['ddpt']                = {} 
+    onetwo['ddpt']['data']        = None
+    onetwo['ddpt']['unit']        = "#/m^3/s"
+    onetwo['ddpt']['info']        = "d(d,p)t rate"
+
+    onetwo['ddpt_tot']                = {} 
+    onetwo['ddpt_tot']['data']        = None
+    onetwo['ddpt_tot']['unit']        = "1/s"
+    onetwo['ddpt_tot']['info']        = "total d(d,p)t reaction rate"
+
+    onetwo['he3dp_th']                = {} 
+    onetwo['he3dp_th']['data']        = None
+    onetwo['he3dp_th']['unit']        = "#/m^3/s"
+    onetwo['he3dp_th']['info']        = "he3(d,p)he4 thermal rate"
+
+    onetwo['he3dp_th_tot']                = {} 
+    onetwo['he3dp_th_tot']['data']        = None
+    onetwo['he3dp_th_tot']['unit']        = "1/s"
+    onetwo['he3dp_th_tot']['info']        = "total thermal He3(d,p)He4 reaction rate"
+
+    onetwo['he3dp_beam_th']                = {} 
+    onetwo['he3dp_beam_th']['data']        = None
+    onetwo['he3dp_beam_th']['unit']        = "#/m^3/s"
+    onetwo['he3dp_beam_th']['info']        = "he3(d,p)he4 beam-thermal rate"
+
+    onetwo['he3dp_beam_th_tot']                = {} 
+    onetwo['he3dp_beam_th_tot']['data']        = None
+    onetwo['he3dp_beam_th_tot']['unit']        = "1/s"
+    onetwo['he3dp_beam_th_tot']['info']        = "total beam thermal He3(d,p)He4 reaction rate"
+
+    onetwo['he3dp_tot']                = {} 
+    onetwo['he3dp_tot']['data']        = None
+    onetwo['he3dp_tot']['unit']        = "1/s"
+    onetwo['he3dp_tot']['info']        = "total beam plus thermal He3(d,p)He4 reaction rat"
+
+    onetwo['he3_frac']                = {} 
+    onetwo['he3_frac']['data']        = None
+    onetwo['he3_frac']['unit']        = None
+    onetwo['he3_frac']['info']        = "fraction of He that is He3"
+
+    onetwo['he3_thermal_spin_pol']                = {} 
+    onetwo['he3_thermal_spin_pol']['data']        = None
+    onetwo['he3_thermal_spin_pol']['unit']        = None
+    onetwo['he3_thermal_spin_pol']['info']        = "thermal He3 spin polarization relative to magnetic field direction"
+
+    onetwo['he3_thermal_spin_pol']                = {} 
+    onetwo['he3_thermal_spin_pol']['data']        = None
+    onetwo['he3_thermal_spin_pol']['unit']        = None
+    onetwo['he3_thermal_spin_pol']['info']        = "thermal He3 spin polarization relative to magnetic field direction"
+
+    onetwo['d_beam_spin_pol']                = {} 
+    onetwo['d_beam_spin_pol']['data']        = None
+    onetwo['d_beam_spin_pol']['unit']        = None
+    onetwo['d_beam_spin_pol']['info']        = "spin polarization of injected d beam"
+
+    onetwo['omega_pi_d']                = {} 
+    onetwo['omega_pi_d']['data']        = None
+    onetwo['omega_pi_d']['unit']        = "rad/s"
+    onetwo['omega_pi_d']['info']        = "plasma frequency species :d"
+
+    onetwo['omega_ci_d']                = {} 
+    onetwo['omega_ci_d']['data']        = None
+    onetwo['omega_ci_d']['unit']        = "rad/s"
+    onetwo['omega_ci_d']['info']        = "ion cyclotron  frequency species :d"
+
+    onetwo['omega_lh_d']                = {} 
+    onetwo['omega_lh_d']['data']        = None
+    onetwo['omega_lh_d']['unit']        = "rad/s"
+    onetwo['omega_lh_d']['info']        = "lower hybrid  frequency species :d"
+
+    onetwo['omega_uh_d']                = {} 
+    onetwo['omega_uh_d']['data']        = None
+    onetwo['omega_uh_d']['unit']        = "rad/s"
+    onetwo['omega_uh_d']['info']        = "upper hybrid  frequency species :d"
+
+    onetwo['omega_ce']                = {} 
+    onetwo['omega_ce']['data']        = None
+    onetwo['omega_ce']['unit']        = "rad/s"
+    onetwo['omega_ce']['info']        = "electron cyclotron  frequency"
+
+    onetwo['omega_pe']                = {} 
+    onetwo['omega_pe']['data']        = None
+    onetwo['omega_pe']['unit']        = "rad/s"
+    onetwo['omega_pe']['info']        = "electron plasma frequency"
+
+    onetwo['stotal_ion']                = {} 
+    onetwo['stotal_ion']['data']        = None
+    onetwo['stotal_ion']['unit']        = "#/m^3/s"
+    onetwo['stotal_ion']['info']        = "Total Sources of Ions"
+
+    onetwo['sion_thermal_e']                = {} 
+    onetwo['sion_thermal_e']['data']        = None
+    onetwo['sion_thermal_e']['unit']        = "#/m^3/s"
+    onetwo['sion_thermal_e']['info']        = "Source of electrons due to electron impact ionization of thermal neutrals"
+
+    onetwo['srecom_e']                = {} 
+    onetwo['srecom_e']['data']        = None
+    onetwo['srecom_e']['unit']        = "#/m^3/s"
+    onetwo['srecom_e']['info']        = "Source of electrons due to recombination"
+
+    onetwo['sbeam_e']                = {} 
+    onetwo['sbeam_e']['data']        = None
+    onetwo['sbeam_e']['unit']        = "#/m^3/s"
+    onetwo['sbeam_e']['info']        = "Source of electrons due to electron impact ionization of beam neutrals"
+
+    onetwo['stotal_e']                = {} 
+    onetwo['stotal_e']['data']        = None
+    onetwo['stotal_e']['unit']        = "#/m^3/s"
+    onetwo['stotal_e']['info']        = "Total sources of electrons"
+
+    onetwo['qcond_e']                = {} 
+    onetwo['qcond_e']['data']        = None
+    onetwo['qcond_e']['unit']        = "W/m^3"
+    onetwo['qcond_e']['info']        = "Conductive electron energy flow (total - convective)"
+
+    onetwo['qconv_e']                = {} 
+    onetwo['qconv_e']['data']        = None
+    onetwo['qconv_e']['unit']        = "W/m^3"
+    onetwo['qconv_e']['info']        = "Convective electron energy flow (five_halfs_te * (electron particle flux>0) * Te)"
+
+    onetwo['qohm_e']                = {} 
+    onetwo['qohm_e']['data']        = None
+    onetwo['qohm_e']['unit']        = "W/m^3"
+    onetwo['qohm_e']['info']        = "Source of energy to electrons due to ohmic heating"
+
+    onetwo['qion_e']                = {} 
+    onetwo['qion_e']['data']        = None
+    onetwo['qion_e']['unit']        = "W/m^3"
+    onetwo['qion_e']['info']        = "Source of energy to electrons due to recombination and ionization (sign?)"
+
+    onetwo['qrad_e']                = {} 
+    onetwo['qrad_e']['data']        = None
+    onetwo['qrad_e']['unit']        = "W/m^3"
+    onetwo['qrad_e']['info']        = "Source of energy from electrons due to radiation"
+
+    onetwo['qomegal_e']                = {} 
+    onetwo['qomegal_e']['data']        = None
+    onetwo['qomegal_e']['unit']        = "W/m^3"
+    onetwo['qomegal_e']['info']        = "Source of energy from electrons due to delayed beam ion momentum transfer"
+
+    onetwo['qbeam_e']                = {} 
+    onetwo['qbeam_e']['data']        = None
+    onetwo['qbeam_e']['unit']        = "W/m^3"
+    onetwo['qbeam_e']['info']        = "Source of energy to electrons due to beam heating"
+
+    onetwo['qcond_i']                = {} 
+    onetwo['qcond_i']['data']        = None
+    onetwo['qcond_i']['unit']        = "W/m^3"
+    onetwo['qcond_i']['info']        = "Conductive ion energy flow (total - convective)"
+
+    onetwo['qconv_i']                = {} 
+    onetwo['qconv_i']['data']        = None
+    onetwo['qconv_i']['unit']        = "W/m^3"
+    onetwo['qconv_i']['info']        = "Convective ion energy flow (five_halfs_ti * (total ion particle flux > 0) * ti)"
+
+    onetwo['qdelt_i']                = {} 
+    onetwo['qdelt_i']['data']        = None
+    onetwo['qdelt_i']['unit']        = "W/m^3"
+    onetwo['qdelt_i']['info']        = "Source of energy to ions due to collisional energy exchange with electrons"
+
+    onetwo['qion_i']                = {} 
+    onetwo['qion_i']['data']        = None
+    onetwo['qion_i']['unit']        = "W/m^3"
+    onetwo['qion_i']['info']        = "Source of energy from ions  due to recombination (3/2 T_i sum_i (srecom_i)) and ionization (3/2 sum_i sion_i tn_i)"
+
+    onetwo['qcx_i']                = {} 
+    onetwo['qcx_i']['data']        = None
+    onetwo['qcx_i']['unit']        = "W/m^3"
+    onetwo['qcx_i']['info']        = "Source of energy to ions due to charge exchange (with beam ions, thermal neutrals)"
+
+    onetwo['qomegale_i']                = {} 
+    onetwo['qomegale_i']['data']        = None
+    onetwo['qomegale_i']['unit']        = "W/m^3"
+    onetwo['qomegale_i']['info']        = "Source of energy subtracted from ions because it was added into the momentum sources (qomegap)"
+
+    onetwo['qomegap_i']                = {} 
+    onetwo['qomegap_i']['data']        = None
+    onetwo['qomegap_i']['unit']        = "W/m^3"
+    onetwo['qomegap_i']['info']        = "Source of energy to ions due to rotation * momentum flux"
+
+    onetwo['qbeam_i']                = {} 
+    onetwo['qbeam_i']['data']        = None
+    onetwo['qbeam_i']['unit']        = "W/m^3"
+    onetwo['qbeam_i']['info']        = "Source of energy to ions due to beam heating"
+
+    onetwo['qbcx_i']                = {} 
+    onetwo['qbcx_i']['data']        = None
+    onetwo['qbcx_i']['unit']        = "W/m^3"
+    onetwo['qbcx_i']['info']        = "Source of energy to thermal neutrals due to neutral beam charge exchange to ions"
+
+    onetwo['qomegdgam']                = {} 
+    onetwo['qomegdgam']['data']        = None
+    onetwo['qomegdgam']['unit']        = "W/m^3"
+    onetwo['qomegdgam']['info']        = "Source of energy to ions (qomegapi + vischeat)"
+
+    onetwo['qvisc_i']                = {} 
+    onetwo['qvisc_i']['data']        = None
+    onetwo['qvisc_i']['unit']        = "W/m^3"
+    onetwo['qvisc_i']['info']        = "Source of energy to ions due to viscous heating (-Pi*d omega/d rho)"
+
+    onetwo['qangce_i']                = {} 
+    onetwo['qangce_i']['data']        = None
+    onetwo['qangce_i']['unit']        = "W/m^3"
+    onetwo['qangce_i']['info']        = "Source of energy to ions due to convective momentum flux"
+
+    onetwo['qthcx_i']                = {} 
+    onetwo['qthcx_i']['data']        = None
+    onetwo['qthcx_i']['unit']        = "W/m^3"
+    onetwo['qthcx_i']['info']        = "Source of energy to ions (rotational kinetic) due to thermal charge exchange"
+
+    onetwo['qrecfcx_i']                = {} 
+    onetwo['qrecfcx_i']['data']        = None
+    onetwo['qrecfcx_i']['unit']        = "W/m^3"
+    onetwo['qrecfcx_i']['info']        = "Source of energy to ions (rotational kinetic) due to recombination and fast ion charge exchange"
+
+    onetwo['qeimpact_i']                = {} 
+    onetwo['qeimpact_i']['data']        = None
+    onetwo['qeimpact_i']['unit']        = "W/m^3"
+    onetwo['qeimpact_i']['info']        = "Source of energy to ions (rotational kinetic) due to electron impact ionization of thermal neutrals"
+
+    onetwo['hibr']                = {} 
+    onetwo['hibr']['data']        = None
+    onetwo['hibr']['unit']        = None
+    onetwo['hibr']['info']        = "hot ion birth rate"
+
+    onetwo['hdep']                = {} 
+    onetwo['hdep']['data']        = None
+    onetwo['hdep']['unit']        = None
+    onetwo['hdep']['info']        = "hot ion deposition"
+
+    onetwo['zeta']                = {} 
+    onetwo['zeta']['data']        = None
+    onetwo['zeta']['unit']        = None
+    onetwo['zeta']['info']        = "hot ion average pitch angle (cos)"
+
+    onetwo['qbsav']                = {} 
+    onetwo['qbsav']['data']        = None
+    onetwo['qbsav']['unit']        = "W/m^3"
+    onetwo['qbsav']['info']        = "total beam heating"
+
+    onetwo['qb']                = {} 
+    onetwo['qb']['data']        = None
+    onetwo['qb']['unit']        = "W/m^3"
+    onetwo['qb']['info']        = "delayed beam heating"
+
+    onetwo['fb_e']                = {} 
+    onetwo['fb_e']['data']        = None
+    onetwo['fb_e']['unit']        = None
+    onetwo['fb_e']['info']        = "fraction of energy to electrons"
+
+    onetwo['fb_i']                = {} 
+    onetwo['fb_i']['data']        = None
+    onetwo['fb_i']['unit']        = None
+    onetwo['fb_i']['info']        = "fraction of energy to ions"
+
+    onetwo['taupb']                = {} 
+    onetwo['taupb']['data']        = None
+    onetwo['taupb']['unit']        = "s"
+    onetwo['taupb']['info']        = "beam particle slowing down time"
+
+    onetwo['taueb']                = {} 
+    onetwo['taueb']['data']        = None
+    onetwo['taueb']['unit']        = "s"
+    onetwo['taueb']['info']        = "beam energy slowing down time"
+
+    onetwo['ebeam']                = {} 
+    onetwo['ebeam']['data']        = None
+    onetwo['ebeam']['unit']        = "keV"
+    onetwo['ebeam']['info']        = "beam particle energy"
+
+    onetwo['bion']                = {} 
+    onetwo['bion']['data']        = None
+    onetwo['bion']['unit']        = "#/s"
+    onetwo['bion']['info']        = "ion beam intensity"
+
+    onetwo['bneut']                = {} 
+    onetwo['bneut']['data']        = None
+    onetwo['bneut']['unit']        = "#/s"
+    onetwo['bneut']['info']        = "neutral beam intensity"
+
+    onetwo['pbeam']                = {} 
+    onetwo['pbeam']['data']        = None
+    onetwo['pbeam']['unit']        = "W"
+    onetwo['pbeam']['info']        = "beam power"
+
+    onetwo['fap']                = {} 
+    onetwo['fap']['data']        = None
+    onetwo['fap']['unit']        = None
+    onetwo['fap']['info']        = "Fraction of beam stopped by aperature"
+
+    onetwo['fwall']                = {} 
+    onetwo['fwall']['data']        = None
+    onetwo['fwall']['unit']        = None
+    onetwo['fwall']['info']        = "Fraction of beam incident on wall (shinethrough)"
+
+    onetwo['forb']                = {} 
+    onetwo['forb']['data']        = None
+    onetwo['forb']['unit']        = None
+    onetwo['forb']['info']        = "Fraction of beam lost on orbits"
+
+    onetwo['fp_e']                = {} 
+    onetwo['fp_e']['data']        = None
+    onetwo['fp_e']['unit']        = None
+    onetwo['fp_e']['info']        = "Fraction of beam deposited in electrons"
+
+    onetwo['fp_i']                = {} 
+    onetwo['fp_i']['data']        = None
+    onetwo['fp_i']['unit']        = None
+    onetwo['fp_i']['info']        = "Fraction of beam deposited in ions"
+
+    onetwo['fpcx']                = {} 
+    onetwo['fpcx']['data']        = None
+    onetwo['fpcx']['unit']        = None
+    onetwo['fpcx']['info']        = "Fraction of beam lost to fast ion charge exchange"
+
+    onetwo['pbap']                = {} 
+    onetwo['pbap']['data']        = None
+    onetwo['pbap']['unit']        = "W"
+    onetwo['pbap']['info']        = "Total beam power through the aperature"
+
+    onetwo['fsap']                = {} 
+    onetwo['fsap']['data']        = None
+    onetwo['fsap']['unit']        = None
+    onetwo['fsap']['info']        = "Total fraction of beams lost to the aperature"
+
+    onetwo['fw']                = {} 
+    onetwo['fw']['data']        = None
+    onetwo['fw']['unit']        = None
+    onetwo['fw']['info']        = "Total fraction of beams lost to shinethrough"
+
+    onetwo['florb']                = {} 
+    onetwo['florb']['data']        = None
+    onetwo['florb']['unit']        = None
+    onetwo['florb']['info']        = "Total fraction of beams lost to orbit losses"
+
+    onetwo['pblaf']                = {} 
+    onetwo['pblaf']['data']        = None
+    onetwo['pblaf']['unit']        = "W"
+    onetwo['pblaf']['info']        = "Total neutral beam power in plasma"
+
+    onetwo['pblas']                = {} 
+    onetwo['pblas']['data']        = None
+    onetwo['pblas']['unit']        = "W"
+    onetwo['pblas']['info']        = "Total slowed neutral beam power in plasma"
+
+    onetwo['fpbe']                = {} 
+    onetwo['fpbe']['data']        = None
+    onetwo['fpbe']['unit']        = None
+    onetwo['fpbe']['info']        = "Total fraction of neutral beam deposited in electrons"
+
+    onetwo['fpbi']                = {} 
+    onetwo['fpbi']['data']        = None
+    onetwo['fpbi']['unit']        = None
+    onetwo['fpbi']['info']        = "Total fraction of neutral beam deposited in ions"
+
+    onetwo['fpbcx']                = {} 
+    onetwo['fpbcx']['data']        = None
+    onetwo['fpbcx']['unit']        = None
+    onetwo['fpbcx']['info']        = "Total fraction of neutral beam lost to charge exchange (fast ion to thermal neutral)"
+
+    onetwo['storque']                = {} 
+    onetwo['storque']['data']        = None
+    onetwo['storque']['unit']        = "kg/m/s^2"
+    onetwo['storque']['info']        = "Total torque"
+
+    onetwo['smagtorque']                = {} 
+    onetwo['smagtorque']['data']        = None
+    onetwo['smagtorque']['unit']        = "kg/m/s^2"
+    onetwo['smagtorque']['info']        = "Torque due to magnetic breaking (see cb_mgbr)"
+
+    onetwo['sprbeam_e']                = {} 
+    onetwo['sprbeam_e']['data']        = None
+    onetwo['sprbeam_e']['unit']        = "kg/m/s^2"
+    onetwo['sprbeam_e']['info']        = "Torque directly to electrons from beams, but counted to ions, due to a delayed momentum transfer from the neutral beams"
+
+    onetwo['sprbeam_i']                = {} 
+    onetwo['sprbeam_i']['data']        = None
+    onetwo['sprbeam_i']['unit']        = "kg/m/s^2"
+    onetwo['sprbeam_i']['info']        = "Torque to ions from beams, due to a delayed momentum transfer from the beams"
+
+    onetwo['ssprcxl']                = {} 
+    onetwo['ssprcxl']['data']        = None
+    onetwo['ssprcxl']['unit']        = "kg/m/s^2"
+    onetwo['ssprcxl']['info']        = "Torque directly to thermal neutrals, but counted to ions, due to beam fast ion transfer of momentum during charge exchange with thermal neutrals"
+
+    onetwo['sprcx']                = {} 
+    onetwo['sprcx']['data']        = None
+    onetwo['sprcx']['unit']        = "kg/m/s^2"
+    onetwo['sprcx']['info']        = "Torque on ions as thermal neutrals charge exchange with thermal ions"
+
+    onetwo['stotal']                = {} 
+    onetwo['stotal']['data']        = None
+    onetwo['stotal']['unit']        = "kg/m/s^2"
+    onetwo['stotal']['info']        = "Total torque on ions (storqueb + spbolt + sntvtorque + smagtorque + sprcxre + spreimpt + sprcx)"
+
+    onetwo['angmtm_density']                = {} 
+    onetwo['angmtm_density']['data']        = None
+    onetwo['angmtm_density']['unit']        = "kg/m/s"
+    onetwo['angmtm_density']['info']        = "Angular momentum density"
+
+    onetwo['vionz']                = {} 
+    onetwo['vionz']['data']        = None
+    onetwo['vionz']['unit']        = "m/s"
+    onetwo['vionz']['info']        = "Ion speed"
+
+    onetwo['angmtm_flux']                = {} 
+    onetwo['angmtm_flux']['data']        = None
+    onetwo['angmtm_flux']['unit']        = "kg/s^2"
+    onetwo['angmtm_flux']['info']        = "Angular momentum flux" 
+
+    onetwo['chi_angmtm']                = {} 
+    onetwo['chi_angmtm']['data']        = None
+    onetwo['chi_angmtm']['unit']        = "m^2/s"
+    onetwo['chi_angmtm']['info']        = "Angular momentum diffusivity"
+
+    onetwo['moment_inertia_density']                = {} 
+    onetwo['moment_inertia_density']['data']        = None
+    onetwo['moment_inertia_density']['unit']        = "kg/m"
+    onetwo['moment_inertia_density']['info']        = "Moment of inertia density"
+
+    onetwo['tn']                = {} 
+    onetwo['tn']['data']        = None
+    onetwo['tn']['unit']        = "keV"
+    onetwo['tn']['info']        = "Temperature of neutral species"
+
+    return onetwo
+
+def read_iterdb_state(fname):
+    onetwo = get_iterdb_vars()
+
+    fid = ncdf.Dataset(fname)
+    fvars = fid.variables.keys()
+    for fvar in fvars:
+        onetwo[fvar]['data'] = fid.variables[fvar][:]
+       #try:
+       #   onetwo[fvar]['data'] = fid.variables[fvar][:]
+       #except KeyError:
+       #    pass
+
+    return onetwo
+
+
+def get_iterdb_vars_file():
     onetwo['jbs']                = {} 
     onetwo['jbs']['data']        = None
     onetwo['jbs']['unit']        = None
@@ -2121,8 +3210,14 @@ def read_iterdb_file(fname):
 
 
 if __name__ == "__main__":
-    fname = "iterdb.101381"
-    read_iterdb_file(fname)
+   #fname = "iterdb.101381"
+    fname = "statefile_2.630000E+00.nc"
+    onetwo = read_iterdb_state(fname)
+
+    import matplotlib.pyplot as plt
+    plt.plot(onetwo['rho_grid']['data'],onetwo['Te']['data'])
+    plt.plot(onetwo['rho_grid']['data'],onetwo['Ti']['data'])
+    plt.show()
 
 
 
