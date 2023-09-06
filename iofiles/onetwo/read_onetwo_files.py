@@ -304,76 +304,91 @@ def get_iterdb_vars():
     onetwo['Te']                       = {}
     onetwo['Te']['data']               = None
     onetwo['Te']['unit']               = "keV"
+    onetwo['Te']['name']               = "Electron Temperature"
     onetwo['Te']['info']               = "Electron Temperature"
 
     onetwo['Ti']                       = {}
     onetwo['Ti']['data']               = None
     onetwo['Ti']['unit']               = "keV"
+    onetwo['Ti']['name']               = "Ion Temperature"
     onetwo['Ti']['info']               = "Ion Temperature"
 
     onetwo['press']                    = {}
     onetwo['press']['data']            = None
     onetwo['press']['unit']            = "N/m^2"
+    onetwo['press']['name']            = "Total Pressure"
     onetwo['press']['info']            = "Total Pressure on Transport rho grid"
 
     onetwo['pressb']                   = {}
     onetwo['pressb']['data']           = None
     onetwo['pressb']['unit']           = "N/m^2"
+    onetwo['pressb']['name']           = "Beam Pressure"
     onetwo['pressb']['info']           = "Beam Pressure on Transport rho grid"
 
     onetwo['q_value']                  = {} 
     onetwo['q_value']['data']          = None
     onetwo['q_value']['unit']          = None
+    onetwo['q_value']['name']          = "Safety Factor"
     onetwo['q_value']['info']          = "Safety Factor"
     
     onetwo['ene']                      = {}
     onetwo['ene']['data']              = None
     onetwo['ene']['unit']              = "/m^3"
+    onetwo['ene']['name']              = "Electron Density"
     onetwo['ene']['info']              = "Electron Density"
 
     onetwo['p_flux_elct']              = {} 
     onetwo['p_flux_elct']['data']      = None
     onetwo['p_flux_elct']['unit']      = "1/m^2/s"
+    onetwo['p_flux_elct']['name']      = "Electron Particle Flux"
     onetwo['p_flux_elct']['info']      = "Electron Particle Flux"
     
     onetwo['p_flux_ion']               = {} 
     onetwo['p_flux_ion']['data']       = None
     onetwo['p_flux_ion']['unit']       = "1/m^2/s"
+    onetwo['p_flux_ion']['name']       = "Ion Total Particle Flux"
     onetwo['p_flux_ion']['info']       = "Ion Total Particle Flux"
     
     onetwo['enion']                    = {}
     onetwo['enion']['data']            = None
     onetwo['enion']['unit']            = "1/m^3"
+    onetwo['enion']['name']            = "Ion Density"
     onetwo['enion']['info']            = "Thermal Ion Density"
 
     onetwo['p_flux']                   = {} 
     onetwo['p_flux']['data']           = None
     onetwo['p_flux']['unit']           = "1/m^2/s"
-    onetwo['p_flux']['info']           = "TThermal Ion Particle Flux"
+    onetwo['p_flux']['name']           = "Thermal Ion Particle Flux"
+    onetwo['p_flux']['info']           = "Thermal Ion Particle Flux"
     
     onetwo['p_flux_conv']              = {} 
     onetwo['p_flux_conv']['data']      = None
     onetwo['p_flux_conv']['unit']      = "1/m^2/s"
-    onetwo['p_flux_conv']['info']      = "Thermal Ion Convectiove Flux"
+    onetwo['p_flux_conv']['name']      = "Thermal Ion Convective Flux"
+    onetwo['p_flux_conv']['info']      = "Thermal Ion Convective Flux"
     
     onetwo['e_fluxe']                  = {} 
     onetwo['e_fluxe']['data']          = None
     onetwo['e_fluxe']['unit']          = "J/m^2/s"
+    onetwo['e_fluxe']['name']          = "Electron Energy Flux"
     onetwo['e_fluxe']['info']          = "Electron Energy Flux"
     
     onetwo['e_fluxe_conv']             = {} 
     onetwo['e_fluxe_conv']['data']     = None
     onetwo['e_fluxe_conv']['unit']     = "J/m^2/s"
+    onetwo['e_fluxe_conv']['name']     = "Electron Convective Energy Flux"
     onetwo['e_fluxe_conv']['info']     = "Electron Convective Energy Flux"
     
     onetwo['e_fluxi']                  = {} 
     onetwo['e_fluxi']['data']          = None
     onetwo['e_fluxi']['unit']          = "J/m^2/s"
+    onetwo['e_fluxi']['name']          = "Total Thermal Ion Energy Flux"
     onetwo['e_fluxi']['info']          = "Total Thermal Ion Energy Flux"
     
     onetwo['e_fluxi_conv']             = {} 
     onetwo['e_fluxi_conv']['data']     = None
     onetwo['e_fluxi_conv']['unit']     = "J/m^2/s"
+    onetwo['e_fluxi_conv']['name']     = "Thermal Ion Convective Energy Flux"
     onetwo['e_fluxi_conv']['info']     = "Thermal Ion Convective Energy Flux"
     
     onetwo['fday_flux']                = {} 
@@ -1613,7 +1628,7 @@ def get_iterdb_vars():
 
     return onetwo
 
-def read_iterdb_state(fname):
+def read_state_file(fname):
     onetwo = get_iterdb_vars()
 
     fid = ncdf.Dataset(fname)
@@ -3211,8 +3226,9 @@ def read_iterdb_file(fname):
 
 if __name__ == "__main__":
    #fname = "iterdb.101381"
+   #onetwo = read_iterdb_file(fname)
     fname = "statefile_2.630000E+00.nc"
-    onetwo = read_iterdb_state(fname)
+    onetwo = read_state_file(fname)
 
     import matplotlib.pyplot as plt
     plt.plot(onetwo['rho_grid']['data'],onetwo['Te']['data'])
