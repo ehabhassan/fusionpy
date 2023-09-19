@@ -13,7 +13,7 @@ import matplotlib.pyplot   as plt
 import matplotlib.colors   as clr
 import matplotlib.gridspec as gds
 
-import iofiles.efit.efit_eqdsk as efit_eqdsk
+import iofiles.efit_eqdsk as efit_eqdsk
 
 from glob                            import glob
 from netCDF4                         import Dataset
@@ -1212,26 +1212,63 @@ def read_genray(WORK_DIR,model):
 
 
 def read_toray_outputs(fpath):
-    if os.path.isfile(fpath[0]):
-        print(CGREEN + "FINDING TORAY OUTPUT AT %s: PASSED" % (fpath[0]) + CEND)
+    ncfpath = os.path.join(fpath,"toray.nc")
+    if ncfpath and os.path.isfile(ncfpath):
+        print(CGREEN + "FINDING TORAY OUTPUT AT %s: PASSED" % (fpath) + CEND)
     else:
-        print(CRED + "FINDING TORAY OUTPUT AT %s: FAILED" % (fpath[0]) + CEND)
-    cdffh = Dataset(fpath[0], mode='r')
+        print(CRED   + "FINDING TORAY OUTPUT AT %s: FAILED" % (fpath) + CEND)
+        return {}
+    try:
+        cdffh = Dataset(ncfpath, mode='r')
+    except OSError:
+        print(CRED + "READING TORAY OUTPUT AT %s: FAILED" % (fpath) + CEND)
+        return {}
 
     toray = {}
     for name, variable in cdffh.variables.items():
         toray[name]                  = {}
         toray[name]['data']          = cdffh.variables[name][:]
         if hasattr(variable, "unit"):
-            toray[name]['units']     = getattr(variable, "units")
+            toray[name]['unit']     = getattr(variable, "units")
         else:
-            toray[name]['units']     = ""
+            toray[name]['unit']     = ""
         if hasattr(variable, "long_name"):
             toray[name]['long_name']     = getattr(variable, "long_name")
         else:
             toray[name]['long_name']     = ""
 
-        print(name, toray[name]['long_name'], npy.shape(toray[name]['data']))
+
+    infpath = os.path.join(fpath,"intoray")
+    if os.path.isfile(infpath):
+       intoray = Namelist(infpath)
+    else:
+       print("TORAY INPUT NOT FOUND in %s" % fpath)
+
+    toray['rho'] = {}
+    toray['rho']['data'] = toray['xrho']['data']
+
+    toray['nrho'] = {}
+    toray['nrho']['data'] = toray['ledge']['data']
+
+    toray['jec'] = {}
+    toray['jec']['data'] = npy.zeros(toray['nrho']['data'])
+    toray['jec']['unit'] = "A/M^2/W"
+
+    toray['pec'] = {}
+    toray['pec']['data'] = npy.zeros(toray['nrho']['data'])
+    toray['jec']['unit'] = "W/M^2/W"
+
+    for ind in range(1,toray['nrho']['data']-1):
+        toray['jec']['data'][ind] = 0.5 * (toray['currf']['data'][ind]  + toray['currf']['data'][ind-1])  * 1.0e4
+        toray['pec']['data'][ind] = 0.5 * (toray['weecrh']['data'][ind] + toray['weecrh']['data'][ind-1]) * 1.0e6
+
+    toray['jec']['data'] *= float(intoray['intoray']['rfpow'][0])*1.0e-6
+    toray['jec']['data'][ 0]  = toray['jec']['data'][1]
+    toray['jec']['data'][-1] = 0.0
+
+    toray['pec']['data'] *= float(intoray['intoray']['rfpow'][0])*1.0e-6
+    toray['pec']['data'][ 0] = toray['pec']['data'][1]
+    toray['pec']['data'][-1] = 0.0
 
     return toray
 

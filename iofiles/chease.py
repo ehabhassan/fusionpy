@@ -8,11 +8,11 @@ import sys
 import numpy       as npy
 import traceback   as traceback
 
-from iofiles.Namelist               import Namelist
-from iofiles.fastran.fastran_tools  import read_fastran_outputs
+from iofiles.Namelist       import Namelist
+from iofiles.fastran  import read_fastran_outputs
 
-import iofiles.cheasepy.cheasetools  as cheasetools
-import iofiles.cheasepy.cheaseprofit as cheaseprofit
+import maths.cheasetools  as cheasetools
+import maths.cheaseprofit as cheaseprofit
 
 from scipy.optimize    import curve_fit
 from scipy.integrate   import trapz,simps
@@ -3122,12 +3122,12 @@ def get_plasmastate(instatefpath="",statefpath="",bcfpath="",eqfpath='',setParam
         statedata['ip']     = abs(inbc['ip'][0])*1.0e6
         statedata['RCTR']   = abs(inbc["r0"][0])
         statedata['BCTR']   = abs(inbc["b0"][0])
-        statedata['nlim']   = inbc["nlim"][0]
-        statedata['rlim']   = inbc["rlim"][:]
-        statedata['zlim']   = inbc["zlim"][:]
-        statedata['nbound'] = inbc["nbdry"][0]
-        statedata['rbound'] = inbc["rbdry"][:]
-        statedata['zbound'] = inbc["zbdry"][:]
+        statedata['nlim']   = npy.array(inbc["nlim"][0])
+        statedata['rlim']   = npy.array(inbc["rlim"][:])
+        statedata['zlim']   = npy.array(inbc["zlim"][:])
+        statedata['nbound'] = npy.array(inbc["nbdry"][0])
+        statedata['rbound'] = npy.array(inbc["rbdry"][:])
+        statedata['zbound'] = npy.array(inbc["zbdry"][:])
     elif eqfpath:
         eqdskdata = read_eqdsk(fpath=eqfpath)
 
@@ -3158,20 +3158,20 @@ def get_plasmastate(instatefpath="",statefpath="",bcfpath="",eqfpath='',setParam
         statedata['TRIANG'] = delta
 
     if instatefpath:
-        instate = Namelist(instatefpath)['instate']
+        instate = Namelist(instatefpath,case='lower')['instate']
 
-        if not statedata['ip']:
+        if 'ip' in statedata and not statedata['ip']:
             statedata['ip']     = instate["ip"][0]*1.0e6
-        if not statedata['RCTR']:
+        if 'RCTR' in statedata and not statedata['RCTR']:
             statedata['RCTR']   = instate["r0"][0]
-        if not statedata['BCTR']:
+        if 'BCTR' in statedata and not statedata['BCTR']:
             statedata['BCTR']   = abs(instate["b0"][0])
-        if not statedata['nlim']:
+        if 'nlim' in statedata and not statedata['nlim']:
             if instate["nlim" ]:
                 statedata['nlim']   = instate["nlim" ][0]
                 statedata['rlim']   = npy.array(instate["rlim" ])
                 statedata['zlim']   = npy.array(instate["zlim" ])
-        if not statedata['nbound']:
+        if 'nbound' in statedata and not statedata['nbound']:
             if instate["nbdry"]:
                 statedata['nbound'] = instate["nbdry"][0]
                 statedata['rbound'] = npy.array(instate["rbdry"])
@@ -3228,6 +3228,18 @@ def get_plasmastate(instatefpath="",statefpath="",bcfpath="",eqfpath='',setParam
         if instate['ffprime']:
             statedata['ffprime']= npy.array(instate['ffprime'])
 
+        if instate['pe_nb']:
+            statedata['pe_nb']= npy.array(instate['pe_nb'])
+
+        if instate['pi_nb']:
+            statedata['pi_nb']= npy.array(instate['pi_nb'])
+
+        if instate['q']:
+            statedata['q']   = npy.array(instate['q'])
+        else:
+            statedata['q']   = npy.zeros(statedata['nrho'])
+        if all(statedata['q'] < 0): statedata['q'] *= -1.0
+
         if instate['j_tot']:
             statedata['jpar']   = npy.array(instate['j_tot'])
         elif instate['jpar_axis']:
@@ -3236,6 +3248,18 @@ def get_plasmastate(instatefpath="",statefpath="",bcfpath="",eqfpath='',setParam
             statedata['jpar']  += instate['jpar_sep'][0]
         statedata['jpar'] *= 1.0e6
         if all(statedata['jpar'] < 0): statedata['jpar'] *= -1.0
+
+        if instate['j_nb']:
+            statedata['j_nb'] = npy.array(instate['j_nb'])
+        else:
+            statedata['j_nb'] = npy.zeros(statedata['nrho'])
+        statedata['j_nb'] *= 1.0e6
+
+        if instate['j_bs']:
+            statedata['j_bs'] = npy.array(instate['j_bs'])
+        else:
+            statedata['j_bs'] = npy.zeros(statedata['nrho'])
+        statedata['j_bs'] *= 1.0e6
 
         if instate['wbeam']:
             statedata['wbeam']  = npy.array(instate['wbeam'])
