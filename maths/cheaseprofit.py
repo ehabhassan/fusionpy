@@ -8,7 +8,7 @@ import warnings
 
 import numpy as npy
 import matplotlib.pyplot as plt
-import iofiles.cheasepy.cheasefiles as cheasefiles
+import iofiles.chease as cheasefiles
 
 from scipy.optimize import curve_fit
 
