@@ -1,7 +1,13 @@
 import os
 import sys
 import numpy
+import random
 import netCDF4 as ncdf
+
+from maths.interp        import interp
+from iofiles.Namelist    import Namelist
+from iofiles.eqdsk       import read_eqdsk_file
+from iofiles.plasmastate import get_instate_vars
 
 def get_iterdb_vars():
     onetwo = {}
@@ -558,7 +564,7 @@ def get_iterdb_vars():
     
     onetwo['enbeam']                = {} 
     onetwo['enbeam']['data']        = None
-    onetwo['enbeam']['unit']        = "#/m^2"
+    onetwo['enbeam']['unit']        = "#/m^3"
     onetwo['enbeam']['info']        = "fast ion density"
     
     onetwo['curden']                = {} 
@@ -1627,21 +1633,6 @@ def get_iterdb_vars():
     onetwo['tn']['info']        = "Temperature of neutral species"
 
     return onetwo
-
-def read_state_file(fname):
-    onetwo = get_iterdb_vars()
-
-    fid = ncdf.Dataset(fname)
-    fvars = fid.variables.keys()
-    for fvar in fvars:
-        onetwo[fvar]['data'] = fid.variables[fvar][:]
-       #try:
-       #   onetwo[fvar]['data'] = fid.variables[fvar][:]
-       #except KeyError:
-       #    pass
-
-    return onetwo
-
 
 def get_iterdb_vars_file():
     onetwo['jbs']                = {} 
@@ -3223,17 +3214,267 @@ def read_iterdb_file(fname):
     return onetwo
 
 
+def read_state_file(fpath):
+    onetwo = get_iterdb_vars()
+
+    if os.path.isfile(fpath):
+       fid = ncdf.Dataset(fpath)
+    else:
+       raise IOError("ONETWO STATE FILE DOES NOT EXIST!" % fpath)
+    fvars = fid.variables.keys()
+    for fvar in fvars:
+        onetwo[fvar]['data'] = fid.variables[fvar][:]
+        try:
+           onetwo[fvar]['data'] = fid.variables[fvar][:]
+        except KeyError:
+            print(fvar)
+            pass
+
+    return onetwo
+
+def to_instate(fpath,gfpath={},setParam={}):
+    onetwo = read_state_file(fpath)
+    if gfpath:
+        geqdskdata = read_eqdsk_file(gfpath)
+   #print(onetwo.keys())
+   #print(onetwo['psivalnpsi']['data'])
+   #sys.exit()
+    instate = get_instate_vars()
+
+    if   'SHOT_ID' in setParam:
+          SHOT_ID = setParam['SHOT_ID']
+    elif 'shot_id' in setParam:
+          SHOT_ID = setParam['shot_id']
+    else:
+          SHOT_ID = "%06d" % (int(onetwo['shot']['data']))
+          
+    if   'TIME_ID' in setParam:
+          TIME_ID = setParam['TIME_ID']
+    elif 'time_id' in setParam:
+          TIME_ID = setParam['time_id']
+    else:
+          TIME_ID = "%05d" % (int(onetwo['time']['data']*1.0e4))
+          
+    if   'TOKAMAK_ID' in setParam:
+          TOKAMAK_ID = setParam['TOKAMAK_ID']
+    elif 'tokamak_id' in setParam:
+          TOKAMAK_ID = setParam['tokamak_id']
+    else:
+          TOKAMAK_ID = "TOKAMAK"
+          
+    if   'LIMITER_MODEL' in setParam:
+          LIMITER_MODEL = setParam['LIMITER_MODEL']
+    elif 'limiter_model' in setParam:
+          LIMITER_MODEL = setParam['limiter_model']
+    else:
+          LIMITER_MODEL = 1
+          
+    instate['SHOT_ID']       = [SHOT_ID]
+    instate['TIME_ID']       = [TIME_ID]
+    instate['TOKAMAK_ID']    = [TOKAMAK_ID]
+    instate['MODEL_SHAPE']   = [0]
+    instate['DENSITY_MODEL'] = [0]
+
+    instate['R0']     = [round(float(onetwo['rmajor']['data']),                             7)]
+    instate['B0']     = [round(float(abs(onetwo['btor']['data'])),                          7)]
+    instate['IP']     = [round(float(onetwo['tot_cur']['data']) * 1.0e-6,                   7)]
+    instate['KAPPA']  = [round(float(onetwo['kappa']['data']),                              7)]
+    instate['DELTA']  = [round(float(onetwo['deltao']['data']),                             7)]
+    instate['RMAJOR'] = [round(float(onetwo['rmajor']['data']),                             7)]
+    instate['ASPECT'] = [round(float(onetwo['eps']['data'][-1]),                            7)]
+    instate['AMINOR'] = [round(float(onetwo['rmajor']['data'] * onetwo['eps']['data'][-1]), 7)]
+
+    instate['N_ION']    = [1]
+    instate['Z_ION']    = [1]
+    instate['A_ION']    = [2]
+    instate['F_ION']    = [1]
+    instate['N_IMP']    = [1]
+    instate['Z_IMP']    = [6]
+    instate['A_IMP']    = [12]
+    instate['F_IMP']    = [1]
+    instate['N_MIN']    = [0]
+    instate['Z_MIN']    = [1]
+    instate['A_MIN']    = [1]
+    instate['N_BEAM']   = [1]
+    instate['Z_BEAM']   = [1]
+    instate['A_BEAM']   = [2]
+    instate['N_FUSION'] = [1]
+    instate['Z_FUSION'] = [2]
+    instate['A_FUSION'] = [4]
+
+    RHO  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
+    RHO /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
+    instate['RHO']    = [round(i,2) for i in RHO                        ]
+    instate['NRHO']   = [numpy.size(instate['RHO'])                     ]
+    instate['PSIPOL'] = [round(i,7) for i in onetwo['psir_grid']['data']]
+
+    instate['NE']      = [round(i,7) for i in (onetwo['ene']['data']*1.0e-19)]
+    instate['TE']      = [round(i,7) for i in onetwo['Te']['data']           ]
+    instate['TI']      = [round(i,7) for i in onetwo['Ti']['data']           ]
+    instate['ZEFF']    = [round(i,7) for i in onetwo['zeff']['data']         ]
+    instate['OMEGA']   = [round(i,7) for i in onetwo['angrot']['data']       ]
+
+    PSI    = (onetwo['psibdry']['data']-onetwo['psiaxis']['data'])
+    PSI   *= numpy.arange(onetwo['nj']['data'])/(onetwo['nj']['data']-1.0)
+    PSIN   = (PSI-PSI[0])/(PSI[-1]-PSI[0])
+    RHOPSI = numpy.sqrt(PSIN)
+    instate['RHOPSI']  = [round(i,7) for i in RHOPSI]
+
+    instate['Q']       = [round(i,7) for i in onetwo['q_value']['data']]
+    instate['P_EQ']    = [round(i,7) for i in onetwo['press']['data']]
+    instate['PPRIME']  = [round(i,7) for i in onetwo['pprim']['data']]
+    instate['FFPRIME'] = [round(i,7) for i in onetwo['ffprim']['data']]
+
+    instate['J_RF']  = [round(i,7) for i in (onetwo['currf']['data']   * 1.0e-6)]
+    instate['J_OH']  = [round(i,7) for i in (onetwo['curohm']['data']  * 1.0e-6)]
+    instate['J_NB']  = [round(i,7) for i in (onetwo['curbeam']['data'] * 1.0e-6)]
+    instate['J_BS']  = [round(i,7) for i in (onetwo['curboot']['data'] * 1.0e-6)]
+    instate['J_EC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['J_IC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['J_LH']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['J_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['J_TOT'] = [round(i,7) for i in (onetwo['curpar']['data']  * 1.0e-6)]
+
+    instate['PE_RF']  = [round(i,7) for i in (onetwo['qrfe']['data']   * 1.0e-6)]
+    instate['PI_RF']  = [round(i,7) for i in (onetwo['qrfi']['data']   * 1.0e-6)]
+    instate['PE_NB']  = [round(i,7) for i in (onetwo['qbeame']['data'] * 1.0e-6)]
+    instate['PI_NB']  = [round(i,7) for i in (onetwo['qbeami']['data'] * 1.0e-6)]
+    instate['SE_NB']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['SI_NB']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PE_EC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PI_EC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PE_IC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PI_IC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PE_LH']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PI_LH']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PE_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+    instate['PI_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
+
+    instate['P_EI']   = [round(i,7) for i in (onetwo['qdelt_i']['data'] * 1.0e-6)]
+    instate['P_RAD']  = [round(i,7) for i in (onetwo['qrad']['data']    * 1.0e-6)]
+    instate['P_OHM']  = [round(i,7) for i in (onetwo['qohm']['data']    * 1.0e-6)]
+    instate['PI_CX']  = [round(i,7) for i in (onetwo['qcx']['data']     * 1.0e-6)]
+    instate['PI_FUS'] = [round(i,7) for i in (onetwo['qfusi']['data']   * 1.0e-6)]
+    instate['PE_FUS'] = [round(i,7) for i in (onetwo['qfuse']['data']   * 1.0e-6)]
+
+    instate['CHIE']          = [round(i,7) for i in onetwo['chieinv']['data']            ]
+    instate['CHII']          = [round(i,7) for i in onetwo['chiinv']['data']             ]
+    instate['WBEAM']         = [round(i,7) for i in (onetwo['wbeam']['data']  *1.603e-22)]
+    instate['WALPHA']        = [round(i,7) for i in (onetwo['walp']['data']   *1.603e-22)]
+    instate['TORQUE_NB']     = [round(i,7) for i in onetwo['storqueb']['data']           ]
+    instate['TORQUE_IN']     = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+    instate['DENSITY_BEAM']  = [round(i,7) for i in (onetwo['enbeam']['data'][0]*1.0e-19)]
+    instate['DENSITY_ALPHA'] = [round(i,7) for i in onetwo['enalp']['data']              ]
+    instate['SE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+    instate['SI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+    instate['PE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+    instate['PI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+
+
+    if gfpath:
+        instate['NBDRY'] = [geqdskdata['nbound']]
+        instate['RBDRY'] =  list(geqdskdata['rbound'])
+        instate['ZBDRY'] =  list(geqdskdata['zbound'])
+
+        instate['NLIM'] = [geqdskdata['nlimit']]
+        instate['RLIM'] =  list(geqdskdata['rlimit'])
+        instate['ZLIM'] =  list(geqdskdata['zlimit'])
+        
+        if instate['NLIM'][0] % 2 == 0:
+            if instate['RLIM'][0] != instate['RLIM'][-1] or instate['ZLIM'][0] != instate['ZLIM'][-1]:
+                instate['RLIM'].append(instate['RLIM'][0])
+                instate['ZLIM'].append(instate['ZLIM'][0])
+                instate['NLIM'] = [instate['NLIM'][0] + 1]
+            else:
+                instate['RLIM'].pop(-2)
+                instate['ZLIM'].pop(-2)
+                instate['NLIM'] = [instate['NLIM'][0] - 1]
+    else:
+        NBDRYmax = 85
+        NBDRY = numpy.size(onetwo['rplasbdry']['data'])
+        if NBDRY > NBDRYmax:
+           RBDRY = onetwo['rplasbdry']['data']
+           ZBDRY = onetwo['zplasbdry']['data']
+           BDRY = zip(RBDRY,ZBDRY)
+           BDRYINDS = random.sample(range(NBDRY),NBDRYmax)
+           instate['NBDRY'] = [NBDRYmax]
+           instate['RBDRY'] = [round(i,7) for i in RBDRY[BDRYINDS]]
+           instate['ZBDRY'] = [round(i,7) for i in ZBDRY[BDRYINDS]]
+        else:
+           instate['NBDRY'] = [numpy.size(onetwo['rplasbdry']['data'])]
+           instate['RBDRY'] = [round(i,7) for i in onetwo['rplasbdry']['data']]
+           instate['ZBDRY'] = [round(i,7) for i in onetwo['zplasbdry']['data']]
+
+
+        if LIMITER_MODEL == 1:
+           NLIMTmax = 86
+           NLIMT = numpy.size(onetwo['rlimiter']['data'])
+           if NLIMT > NLIMTmax:
+              RLIMT = onetwo['rlimiter']['data']
+              ZLIMT = onetwo['zlimiter']['data']
+              stride = int(NLIMT / (NLIMTmax+1))
+              indexes = list(range(2,NLIMTmax-2,stride))
+              indexes.insert(0,0)
+              indexes.append(NLIMTmax)
+              instate['NLIM'] = [len(indexes)]
+              instate['RLIM'] = [round(RLIMT[i],7) for i in indexes]
+              instate['ZLIM'] = [round(ZLIMT[i],7) for i in indexes]
+             #LIMT = zip(RLIMT,ZLIMT)
+             #LIMTINDS = random.sample(range(NLIMT),NLIMTmax)
+             #instate['NLIM'] = [NLIMTmax]
+             #instate['RLIM'] = [round(i,7) for i in RLIMT[LIMTINDS]]
+             #instate['ZLIM'] = [round(i,7) for i in ZLIMT[LIMTINDS]]
+           else:
+              instate['NLIM']  = [numpy.size(onetwo['rlimiter']['data'])]
+              instate['RLIM']  = [round(i,7) for i in onetwo['rlimiter']['data'] ]
+              instate['ZLIM']  = [round(i,7) for i in onetwo['zlimiter']['data'] ]
+
+        elif LIMITER_MODEL == 2:
+           RLIM_MAX = max(onetwo['rlimiter']['data'])
+           RLIM_MIN = min(onetwo['rlimiter']['data'])
+           ZLIM_MAX = max(onetwo['zlimiter']['data'])
+           ZLIM_MIN = min(onetwo['zlimiter']['data'])
+           instate['RLIM'] = [RLIM_MAX, RLIM_MIN, RLIM_MIN, RLIM_MAX, RLIM_MAX]
+           instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
+           instate['NLIM'] = [len(instate['RLIM'])]
+
+   #for i in range(instate['NLIM'][0]):
+   #    print(instate['RLIM'][i], instate['ZLIM'][i])
+
+  # for fvar in list(instate.keys()):
+  # for fvar in list(instate.keys()):
+  #     if type(instate[fvar]) in [numpy.ma.core.MaskedArray]:
+  #        print(fvar," = ",instate[fvar])
+  #     elif type(instate[fvar]) in [list,tuple]:
+  #        print(fvar," = ",instate[fvar])
+
+    INSTATE = Namelist()
+    INSTATE['instate'] = {}
+    INSTATE['instate'].update(instate)
+    INSTATE.write("instate_%s_%s.%s" % (TOKAMAK_ID,SHOT_ID,TIME_ID))
+
+    return instate
+
 
 if __name__ == "__main__":
    #fname = "iterdb.101381"
    #onetwo = read_iterdb_file(fname)
-    fname = "statefile_2.630000E+00.nc"
-    onetwo = read_state_file(fname)
 
-    import matplotlib.pyplot as plt
-    plt.plot(onetwo['rho_grid']['data'],onetwo['Te']['data'])
-    plt.plot(onetwo['rho_grid']['data'],onetwo['Ti']['data'])
-    plt.show()
+   #geqdskfname = "../../Discharges/DIIID/DIIID150139/g150139.02026"
+   #onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
+   #onetwo = to_instate(fpath=onetwofname,gfpath=geqdskfname,setParam={"TOKAMAK_ID":"d3d"})
+
+    onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
+   #onetwo = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d"})
+    onetwo = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
+
+   #fname = "../testsuite/onetwo/onetwo_statefile_101381.02630.nc"
+   #onetwo = read_state_file(fname)
+
+   #import matplotlib.pyplot as plt
+   #plt.plot(onetwo['rho_grid']['data'],onetwo['Te']['data'])
+   #plt.plot(onetwo['rho_grid']['data'],onetwo['Ti']['data'])
+   #plt.show()
 
 
 

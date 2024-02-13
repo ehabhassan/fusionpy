@@ -9,8 +9,8 @@ import warnings
 import numpy as npy
 import matplotlib.pyplot as plt
 
+from iofiles        import chease
 from scipy.optimize import curve_fit
-from iofiles.fastran import cheasefiles
 
 
 if   sys.version_info.major == 3:

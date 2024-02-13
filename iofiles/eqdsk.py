@@ -12,7 +12,7 @@ from maths.fd_d1_o4    import fd_d1_o4
 from scipy.interpolate import interp1d
 from scipy.interpolate import CubicSpline
 
-def read_eqdsk(fpath):
+def read_eqdsk_file(fpath):
    #Developed by Ehab Hassan on 2019-02-27
     if isfile(fpath) == False:
        errorFunc = extract_stack(limit=2)[-2][3]
@@ -288,8 +288,9 @@ class jtot():
         return True
 
     def default(self, ps, ps_update=False):
-        self.R1D[0] = 0.0025
+       #self.R1D[0] = 0.0025
         jtot = self.R1D*ps['pprime']+ps['ffprime']/self.R1D
+        if all(jtot < 0): jtot *= -1.0
         if ps_update:
             ps['jtot'] = jtot
         return jtot
@@ -474,7 +475,7 @@ class qtor():
 
 if __name__=='__main__':
     efit_file_path = realpath('../testsuite/state_files/plasma_eq.efit')
-    efitdata = read_eqdsk(fpath=efit_file_path)
+    efitdata = read_eqdsk_file(fpath=efit_file_path)
 
     calc_qtor = qtor()
     print(calc_qtor(efitdata,ps_update=True))
@@ -492,12 +493,12 @@ if __name__=='__main__':
 #   print(calc_phigrids(efitdata,ps_update=True))
 #   print(efitdata.keys())
 
-#   calc_lref = lref()
-#   print(calc_lref(efitdata,ps_update=True))
-#   print(efitdata.keys())
-
 #   calc_jtot = jtot()
 #   print(calc_jtot(efitdata,ps_update=True))
+#   print(efitdata.keys())
+
+#   calc_lref = lref()
+#   print(calc_lref(efitdata,ps_update=True))
 #   print(efitdata.keys())
 
 #   calc_bref = bref()

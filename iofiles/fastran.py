@@ -13,7 +13,7 @@ import matplotlib.pyplot   as plt
 import matplotlib.colors   as clr
 import matplotlib.gridspec as gds
 
-import iofiles.efit_eqdsk as efit_eqdsk
+import iofiles.eqdsk as efit_eqdsk
 
 from glob                            import glob
 from netCDF4                         import Dataset
