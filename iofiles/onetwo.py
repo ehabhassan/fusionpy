@@ -12,6 +12,8 @@ from iofiles.plasmastate import get_instate_vars
 def get_iterdb_vars():
     onetwo = {}
     
+    onetwo['file_type']               = None
+
     onetwo['shot']                    = {} 
     onetwo['shot']['data']            = None
     onetwo['shot']['unit']            = None
@@ -520,7 +522,7 @@ def get_iterdb_vars():
     onetwo['ennv']                = {} 
     onetwo['ennv']['data']        = None
     onetwo['ennv']['unit']        = "#/m^3"
-    onetwo['ennv']['info']        = "neutral density,due to volume  source , species: d"
+    onetwo['ennv']['info']        = "neutral density,due to volume source , species: d"
     
     onetwo['volsn']                = {} 
     onetwo['volsn']['data']        = None
@@ -947,6 +949,11 @@ def get_iterdb_vars():
     onetwo['cxareanpsi']['unit']        = "m^2"
     onetwo['cxareanpsi']['info']        = "cross-sectional area of each flux"
 
+    onetwo['cxareao']                   = {} 
+    onetwo['cxareao']['data']           = None
+    onetwo['cxareao']['unit']           = "m^2"
+    onetwo['cxareao']['info']           = "plasma cross-sectional area"
+    
     onetwo['grho1npsi']                = {} 
     onetwo['grho1npsi']['data']        = None
     onetwo['grho1npsi']['unit']        = None
@@ -976,6 +983,11 @@ def get_iterdb_vars():
     onetwo['pprimnpsi']['data']        = None
     onetwo['pprimnpsi']['unit']        = "A/m^3"
     onetwo['pprimnpsi']['info']        = "pprime  on eqdsk psigrid"
+
+    onetwo['nplasbdry']                = {} 
+    onetwo['nplasbdry']['data']        = None
+    onetwo['nplasbdry']['unit']        = "m"
+    onetwo['nplasbdry']['info']        = "number of points for plasma boundary"
 
     onetwo['rplasbdry']                = {} 
     onetwo['rplasbdry']['data']        = None
@@ -1632,348 +1644,7 @@ def get_iterdb_vars():
     onetwo['tn']['unit']        = "keV"
     onetwo['tn']['info']        = "Temperature of neutral species"
 
-    return onetwo
-
-def get_iterdb_vars_file():
-    onetwo['jbs']                = {} 
-    onetwo['jbs']['data']        = None
-    onetwo['jbs']['unit']        = None
-    onetwo['jbs']['info']        = None
-    
-    onetwo['jnb']                = {} 
-    onetwo['jnb']['data']        = None
-    onetwo['jnb']['unit']        = None
-    onetwo['jnb']['info']        = None
-    
-    onetwo['jrf']                = {} 
-    onetwo['jrf']['data']        = None
-    onetwo['jrf']['unit']        = None
-    onetwo['jrf']['info']        = None
-    
-    onetwo['johm']               = {} 
-    onetwo['johm']['data']       = None
-    onetwo['johm']['unit']        = None
-    onetwo['johm']['info']        = None
-    
-    onetwo['jtot']               = {} 
-    onetwo['jtot']['data']       = None
-    onetwo['jtot']['unit']        = None
-    onetwo['jtot']['info']        = None
-    
-    onetwo['Rmag']               = {} 
-    onetwo['Rmag']['data']       = None
-    onetwo['Rmag']['unit']        = None
-    onetwo['Rmag']['info']        = None
-    
-    onetwo['ibion']              = {} 
-    onetwo['ibion']['data']      = None
-    onetwo['ibion']['unit']        = None
-    onetwo['ibion']['info']        = None
-    
-    onetwo['kappa']              = {} 
-    onetwo['kappa']['data']      = None
-    onetwo['kappa']['unit']        = None
-    onetwo['kappa']['info']        = None
-    
-    onetwo['delta']              = {} 
-    onetwo['delta']['data']      = None
-    onetwo['delta']['unit']        = None
-    onetwo['delta']['info']        = None
-    
-    onetwo['cxareao']            = {} 
-    onetwo['cxareao']['data']    = None
-    onetwo['cxareao']['unit']        = None
-    onetwo['cxareao']['info']        = None
-    
-    onetwo['rho']                = {}
-    onetwo['rho']['data']        = None
-    onetwo['rho']['unit']        = None
-    onetwo['rho']['info']        = None
-
-    onetwo['s']                  = {}
-    onetwo['s']['data']          = None
-    onetwo['s']['unit']        = None
-    onetwo['s']['info']        = None
-
-    onetwo['dudt']               = {}
-    onetwo['dudt']['data']       = None
-    onetwo['dudt']['unit']        = None
-    onetwo['dudt']['info']        = None
-
-    onetwo['sbcx_d']             = {}
-    onetwo['sbcx_d']['data']     = None
-    onetwo['sbcx_d']['unit']        = None
-    onetwo['sbcx_d']['info']        = None
-
-    onetwo['sion_d']             = {}
-    onetwo['sion_d']['data']     = None
-    onetwo['sion_d']['unit']        = None
-    onetwo['sion_d']['info']        = None
-
-    onetwo['enbeam']             = {}
-    onetwo['enbeam']['data']     = None
-    onetwo['enbeam']['unit']        = None
-    onetwo['enbeam']['info']        = None
-
-    onetwo['enn']                = {}
-    onetwo['enn']['data']        = None
-    onetwo['enn']['unit']        = None
-    onetwo['enn']['info']        = None
-
-    onetwo['ennw']               = {}
-    onetwo['ennw']['data']       = None
-    onetwo['ennw']['unit']        = None
-    onetwo['ennw']['info']        = None
-
-    onetwo['ennv']               = {}
-    onetwo['ennv']['data']       = None
-    onetwo['ennv']['unit']        = None
-    onetwo['ennv']['info']        = None
-
-    onetwo['ennvol']             = {}
-    onetwo['ennvol']['data']     = None
-    onetwo['ennvol']['unit']        = None
-    onetwo['ennvol']['info']        = None
-
-    onetwo['sbeame']             = {}
-    onetwo['sbeame']['data']     = None
-    onetwo['sbeame']['unit']        = None
-    onetwo['sbeame']['info']        = None
-
-    onetwo['sbeam']              = {}
-    onetwo['sbeam']['data']      = None
-    onetwo['sbeam']['unit']        = None
-    onetwo['sbeam']['info']        = None
-
-    onetwo['Tm']                 = {}
-    onetwo['Tm']['data']         = None
-    onetwo['Tm']['unit']        = None
-    onetwo['Tm']['info']        = None
-
-    onetwo['zeff']               = {}
-    onetwo['zeff']['data']       = None
-    onetwo['zeff']['unit']        = None
-    onetwo['zeff']['info']        = None
-
-    onetwo['angrot']             = {}
-    onetwo['angrot']['data']     = None
-    onetwo['angrot']['unit']        = None
-    onetwo['angrot']['info']        = None
-
-    onetwo['edifth']             = {}
-    onetwo['edifth']['data']     = None
-    onetwo['edifth']['unit']        = None
-    onetwo['edifth']['info']        = None
-
-    onetwo['idifth']             = {}
-    onetwo['idifth']['data']     = None
-    onetwo['idifth']['unit']        = None
-    onetwo['idifth']['info']        = None
-
-    onetwo['ineoth']             = {}
-    onetwo['ineoth']['data']     = None
-    onetwo['ineoth']['unit']        = None
-    onetwo['ineoth']['info']        = None
-
-    onetwo['dpedt']              = {}
-    onetwo['dpedt']['data']      = None
-    onetwo['dpedt']['unit']        = None
-    onetwo['dpedt']['info']        = None
-
-    onetwo['dpidt']              = {}
-    onetwo['dpidt']['data']      = None
-    onetwo['dpidt']['unit']        = None
-    onetwo['dpidt']['info']        = None
-
-    onetwo['econduct']           = {}
-    onetwo['econduct']['data']   = None
-    onetwo['econduct']['unit']        = None
-    onetwo['econduct']['info']        = None
-
-    onetwo['iconduct']           = {}
-    onetwo['iconduct']['data']   = None
-    onetwo['iconduct']['unit']        = None
-    onetwo['iconduct']['info']        = None
-
-    onetwo['econvect']           = {}
-    onetwo['econvect']['data']   = None
-    onetwo['econvect']['unit']        = None
-    onetwo['econvect']['info']        = None
-
-    onetwo['iconvect']           = {}
-    onetwo['iconvect']['data']   = None
-    onetwo['iconvect']['unit']        = None
-    onetwo['iconvect']['info']        = None
-
-    onetwo['qbeame']             = {}
-    onetwo['qbeame']['data']     = None
-    onetwo['qbeame']['unit']        = None
-    onetwo['qbeame']['info']        = None
-
-    onetwo['qdelt']              = {}
-    onetwo['qdelt']['data']      = None
-    onetwo['qdelt']['unit']        = None
-    onetwo['qdelt']['info']        = None
-
-    onetwo['qbeami']             = {}
-    onetwo['qbeami']['data']     = None
-    onetwo['qbeami']['unit']        = None
-    onetwo['qbeami']['info']        = None
-
-    onetwo['qrfe']               = {}
-    onetwo['qrfe']['data']       = None
-    onetwo['qrfe']['unit']        = None
-    onetwo['qrfe']['info']        = None
-
-    onetwo['qrfi']               = {}
-    onetwo['qrfi']['data']       = None
-    onetwo['qrfi']['unit']        = None
-    onetwo['qrfi']['info']        = None
-
-    onetwo['qione']              = {}
-    onetwo['qione']['data']      = None
-    onetwo['qione']['unit']        = None
-    onetwo['qione']['info']        = None
-
-    onetwo['qioni']              = {}
-    onetwo['qioni']['data']      = None
-    onetwo['qioni']['unit']        = None
-    onetwo['qioni']['info']        = None
-
-    onetwo['qcx']                = {}
-    onetwo['qcx']['data']        = None
-    onetwo['qcx']['unit']        = None
-    onetwo['qcx']['info']        = None
-
-    onetwo['qe2d']               = {}
-    onetwo['qe2d']['data']       = None
-    onetwo['qe2d']['unit']        = None
-    onetwo['qe2d']['info']        = None
-
-    onetwo['qi2d']               = {}
-    onetwo['qi2d']['data']       = None
-    onetwo['qi2d']['unit']        = None
-    onetwo['qi2d']['info']        = None
-
-    onetwo['qfuse']              = {}
-    onetwo['qfuse']['data']      = None
-    onetwo['qfuse']['unit']        = None
-    onetwo['qfuse']['info']        = None
-
-    onetwo['qfusi']              = {}
-    onetwo['qfusi']['data']      = None
-    onetwo['qfusi']['unit']        = None
-    onetwo['qfusi']['info']        = None
-
-    onetwo['qfuseb']             = {}
-    onetwo['qfuseb']['data']     = None
-    onetwo['qfuseb']['unit']        = None
-    onetwo['qfuseb']['info']        = None
-
-    onetwo['qfusib']             = {}
-    onetwo['qfusib']['data']     = None
-    onetwo['qfusib']['unit']        = None
-    onetwo['qfusib']['info']        = None
-
-    onetwo['qmage']              = {}
-    onetwo['qmage']['data']      = None
-    onetwo['qmage']['unit']        = None
-    onetwo['qmage']['info']        = None
-
-    onetwo['qswte']              = {}
-    onetwo['qswte']['data']      = None
-    onetwo['qswte']['unit']        = None
-    onetwo['qswte']['info']        = None
-
-    onetwo['qswti']              = {}
-    onetwo['qswti']['data']      = None
-    onetwo['qswti']['unit']        = None
-    onetwo['qswti']['info']        = None
-
-    onetwo['qrad']               = {}
-    onetwo['qrad']['data']       = None
-    onetwo['qrad']['unit']        = None
-    onetwo['qrad']['info']        = None
-
-    onetwo['qohm']               = {}
-    onetwo['qohm']['data']       = None
-    onetwo['qohm']['unit']        = None
-    onetwo['qohm']['info']        = None
-
-    onetwo['rmajfs']             = {}
-    onetwo['rmajfs']['data']     = None
-    onetwo['rmajfs']['unit']        = None
-    onetwo['rmajfs']['info']        = None
-
-    onetwo['rminfs']             = {}
-    onetwo['rminfs']['data']     = None
-    onetwo['rminfs']['unit']        = None
-    onetwo['rminfs']['info']        = None
-
-    onetwo['volfs']              = {}
-    onetwo['volfs']['data']      = None
-    onetwo['volfs']['unit']        = None
-    onetwo['volfs']['info']        = None
-
-    onetwo['kappafs']            = {}
-    onetwo['kappafs']['data']    = None
-    onetwo['kappafs']['unit']        = None
-    onetwo['kappafs']['info']        = None
-
-    onetwo['deltafs']            = {}
-    onetwo['deltafs']['data']    = None
-    onetwo['deltafs']['unit']        = None
-    onetwo['deltafs']['info']        = None
-
-    onetwo['indfs']              = {}
-    onetwo['indfs']['data']      = None
-    onetwo['indfs']['unit']        = None
-    onetwo['indfs']['info']        = None
-
-    onetwo['areafs']             = {}
-    onetwo['areafs']['data']     = None
-    onetwo['areafs']['unit']        = None
-    onetwo['areafs']['info']        = None
-
-    onetwo['xareafs']            = {}
-    onetwo['xareafs']['data']    = None
-    onetwo['xareafs']['unit']        = None
-    onetwo['xareafs']['info']        = None
-
-    onetwo['gradrhofs']          = {}
-    onetwo['gradrhofs']['data']  = None
-    onetwo['gradrhofs']['unit']        = None
-    onetwo['gradrhofs']['info']        = None
-
-    onetwo['gradrho2fs']         = {}
-    onetwo['gradrho2fs']['data'] = None
-    onetwo['gradrho2fs']['unit']        = None
-    onetwo['gradrho2fs']['info']        = None
-
-    onetwo['nplasbdry']          = {}
-    onetwo['nplasbdry']['data']  = None
-    onetwo['nplasbdry']['unit']        = None
-    onetwo['nplasbdry']['info']        = None
-
-    onetwo['rbdry']              = {}
-    onetwo['rbdry']['data']      = None
-    onetwo['rbdry']['unit']        = None
-    onetwo['rbdry']['info']        = None
-
-    onetwo['zbdry']              = {}
-    onetwo['zbdry']['data']      = None
-    onetwo['zbdry']['unit']        = None
-    onetwo['zbdry']['info']        = None
-
-    onetwo['storqueb']           = {}
-    onetwo['storqueb']['data']   = None
-    onetwo['storqueb']['unit']        = None
-    onetwo['storqueb']['info']        = None
-
-    onetwo['p_tot']              = {}
-    onetwo['p_tot']['data']      = None
-    onetwo['p_tot']['unit']      = None
-    onetwo['p_tot']['info']        = None
+    # EXTRA FIELDS MIGHT NO BE USED
 
     onetwo['sscxl']              = {}
     onetwo['sscxl']['data']      = None
@@ -1985,9 +1656,6 @@ def get_iterdb_vars_file():
     onetwo['qsync']['unit']      = None
     onetwo['qsync']['info']        = None
 
-  # onetwo['']                 = {}
-  # onetwo['']['data']         = {}
-
     return onetwo
 
 
@@ -1998,12 +1666,14 @@ def read_iterdb_file(fname):
         raise IOError("FILE %s DOES NOT EXIST!" % fname); sys.exit()
 
     onetwo = get_iterdb_vars()
+    onetwo['file_type'] = 'iterdb'
+
     onetwo_varnames = list(onetwo.keys())
 
     fid.readline()
     fid.readline()
     line = fid.readline()
-    onetwo["ishot"]['data'] = line.strip()
+    onetwo["shot"]['data'] = line.strip()
 
     fid.readline()
     line = fid.readline()
@@ -2033,7 +1703,7 @@ def read_iterdb_file(fname):
 
     fid.readline()
     line = fid.readline()
-    onetwo["ibion"]['data'] = int(line.strip())
+    onetwo["bion"]['data'] = int(line.strip())
 
     fid.readline()
     line = fid.readline()
@@ -2057,11 +1727,11 @@ def read_iterdb_file(fname):
 
     fid.readline()
     line = fid.readline()
-    onetwo["Rmag"]['data'] = float(line.strip())
+    onetwo["rma"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
-    onetwo["R0"]['data'] = float(line.strip())
+    onetwo["rmajor"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
@@ -2069,15 +1739,15 @@ def read_iterdb_file(fname):
 
     fid.readline()
     line = fid.readline()
-    onetwo["delta"]['data'] = float(line.strip())
+    onetwo["deltao"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
-    onetwo["pindent"]['data'] = float(line.strip())
+    onetwo["pindento"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
-    onetwo["volo"]['data'] = float(line.strip())
+    onetwo["volume"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
@@ -2085,16 +1755,16 @@ def read_iterdb_file(fname):
 
     fid.readline()
     line = fid.readline()
-    onetwo["Btor"]['data'] = float(line.strip())
+    onetwo["btor"]['data'] = float(line.strip())
 
     fid.readline()
     line = fid.readline()
     linecontent = line.split()
-    onetwo['itot']['data'] = float(linecontent[0])
-    onetwo['iohm']['data'] = float(linecontent[1])
-    onetwo['ibs']['data']  = float(linecontent[2])
-    onetwo['inb']['data']  = float(linecontent[3])
-    onetwo['irf']['data']  = float(linecontent[4])
+    onetwo['tot_cur']['data'] = float(linecontent[0])
+    onetwo['totohm_cur']['data'] = float(linecontent[1])
+    onetwo['totboot_cur']['data']  = float(linecontent[2])
+    onetwo['totbeam_cur']['data']  = float(linecontent[3])
+    onetwo['totrf_cur']['data']  = float(linecontent[4])
 
     fid.readline()
     line = fid.readline()
@@ -2116,31 +1786,32 @@ def read_iterdb_file(fname):
     line = fid.readline()
     onetwo["ti0"]['data'] = float(line.strip())
 
-    onetwo["psi"]['data'] = numpy.zeros(nrho,dtype=float)
+   #onetwo["psi"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["psir_grid"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["psi"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["psi"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["psi"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["psi"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["psi"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["psir_grid"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["psir_grid"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["psir_grid"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["psir_grid"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["psir_grid"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["rhogrid"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rho_grid"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["rhogrid"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["rhogrid"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["rhogrid"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["rhogrid"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["rhogrid"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["rho_grid"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["rho_grid"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["rho_grid"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["rho_grid"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["rho_grid"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2186,45 +1857,45 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["te"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["Te"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["te"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["te"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["te"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["te"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["te"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["Te"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["Te"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["Te"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["Te"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["Te"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["ti"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["Ti"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["ti"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["ti"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["ti"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["ti"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["ti"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["Ti"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["Ti"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["Ti"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["Ti"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["Ti"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["q"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["q_value"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["q"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["q"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["q"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["q"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["q"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["q_value"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["q_value"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["q_value"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["q_value"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["q_value"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2271,7 +1942,7 @@ def read_iterdb_file(fname):
                 onetwo["sion"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
-    onetwo["sion_d"]["data"] = numpy.sum(onetwo["sion"]["data"],axis=0)
+    onetwo["sion"]["data"] = numpy.sum(onetwo["sion"]["data"],axis=0)
 
     onetwo["srecom"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
     for i in range(nprim):
@@ -2319,37 +1990,37 @@ def read_iterdb_file(fname):
                 onetwo["sbcx"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
-    onetwo["sbcx_d"]["data"] = numpy.sum(onetwo["sbcx"]["data"],axis=0)
+    onetwo["sbcx"]["data"] = numpy.sum(onetwo["sbcx"]["data"],axis=0)
 
 
-    onetwo["s"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
+    onetwo["stsource"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
     for i in range(nprim):
         fid.readline()
         for iline in range(nlines):
             line = fid.readline()
             linecontent = line.split()
             try:
-                onetwo["s"]['data'][i,iline*5+0] = float(linecontent[0])
-                onetwo["s"]['data'][i,iline*5+1] = float(linecontent[1])
-                onetwo["s"]['data'][i,iline*5+2] = float(linecontent[2])
-                onetwo["s"]['data'][i,iline*5+3] = float(linecontent[3])
-                onetwo["s"]['data'][i,iline*5+4] = float(linecontent[4])
+                onetwo["stsource"]['data'][i,iline*5+0] = float(linecontent[0])
+                onetwo["stsource"]['data'][i,iline*5+1] = float(linecontent[1])
+                onetwo["stsource"]['data'][i,iline*5+2] = float(linecontent[2])
+                onetwo["stsource"]['data'][i,iline*5+3] = float(linecontent[3])
+                onetwo["stsource"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
 
 
-    onetwo["dudt"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
+    onetwo["dudtsv"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
     for i in range(nprim):
         fid.readline()
         for iline in range(nlines):
             line = fid.readline()
             linecontent = line.split()
             try:
-                onetwo["dudt"]['data'][i,iline*5+0] = float(linecontent[0])
-                onetwo["dudt"]['data'][i,iline*5+1] = float(linecontent[1])
-                onetwo["dudt"]['data'][i,iline*5+2] = float(linecontent[2])
-                onetwo["dudt"]['data'][i,iline*5+3] = float(linecontent[3])
-                onetwo["dudt"]['data'][i,iline*5+4] = float(linecontent[4])
+                onetwo["dudtsv"]['data'][i,iline*5+0] = float(linecontent[0])
+                onetwo["dudtsv"]['data'][i,iline*5+1] = float(linecontent[1])
+                onetwo["dudtsv"]['data'][i,iline*5+2] = float(linecontent[2])
+                onetwo["dudtsv"]['data'][i,iline*5+3] = float(linecontent[3])
+                onetwo["dudtsv"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
 
@@ -2413,18 +2084,18 @@ def read_iterdb_file(fname):
             except:
                 error = 'empty records'
 
-    onetwo["ennvol"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
+    onetwo["volsn"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
     for i in range(nprim):
         fid.readline()
         for iline in range(nlines):
             line = fid.readline()
             linecontent = line.split()
             try:
-                onetwo["ennvol"]['data'][i,iline*5+0] = float(linecontent[0])
-                onetwo["ennvol"]['data'][i,iline*5+1] = float(linecontent[1])
-                onetwo["ennvol"]['data'][i,iline*5+2] = float(linecontent[2])
-                onetwo["ennvol"]['data'][i,iline*5+3] = float(linecontent[3])
-                onetwo["ennvol"]['data'][i,iline*5+4] = float(linecontent[4])
+                onetwo["volsn"]['data'][i,iline*5+0] = float(linecontent[0])
+                onetwo["volsn"]['data'][i,iline*5+1] = float(linecontent[1])
+                onetwo["volsn"]['data'][i,iline*5+2] = float(linecontent[2])
+                onetwo["volsn"]['data'][i,iline*5+3] = float(linecontent[3])
+                onetwo["volsn"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
 
@@ -2456,87 +2127,87 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["jtot"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["curden"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["jtot"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["jtot"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["jtot"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["jtot"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["jtot"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["curden"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["curden"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["curden"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["curden"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["curden"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["johm"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["curohm"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["johm"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["johm"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["johm"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["johm"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["johm"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["curohm"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["curohm"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["curohm"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["curohm"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["curohm"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["jbs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["curboot"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["jbs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["jbs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["jbs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["jbs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["jbs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["curboot"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["curboot"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["curboot"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["curboot"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["curboot"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["jnb"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["curbeam"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["jnb"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["jnb"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["jnb"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["jnb"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["jnb"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["curbeam"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["curbeam"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["curbeam"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["curbeam"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["curbeam"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["jrf"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["currf"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["jrf"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["jrf"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["jrf"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["jrf"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["jrf"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["currf"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["currf"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["currf"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["currf"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["currf"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["Tm"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rbp"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["Tm"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["Tm"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["Tm"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["Tm"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["Tm"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["rbp"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["rbp"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["rbp"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["rbp"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["rbp"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2568,45 +2239,45 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["edifth"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["chieinv"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["edifth"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["edifth"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["edifth"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["edifth"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["edifth"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["chieinv"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["chieinv"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["chieinv"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["chieinv"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["chieinv"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["idifth"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["chiinv"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["idifth"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["idifth"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["idifth"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["idifth"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["idifth"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["chiinv"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["chiinv"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["chiinv"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["chiinv"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["chiinv"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["ineoth"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["xkineo"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["ineoth"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["ineoth"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["ineoth"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["ineoth"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["ineoth"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["xkineo"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["xkineo"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["xkineo"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["xkineo"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["xkineo"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2638,59 +2309,59 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["econduct"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qconde"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["econduct"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["econduct"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["econduct"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["econduct"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["econduct"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qconde"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qconde"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qconde"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qconde"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qconde"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["iconduct"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qcondi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["iconduct"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["iconduct"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["iconduct"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["iconduct"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["iconduct"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qcondi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qcondi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qcondi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qcondi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qcondi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["econvect"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qconve"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["econvect"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["econvect"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["econvect"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["econvect"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["econvect"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qconve"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qconve"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qconve"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qconve"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qconve"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["iconvect"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qconvi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["iconvect"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["iconvect"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["iconvect"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["iconvect"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["iconvect"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qconvi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qconvi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qconvi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qconvi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qconvi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2862,73 +2533,73 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["qfuseb"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qbfuse"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["qfuseb"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["qfuseb"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["qfuseb"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["qfuseb"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["qfuseb"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qbfuse"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qbfuse"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qbfuse"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qbfuse"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qbfuse"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["qfusib"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qbfusi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["qfusib"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["qfusib"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["qfusib"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["qfusib"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["qfusib"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qbfusi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qbfusi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qbfusi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qbfusi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qbfusi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["qmage"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qmag"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["qmage"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["qmage"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["qmage"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["qmage"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["qmage"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qmag"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qmag"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qmag"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qmag"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qmag"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["qswte"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qsawe"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["qswte"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["qswte"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["qswte"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["qswte"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["qswte"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qsawe"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qsawe"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qsawe"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qsawe"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qsawe"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["qswti"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["qsawi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["qswti"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["qswti"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["qswti"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["qswti"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["qswti"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["qsawi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["qsawi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["qsawi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["qsawi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["qsawi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -2960,145 +2631,145 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo["rmajfs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rmajavnpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["rmajfs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["rmajfs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["rmajfs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["rmajfs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["rmajfs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["rmajavnpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["rmajavnpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["rmajavnpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["rmajavnpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["rmajavnpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["rminfs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rminavnpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["rminfs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["rminfs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["rminfs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["rminfs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["rminfs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["rminavnpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["rminavnpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["rminavnpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["rminavnpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["rminavnpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["volfs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["psivolpnpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["volfs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["volfs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["volfs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["volfs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["volfs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["psivolpnpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["psivolpnpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["psivolpnpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["psivolpnpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["psivolpnpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["kappafs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["elongxnpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["kappafs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["kappafs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["kappafs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["kappafs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["kappafs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["elongxnpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["elongxnpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["elongxnpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["elongxnpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["elongxnpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["deltafs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["triangnpsi_u"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["deltafs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["deltafs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["deltafs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["deltafs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["deltafs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["triangnpsi_u"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["triangnpsi_u"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["triangnpsi_u"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["triangnpsi_u"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["triangnpsi_u"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["indfs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["pindentnpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["indfs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["indfs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["indfs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["indfs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["indfs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["pindentnpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["pindentnpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["pindentnpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["pindentnpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["pindentnpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
     fid.readline()
 
-    onetwo["areafs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["sfareanpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["areafs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["areafs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["areafs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["areafs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["areafs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["sfareanpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["sfareanpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["sfareanpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["sfareanpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["sfareanpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["xareafs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["cxareanpsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["xareafs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["xareafs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["xareafs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["xareafs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["xareafs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["cxareanpsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["cxareanpsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["cxareanpsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["cxareanpsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["cxareanpsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["gradrhofs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["grho1npsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["gradrhofs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["gradrhofs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["gradrhofs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["gradrhofs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["gradrhofs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["grho1npsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["grho1npsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["grho1npsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["grho1npsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["grho1npsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["gradrho2fs"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["grho2npsi"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["gradrho2fs"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["gradrho2fs"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["gradrho2fs"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["gradrho2fs"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["gradrho2fs"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["grho2npsi"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["grho2npsi"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["grho2npsi"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["grho2npsi"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["grho2npsi"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
@@ -3106,39 +2777,39 @@ def read_iterdb_file(fname):
     line = fid.readline()
     onetwo["nplasbdry"]['data'] = int(line.strip())
     nplasbdry = int(line.strip())
-    nblines = int((onetwo["nj"]['data'] / 5) + (onetwo["nj"]['data'] % 5))
+    nblines = int(numpy.ceil((onetwo["nplasbdry"]['data'] / 5)))
 
-    onetwo["rbdry"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rplasbdry"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nblines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["rbdry"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["rbdry"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["rbdry"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["rbdry"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["rbdry"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["rplasbdry"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["rplasbdry"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["rplasbdry"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["rplasbdry"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["rplasbdry"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
-    onetwo["zbdry"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["zplasbdry"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nblines):
         line = fid.readline()
         linecontent = line.split()
         try:
-            onetwo["zbdry"]['data'][iline*5+0] = float(linecontent[0])
-            onetwo["zbdry"]['data'][iline*5+1] = float(linecontent[1])
-            onetwo["zbdry"]['data'][iline*5+2] = float(linecontent[2])
-            onetwo["zbdry"]['data'][iline*5+3] = float(linecontent[3])
-            onetwo["zbdry"]['data'][iline*5+4] = float(linecontent[4])
+            onetwo["zplasbdry"]['data'][iline*5+0] = float(linecontent[0])
+            onetwo["zplasbdry"]['data'][iline*5+1] = float(linecontent[1])
+            onetwo["zplasbdry"]['data'][iline*5+2] = float(linecontent[2])
+            onetwo["zplasbdry"]['data'][iline*5+3] = float(linecontent[3])
+            onetwo["zplasbdry"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
 
     onetwo["storqueb"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
-    if "beam  torque" in infoline:
+    if "beam   torque" in infoline:
        for iline in range(nlines):
            line = fid.readline()
            linecontent = line.split()
@@ -3166,18 +2837,18 @@ def read_iterdb_file(fname):
            except:
                error = 'empty records'
 
-    onetwo["p_tot"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["press"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
     if "total  pressure" in infoline:
        for iline in range(nlines):
            line = fid.readline()
            linecontent = line.split()
            try:
-               onetwo["p_tot"]['data'][iline*5+0] = float(linecontent[0])
-               onetwo["p_tot"]['data'][iline*5+1] = float(linecontent[1])
-               onetwo["p_tot"]['data'][iline*5+2] = float(linecontent[2])
-               onetwo["p_tot"]['data'][iline*5+3] = float(linecontent[3])
-               onetwo["p_tot"]['data'][iline*5+4] = float(linecontent[4])
+               onetwo["press"]['data'][iline*5+0] = float(linecontent[0])
+               onetwo["press"]['data'][iline*5+1] = float(linecontent[1])
+               onetwo["press"]['data'][iline*5+2] = float(linecontent[2])
+               onetwo["press"]['data'][iline*5+3] = float(linecontent[3])
+               onetwo["press"]['data'][iline*5+4] = float(linecontent[4])
            except:
                error = 'empty records'
 
@@ -3216,6 +2887,7 @@ def read_iterdb_file(fname):
 
 def read_state_file(fpath):
     onetwo = get_iterdb_vars()
+    onetwo['file_type'] = 'state'
 
     if os.path.isfile(fpath):
        fid = ncdf.Dataset(fpath)
@@ -3230,15 +2902,40 @@ def read_state_file(fpath):
             print(fvar)
             pass
 
+    if all(onetwo['qcx']['data']) > 0.0:   onetwo['qcx']['data'] *= -1.0
+    if all(onetwo['qrad']['data']) > 0.0:  onetwo['qrad']['data'] *= -1.0
+    if all(onetwo['qione']['data']) > 0.0: onetwo['qione']['data'] *= -1.0
+    onetwo['qdelt']['data']     = numpy.abs(onetwo['qdelt']['data'])
+    onetwo['q_value']['data']   = numpy.abs(onetwo['q_value']['data'])
+    onetwo['dudtsv']['data']    = numpy.transpose(onetwo['dudtsv']['data'])
+    onetwo['stsource']['data']  = numpy.transpose(onetwo['stsource']['data'])
+
     return onetwo
 
+def test_binary_file(fname):
+    textchars = bytearray({7,8,9,10,12,13,27} | set(range(0x20, 0x100)) - {0x7f})
+    is_binary_string = lambda bytes: bool(bytes.translate(None, textchars))
+    return is_binary_string(open(fname,'rb').read(1024))
+
+def read_onetwo_file(fpath):
+    if test_binary_file(fpath):
+        onetwo = read_state_file(fpath)
+    else:
+        onetwo = read_iterdb_file(fpath)
+    return onetwo
+
+
 def to_instate(fpath,gfpath={},setParam={}):
-    onetwo = read_state_file(fpath)
+    onetwo = read_onetwo_file(fpath)
+    if onetwo['file_type'] == 'state':
+        fpstate_flag = True
+        fiterdb_flag = False
+    elif onetwo['file_type'] == 'iterdb':
+        fpstate_flag = False
+        fiterdb_flag = True
+        
     if gfpath:
         geqdskdata = read_eqdsk_file(gfpath)
-   #print(onetwo.keys())
-   #print(onetwo['psivalnpsi']['data'])
-   #sys.exit()
     instate = get_instate_vars()
 
     if   'SHOT_ID' in setParam:
@@ -3274,6 +2971,9 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['TOKAMAK_ID']    = [TOKAMAK_ID]
     instate['MODEL_SHAPE']   = [0]
     instate['DENSITY_MODEL'] = [0]
+
+    if fiterdb_flag and type(onetwo['psiaxis']['data']) == type(None):
+        onetwo['eps']['data'] = onetwo['rminavnpsi']['data']/onetwo['rmajavnpsi']['data']
 
     instate['R0']     = [round(float(onetwo['rmajor']['data']),                             7)]
     instate['B0']     = [round(float(abs(onetwo['btor']['data'])),                          7)]
@@ -3314,6 +3014,10 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['ZEFF']    = [round(i,7) for i in onetwo['zeff']['data']         ]
     instate['OMEGA']   = [round(i,7) for i in onetwo['angrot']['data']       ]
 
+    if type(onetwo['psiaxis']['data']) == type(None):
+        onetwo['psiaxis']['data'] = onetwo['psir_grid']['data'][0]
+        onetwo['psibdry']['data'] = onetwo['psir_grid']['data'][-1]
+
     PSI    = (onetwo['psibdry']['data']-onetwo['psiaxis']['data'])
     PSI   *= numpy.arange(onetwo['nj']['data'])/(onetwo['nj']['data']-1.0)
     PSIN   = (PSI-PSI[0])/(PSI[-1]-PSI[0])
@@ -3322,8 +3026,10 @@ def to_instate(fpath,gfpath={},setParam={}):
 
     instate['Q']       = [round(i,7) for i in onetwo['q_value']['data']]
     instate['P_EQ']    = [round(i,7) for i in onetwo['press']['data']]
-    instate['PPRIME']  = [round(i,7) for i in onetwo['pprim']['data']]
-    instate['FFPRIME'] = [round(i,7) for i in onetwo['ffprim']['data']]
+    if type(onetwo['pprim']['data']) != type(None):
+        instate['PPRIME']  = [round(i,7) for i in onetwo['pprim']['data']]
+    if type(onetwo['ffprim']['data']) != type(None):
+        instate['FFPRIME'] = [round(i,7) for i in onetwo['ffprim']['data']]
 
     instate['J_RF']  = [round(i,7) for i in (onetwo['currf']['data']   * 1.0e-6)]
     instate['J_OH']  = [round(i,7) for i in (onetwo['curohm']['data']  * 1.0e-6)]
@@ -3333,7 +3039,7 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['J_IC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['J_LH']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['J_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
-    instate['J_TOT'] = [round(i,7) for i in (onetwo['curpar']['data']  * 1.0e-6)]
+    instate['J_TOT'] = [round(i,7) for i in (onetwo['curden']['data']  * 1.0e-6)]
 
     instate['PE_RF']  = [round(i,7) for i in (onetwo['qrfe']['data']   * 1.0e-6)]
     instate['PI_RF']  = [round(i,7) for i in (onetwo['qrfi']['data']   * 1.0e-6)]
@@ -3350,7 +3056,10 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['PE_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['PI_HC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
 
-    instate['P_EI']   = [round(i,7) for i in (onetwo['qdelt_i']['data'] * 1.0e-6)]
+    if fpstate_flag:
+        instate['P_EI']   = [round(i,7) for i in (onetwo['qdelt']['data'] * 1.0e-6)]
+    elif fiterdb_flag:
+        instate['P_EI']   = [-round(i,7) for i in (onetwo['qdelt']['data'] * 1.0e-6)]
     instate['P_RAD']  = [round(i,7) for i in (onetwo['qrad']['data']    * 1.0e-6)]
     instate['P_OHM']  = [round(i,7) for i in (onetwo['qohm']['data']    * 1.0e-6)]
     instate['PI_CX']  = [round(i,7) for i in (onetwo['qcx']['data']     * 1.0e-6)]
@@ -3359,12 +3068,15 @@ def to_instate(fpath,gfpath={},setParam={}):
 
     instate['CHIE']          = [round(i,7) for i in onetwo['chieinv']['data']            ]
     instate['CHII']          = [round(i,7) for i in onetwo['chiinv']['data']             ]
-    instate['WBEAM']         = [round(i,7) for i in (onetwo['wbeam']['data']  *1.603e-22)]
-    instate['WALPHA']        = [round(i,7) for i in (onetwo['walp']['data']   *1.603e-22)]
+    if type(onetwo['wbeam']['data']) != type(None):
+        instate['WBEAM']         = [round(i,7) for i in (onetwo['wbeam']['data']  *1.603e-22)]
+    if type(onetwo['walp']['data']) != type(None):
+        instate['WALPHA']        = [round(i,7) for i in (onetwo['walp']['data']   *1.603e-22)]
     instate['TORQUE_NB']     = [round(i,7) for i in onetwo['storqueb']['data']           ]
     instate['TORQUE_IN']     = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['DENSITY_BEAM']  = [round(i,7) for i in (onetwo['enbeam']['data'][0]*1.0e-19)]
-    instate['DENSITY_ALPHA'] = [round(i,7) for i in onetwo['enalp']['data']              ]
+    if type(onetwo['enalp']['data']) != type(None):
+        instate['DENSITY_ALPHA'] = [round(i,7) for i in onetwo['enalp']['data']              ]
     instate['SE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['SI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['PE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
@@ -3406,37 +3118,46 @@ def to_instate(fpath,gfpath={},setParam={}):
            instate['ZBDRY'] = [round(i,7) for i in onetwo['zplasbdry']['data']]
 
 
-        if LIMITER_MODEL == 1:
-           NLIMTmax = 86
-           NLIMT = numpy.size(onetwo['rlimiter']['data'])
-           if NLIMT > NLIMTmax:
-              RLIMT = onetwo['rlimiter']['data']
-              ZLIMT = onetwo['zlimiter']['data']
-              stride = int(NLIMT / (NLIMTmax+1))
-              indexes = list(range(2,NLIMTmax-2,stride))
-              indexes.insert(0,0)
-              indexes.append(NLIMTmax)
-              instate['NLIM'] = [len(indexes)]
-              instate['RLIM'] = [round(RLIMT[i],7) for i in indexes]
-              instate['ZLIM'] = [round(ZLIMT[i],7) for i in indexes]
-             #LIMT = zip(RLIMT,ZLIMT)
-             #LIMTINDS = random.sample(range(NLIMT),NLIMTmax)
-             #instate['NLIM'] = [NLIMTmax]
-             #instate['RLIM'] = [round(i,7) for i in RLIMT[LIMTINDS]]
-             #instate['ZLIM'] = [round(i,7) for i in ZLIMT[LIMTINDS]]
-           else:
-              instate['NLIM']  = [numpy.size(onetwo['rlimiter']['data'])]
-              instate['RLIM']  = [round(i,7) for i in onetwo['rlimiter']['data'] ]
-              instate['ZLIM']  = [round(i,7) for i in onetwo['zlimiter']['data'] ]
+        if type(onetwo['rlimiter']['data']) != type(None):
+            if LIMITER_MODEL == 1:
+               NLIMTmax = 86
+               NLIMT = numpy.size(onetwo['rlimiter']['data'])
+               if NLIMT > NLIMTmax:
+                  RLIMT = onetwo['rlimiter']['data']
+                  ZLIMT = onetwo['zlimiter']['data']
+                  stride = int(NLIMT / (NLIMTmax+1))
+                  indexes = list(range(2,NLIMTmax-2,stride))
+                  indexes.insert(0,0)
+                  indexes.append(NLIMTmax)
+                  instate['NLIM'] = [len(indexes)]
+                  instate['RLIM'] = [round(RLIMT[i],7) for i in indexes]
+                  instate['ZLIM'] = [round(ZLIMT[i],7) for i in indexes]
+                 #LIMT = zip(RLIMT,ZLIMT)
+                 #LIMTINDS = random.sample(range(NLIMT),NLIMTmax)
+                 #instate['NLIM'] = [NLIMTmax]
+                 #instate['RLIM'] = [round(i,7) for i in RLIMT[LIMTINDS]]
+                 #instate['ZLIM'] = [round(i,7) for i in ZLIMT[LIMTINDS]]
+               else:
+                  instate['NLIM']  = [numpy.size(onetwo['rlimiter']['data'])]
+                  instate['RLIM']  = [round(i,7) for i in onetwo['rlimiter']['data'] ]
+                  instate['ZLIM']  = [round(i,7) for i in onetwo['zlimiter']['data'] ]
 
-        elif LIMITER_MODEL == 2:
-           RLIM_MAX = max(onetwo['rlimiter']['data'])
-           RLIM_MIN = min(onetwo['rlimiter']['data'])
-           ZLIM_MAX = max(onetwo['zlimiter']['data'])
-           ZLIM_MIN = min(onetwo['zlimiter']['data'])
-           instate['RLIM'] = [RLIM_MAX, RLIM_MIN, RLIM_MIN, RLIM_MAX, RLIM_MAX]
-           instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
-           instate['NLIM'] = [len(instate['RLIM'])]
+            elif LIMITER_MODEL == 2:
+               RLIM_MAX = max(onetwo['rlimiter']['data'])
+               RLIM_MIN = min(onetwo['rlimiter']['data'])
+               ZLIM_MAX = max(onetwo['zlimiter']['data'])
+               ZLIM_MIN = min(onetwo['zlimiter']['data'])
+               instate['RLIM'] = [RLIM_MAX, RLIM_MIN, RLIM_MIN, RLIM_MAX, RLIM_MAX]
+               instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
+               instate['NLIM'] = [len(instate['RLIM'])]
+        else:
+            RLIM_MAX = max(onetwo['rplasbdry']['data']) + 0.5
+            RLIM_MIN = min(onetwo['rplasbdry']['data']) - 0.5
+            ZLIM_MAX = max(onetwo['zplasbdry']['data']) + 0.5
+            ZLIM_MIN = min(onetwo['zplasbdry']['data']) - 0.5
+            instate['RLIM'] = [RLIM_MAX, RLIM_MIN, RLIM_MIN, RLIM_MAX, RLIM_MAX]
+            instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
+            instate['NLIM'] = [len(instate['RLIM'])]
 
    #for i in range(instate['NLIM'][0]):
    #    print(instate['RLIM'][i], instate['ZLIM'][i])
@@ -3457,8 +3178,14 @@ def to_instate(fpath,gfpath={},setParam={}):
 
 
 if __name__ == "__main__":
-   #fname = "iterdb.101381"
-   #onetwo = read_iterdb_file(fname)
+    onetwofname = "statefile_2.026000E+00.nc"
+    instate_from_pstate = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
+    onetwofname = "iterdb.150139"
+    instate_from_iterdb = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
+
+    sys.exit()
+
+
 
    #geqdskfname = "../../Discharges/DIIID/DIIID150139/g150139.02026"
    #onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
