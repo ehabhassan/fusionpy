@@ -284,6 +284,11 @@ def get_iterdb_vars():
     onetwo['zmhdgrid']['unit']         = "m"
     onetwo['zmhdgrid']['info']         = "Z Grid"
     
+    onetwo['rho']                      = {}
+    onetwo['rho']['data']              = None
+    onetwo['rho']['unit']              = "m"
+    onetwo['rho']['info']              = "rho grid (normalized)"
+
     onetwo['rho_grid']                 = {}
     onetwo['rho_grid']['data']         = None
     onetwo['rho_grid']['unit']         = "m"
@@ -527,7 +532,7 @@ def get_iterdb_vars():
     onetwo['volsn']                = {} 
     onetwo['volsn']['data']        = None
     onetwo['volsn']['unit']        = "#/m^3/s"
-    onetwo['volsn']['info']        = "Source of neutrals"
+    onetwo['volsn']['info']        = "Source Rate of Neutrals"
     
     onetwo['z']                = {} 
     onetwo['z']['data']        = None
@@ -1815,6 +1820,9 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
+    onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
+    onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
+
     onetwo["fcap"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
     for iline in range(nlines):
@@ -2822,6 +2830,31 @@ def read_iterdb_file(fname):
            except:
                error = 'empty records'
 
+    # THIS NEEDS TO BE REVIEWED
+    if type(onetwo['wbeam']['data']) == type(None):
+        onetwo["wbeam"]['data'] = numpy.zeros(nrho,dtype=float)
+       #for i in range(onetwo['nneu']['data']):
+       #    onetwo['wbeam']['data'] += onetwo['enbeam']['data'][i,:] 
+       #   #onetwo['wbeam']['data'] *= onetwo['ebeam']['data']
+       #    onetwo['wbeam']['data'] *= onetwo['qbeami']['data']
+       #   #onetwo['wbeam']['data'] *= (onetwo['qbeami']['data'] + onetwo['qbeame']['data'])
+       #   #onetwo['wbeam']['data'] *= (2.0/3.0)
+       #    onetwo['wbeam']['data'] /= 1.602e3
+
+    if type(onetwo['walp']['data']) == type(None):
+        onetwo["walp"]['data'] = numpy.zeros(nrho,dtype=float)
+
+    if type(onetwo['enalp']['data']) == type(None):
+        onetwo["enalp"]['data'] = numpy.zeros(nrho,dtype=float)
+
+    if type(onetwo['ffprim']['data']) == type(None):
+        onetwo["ffprim"]['data'] = numpy.zeros(nrho,dtype=float)
+
+    if type(onetwo['pprim']['data']) == type(None):
+        onetwo["pprim"]['data'] = numpy.zeros(nrho,dtype=float)
+
+    ############################
+
     onetwo["pressb"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
     if "beam  pressure" in infoline:
@@ -2836,6 +2869,12 @@ def read_iterdb_file(fname):
                onetwo["pressb"]['data'][iline*5+4] = float(linecontent[4])
            except:
                error = 'empty records'
+    else:
+        if type(onetwo['walp']['data']) != type(None):
+            onetwo['pressb']['data'] += onetwo['walp']['data']
+        if type(onetwo['wbeam']['data']) != type(None):
+            onetwo['pressb']['data'] += onetwo['wbeam']['data']
+        onetwo['pressb']['data'] *= 1.0e-22
 
     onetwo["press"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
@@ -2851,6 +2890,11 @@ def read_iterdb_file(fname):
                onetwo["press"]['data'][iline*5+4] = float(linecontent[4])
            except:
                error = 'empty records'
+    if all(onetwo["press"]['data']) == 0.0:
+        onetwo["press"]['data'] = onetwo["ene"]['data'] * onetwo["Te"]['data']
+        for i in range(onetwo["nion"]['data']):
+            onetwo["press"]['data'] += onetwo["enion"]['data'][i] * onetwo["Ti"]['data']
+        onetwo["press"]['data'] *= 1.0e3 * 1.6e-19
 
     onetwo["sscxl"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
@@ -2902,6 +2946,9 @@ def read_state_file(fpath):
             print(fvar)
             pass
 
+    onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
+    onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
+
     if all(onetwo['qcx']['data']) > 0.0:   onetwo['qcx']['data'] *= -1.0
     if all(onetwo['qrad']['data']) > 0.0:  onetwo['qrad']['data'] *= -1.0
     if all(onetwo['qione']['data']) > 0.0: onetwo['qione']['data'] *= -1.0
@@ -2950,7 +2997,7 @@ def to_instate(fpath,gfpath={},setParam={}):
     elif 'time_id' in setParam:
           TIME_ID = setParam['time_id']
     else:
-          TIME_ID = "%05d" % (int(onetwo['time']['data']*1.0e4))
+          TIME_ID = "%05d" % (int(numpy.ceil(onetwo['time']['data']*1.0e4)))
           
     if   'TOKAMAK_ID' in setParam:
           TOKAMAK_ID = setParam['TOKAMAK_ID']

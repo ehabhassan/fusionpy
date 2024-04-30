@@ -76,9 +76,18 @@ def plot_state_file(fname):
 
     ONETWOfigs.close()
 
-def compare_data(fpathlist):
+def plot_onetwo_data(fpathlist, setParams = {}):
     if type(fpathlist) == str:
         fpathlist = [fpathlist]
+
+    ncases = len(fpathlist)
+    if 'labels' in setParams:
+        if type(setParams['labels']) == str: 
+            labels = [setParams['labels']]
+        else:
+            labels =  setParams['labels']
+    else:
+            labels = []
 
     figs = []
 
@@ -208,6 +217,8 @@ def compare_data(fpathlist):
     fields13 = ['sfareanpsi','cxareanpsi','grho1npsi','grho2npsi']
 
     for ifpath in fpathlist:
+        ifpath_ind = fpathlist.index(ifpath)
+
         onetwodata = read_onetwo_file(ifpath)
         if onetwodata['file_type'] == 'state':
             fpstate_flag = True
@@ -216,213 +227,250 @@ def compare_data(fpathlist):
             fpstate_flag = False
             fiterdb_flag = True
 
+        if len(labels) > ifpath_ind:
+            fig_label = labels[ifpath_ind]
+        elif fpstate_flag:
+            fig_label = "onetwo-%02d (pstate)" % ifpath_ind
+        elif fiterdb_flag:
+            fig_label = "onetwo-%02d (iterdb)" % ifpath_ind
+
         if fpstate_flag:
-            ax011.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[0]]['data'],    label='pstate', linestyle='-')
-            ax012.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[1]]['data'][0], label='pstate', linestyle='-')
-            ax013.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[2]]['data'],    label='pstate', linestyle='-')
-            ax014.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[3]]['data'],    label='pstate', linestyle='-')
+            ax011.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[0]]['data'],      label=fig_label, linestyle='-')
+            ax012.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[1]]['data'][0],   label=fig_label, linestyle='-')
+            ax013.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[2]]['data'],      label=fig_label, linestyle='-')
+            ax014.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[3]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax011.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[0]]['data'],    label='iterdb', linestyle='--')
-            ax012.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[1]]['data'][0], label='iterdb', linestyle='--')
-            ax013.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[2]]['data'],    label='iterdb', linestyle='--')
-            ax014.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[3]]['data'],    label='iterdb', linestyle='--')
+            ax011.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[0]]['data'],      label=fig_label, linestyle='--')
+            ax012.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[1]]['data'][0],   label=fig_label, linestyle='--')
+            ax013.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[2]]['data'],      label=fig_label, linestyle='--')
+            ax014.plot(onetwodata['psir_grid']['data'], onetwodata[fields01[3]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax021.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[0]]['data'], label='pstate', linestyle='-')
-            ax022.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[1]]['data'], label='pstate', linestyle='-')
-            ax023.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[2]]['data'], label='pstate', linestyle='-')
-            ax024.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[3]]['data'], label='pstate', linestyle='-')
+            ax021.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[0]]['data'],      label=fig_label, linestyle='-')
+            ax022.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[1]]['data'],      label=fig_label, linestyle='-')
+            ax023.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[2]]['data'],      label=fig_label, linestyle='-')
+            ax024.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[3]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax021.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[0]]['data'], label='iterdb', linestyle='--')
-            ax022.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[1]]['data'], label='iterdb', linestyle='--')
-            ax023.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[2]]['data'], label='iterdb', linestyle='--')
-            ax024.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[3]]['data'], label='iterdb', linestyle='--')
+            ax021.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[0]]['data'],      label=fig_label, linestyle='--')
+            ax022.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[1]]['data'],      label=fig_label, linestyle='--')
+            ax023.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[2]]['data'],      label=fig_label, linestyle='--')
+            ax024.plot(onetwodata['psir_grid']['data'], onetwodata[fields02[3]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax031.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'], label='pstate', linestyle='-')
-            ax032.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[1]]['data'], label='pstate', linestyle='-')
-            ax033.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[2]]['data'], label='pstate', linestyle='-')
-            ax034.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[3]]['data'], label='pstate', linestyle='-')
-            ax035.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[4]]['data'], label='pstate', linestyle='-')
-            ax036.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[5]]['data'], label='pstate', linestyle='-')
+            ax031.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'],      label=fig_label, linestyle='-')
+            ax032.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[1]]['data'],      label=fig_label, linestyle='-')
+            ax033.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[2]]['data'],      label=fig_label, linestyle='-')
+            ax034.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[3]]['data'],      label=fig_label, linestyle='-')
+            ax035.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[4]]['data'],      label=fig_label, linestyle='-')
+            ax036.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[5]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax031.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'], label='iterdb', linestyle='--')
-            ax032.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'], label='iterdb', linestyle='--')
-            ax033.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[2]]['data'], label='iterdb', linestyle='--')
-            ax034.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[3]]['data'], label='iterdb', linestyle='--')
-            ax035.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[4]]['data'], label='iterdb', linestyle='--')
-            ax036.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[5]]['data'], label='iterdb', linestyle='--')
+            ax031.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'],      label=fig_label, linestyle='--')
+            ax032.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[0]]['data'],      label=fig_label, linestyle='--')
+            ax033.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[2]]['data'],      label=fig_label, linestyle='--')
+            ax034.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[3]]['data'],      label=fig_label, linestyle='--')
+            ax035.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[4]]['data'],      label=fig_label, linestyle='--')
+            ax036.plot(onetwodata['psir_grid']['data'], onetwodata[fields03[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax041.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[0]]['data'], label='pstate', linestyle='-')
-            ax042.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[1]]['data'], label='pstate', linestyle='-')
-            ax043.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[2]]['data'], label='pstate', linestyle='-')
-            ax044.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[3]]['data'], label='pstate', linestyle='-')
-            ax045.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[4]]['data'], label='pstate', linestyle='-')
+            ax041.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[0]]['data'],      label=fig_label, linestyle='-')
+            ax042.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[1]]['data'],      label=fig_label, linestyle='-')
+            ax043.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[2]]['data'],      label=fig_label, linestyle='-')
+            ax044.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[3]]['data'],      label=fig_label, linestyle='-')
+            ax045.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[4]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax041.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[0]]['data'], label='iterdb', linestyle='--')
-            ax042.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[1]]['data'], label='iterdb', linestyle='--')
-            ax043.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[2]]['data'], label='iterdb', linestyle='--')
-            ax044.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[3]]['data'], label='iterdb', linestyle='--')
-            ax045.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[4]]['data'], label='iterdb', linestyle='--')
+            ax041.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[0]]['data'],      label=fig_label, linestyle='--')
+            ax042.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[1]]['data'],      label=fig_label, linestyle='--')
+            ax043.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[2]]['data'],      label=fig_label, linestyle='--')
+            ax044.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[3]]['data'],      label=fig_label, linestyle='--')
+            ax045.plot(onetwodata['psir_grid']['data'], onetwodata[fields04[4]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax051.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[0]]['data'][0,:], label='pstate', linestyle='-')
-            ax052.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[1]]['data'][0,:], label='pstate', linestyle='-')
-            ax053.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[2]]['data'][0,:], label='pstate', linestyle='-')
-            ax054.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[3]]['data'][0,:], label='pstate', linestyle='-')
-            ax055.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[4]]['data'][0,:], label='pstate', linestyle='-')
-            ax056.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[5]]['data'][0,:], label='pstate', linestyle='-')
+            ax051.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[0]]['data'][0,:], label=fig_label, linestyle='-')
+            ax052.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[1]]['data'][0,:], label=fig_label, linestyle='-')
+            ax053.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[2]]['data'][0,:], label=fig_label, linestyle='-')
+            ax054.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[3]]['data'][0,:], label=fig_label, linestyle='-')
+            ax055.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[4]]['data'][0,:], label=fig_label, linestyle='-')
+            ax056.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[5]]['data'][0,:], label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax051.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[0]]['data']   ,   label='iterdb', linestyle='--')
-            ax052.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[1]]['data'][0,:], label='iterdb', linestyle='--')
-            ax053.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[2]]['data'][0],   label='iterdb', linestyle='--')
-            ax054.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[3]]['data'],      label='iterdb', linestyle='--')
-            ax055.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[4]]['data'][0,:], label='iterdb', linestyle='--')
-            ax056.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[5]]['data'][0,:], label='iterdb', linestyle='--')
+            ax051.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[0]]['data']   ,   label=fig_label, linestyle='--')
+            ax052.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[1]]['data'][0,:], label=fig_label, linestyle='--')
+            ax053.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[2]]['data'][0],   label=fig_label, linestyle='--')
+            ax054.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[3]]['data'],      label=fig_label, linestyle='--')
+            ax055.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[4]]['data'][0,:], label=fig_label, linestyle='--')
+            ax056.plot(onetwodata['psir_grid']['data'], onetwodata[fields05[5]]['data'][0,:], label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax061.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[0]]['data'][0,:], label='pstate', linestyle='-')
-            ax062.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[1]]['data'][0,:], label='pstate', linestyle='-')
-            ax063.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[2]]['data'][0,:], label='pstate', linestyle='-')
-            ax064.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[3]]['data'][0,:], label='pstate', linestyle='-')
-            ax065.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[4]]['data'][0,:], label='pstate', linestyle='-')
-            ax066.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[5]]['data']     , label='pstate', linestyle='-')
+            ax061.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[0]]['data'][0,:], label=fig_label, linestyle='-')
+            ax062.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[1]]['data'][0,:], label=fig_label, linestyle='-')
+            ax063.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[2]]['data'][0,:], label=fig_label, linestyle='-')
+            ax064.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[3]]['data'][0,:], label=fig_label, linestyle='-')
+            ax065.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[4]]['data'][0,:], label=fig_label, linestyle='-')
+            ax066.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[5]]['data']     , label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax061.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[0]]['data'][0,:], label='iterdb', linestyle='--')
-            ax062.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[1]]['data'][0,:], label='iterdb', linestyle='--')
-            ax063.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[2]]['data'][0,:], label='iterdb', linestyle='--')
-            ax064.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[3]]['data'][0,:], label='iterdb', linestyle='--')
-            ax065.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[4]]['data'][0,:], label='iterdb', linestyle='--')
-            ax066.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[5]]['data']     , label='iterdb', linestyle='--')
+            ax061.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[0]]['data'][0,:], label=fig_label, linestyle='--')
+            ax062.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[1]]['data'][0,:], label=fig_label, linestyle='--')
+            ax063.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[2]]['data'][0,:], label=fig_label, linestyle='--')
+            ax064.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[3]]['data'][0,:], label=fig_label, linestyle='--')
+            ax065.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[4]]['data'][0,:], label=fig_label, linestyle='--')
+            ax066.plot(onetwodata['psir_grid']['data'], onetwodata[fields06[5]]['data']     , label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax071.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[0]]['data'], label='pstate', linestyle='-')
-            ax072.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[1]]['data'][0,:], label='pstate', linestyle='-')
-            ax073.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[2]]['data'], label='pstate', linestyle='-')
-            ax074.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[3]]['data'], label='pstate', linestyle='-')
-            ax075.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[4]]['data'], label='pstate', linestyle='-')
-            ax076.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[5]]['data'][0,:], label='pstate', linestyle='-')
+            ax071.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[0]]['data'],      label=fig_label, linestyle='-')
+            ax072.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[1]]['data'][0,:], label=fig_label, linestyle='-')
+            ax073.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[2]]['data'],      label=fig_label, linestyle='-')
+            ax074.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[3]]['data'],      label=fig_label, linestyle='-')
+            ax075.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[4]]['data'],      label=fig_label, linestyle='-')
+            ax076.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[5]]['data'][0,:], label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax071.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[0]]['data'], label='iterdb', linestyle='--')
-            ax072.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[1]]['data'], label='iterdb', linestyle='--')
-            ax073.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[2]]['data'], label='iterdb', linestyle='--')
-            ax074.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[3]]['data'], label='iterdb', linestyle='--')
-            ax075.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[4]]['data'], label='iterdb', linestyle='--')
-            ax076.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[5]]['data'], label='iterdb', linestyle='--')
+            ax071.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[0]]['data'],      label=fig_label, linestyle='--')
+            ax072.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[1]]['data'],      label=fig_label, linestyle='--')
+            ax073.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[2]]['data'],      label=fig_label, linestyle='--')
+            ax074.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[3]]['data'],      label=fig_label, linestyle='--')
+            ax075.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[4]]['data'],      label=fig_label, linestyle='--')
+            ax076.plot(onetwodata['psir_grid']['data'], onetwodata[fields07[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax081.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[0]]['data'], label='pstate', linestyle='-')
-            ax082.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[1]]['data'], label='pstate', linestyle='-')
-            ax083.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[2]]['data'], label='pstate', linestyle='-')
-            ax084.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[3]]['data'], label='pstate', linestyle='-')
-            ax085.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[4]]['data'], label='pstate', linestyle='-')
-            ax086.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[5]]['data'], label='pstate', linestyle='-')
+            ax081.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[0]]['data'],      label=fig_label, linestyle='-')
+            ax082.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[1]]['data'],      label=fig_label, linestyle='-')
+            ax083.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[2]]['data'],      label=fig_label, linestyle='-')
+            ax084.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[3]]['data'],      label=fig_label, linestyle='-')
+            ax085.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[4]]['data'],      label=fig_label, linestyle='-')
+            ax086.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[5]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax081.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[0]]['data'], label='iterdb', linestyle='--')
-            ax082.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[1]]['data'], label='iterdb', linestyle='--')
-            ax083.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[2]]['data'], label='iterdb', linestyle='--')
-            ax084.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[3]]['data'], label='iterdb', linestyle='--')
-            ax085.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[4]]['data'], label='iterdb', linestyle='--')
-            ax086.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[5]]['data'], label='iterdb', linestyle='--')
+            ax081.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[0]]['data'],      label=fig_label, linestyle='--')
+            ax082.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[1]]['data'],      label=fig_label, linestyle='--')
+            ax083.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[2]]['data'],      label=fig_label, linestyle='--')
+            ax084.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[3]]['data'],      label=fig_label, linestyle='--')
+            ax085.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[4]]['data'],      label=fig_label, linestyle='--')
+            ax086.plot(onetwodata['psir_grid']['data'], onetwodata[fields08[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax091.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[0]]['data'], label='pstate', linestyle='-')
-            ax092.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[1]]['data'], label='pstate', linestyle='-')
-            ax093.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[2]]['data'], label='pstate', linestyle='-')
-            ax094.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[3]]['data'], label='pstate', linestyle='-')
-            ax095.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[4]]['data'], label='pstate', linestyle='-')
-            ax096.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[5]]['data'], label='pstate', linestyle='-')
+            ax091.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[0]]['data'],      label=fig_label, linestyle='-')
+            ax092.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[1]]['data'],      label=fig_label, linestyle='-')
+            ax093.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[2]]['data'],      label=fig_label, linestyle='-')
+            ax094.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[3]]['data'],      label=fig_label, linestyle='-')
+            ax095.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[4]]['data'],      label=fig_label, linestyle='-')
+            ax096.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[5]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax091.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[0]]['data'], label='iterdb', linestyle='--')
-            ax092.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[1]]['data'], label='iterdb', linestyle='--')
-            ax093.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[2]]['data'], label='iterdb', linestyle='--')
-            ax094.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[3]]['data'], label='iterdb', linestyle='--')
-            ax095.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[4]]['data'], label='iterdb', linestyle='--')
-            ax096.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[5]]['data'], label='iterdb', linestyle='--')
+            ax091.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[0]]['data'],      label=fig_label, linestyle='--')
+            ax092.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[1]]['data'],      label=fig_label, linestyle='--')
+            ax093.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[2]]['data'],      label=fig_label, linestyle='--')
+            ax094.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[3]]['data'],      label=fig_label, linestyle='--')
+            ax095.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[4]]['data'],      label=fig_label, linestyle='--')
+            ax096.plot(onetwodata['psir_grid']['data'], onetwodata[fields09[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax101.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[0]]['data'], label='pstate', linestyle='-')
-            ax102.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[1]]['data'], label='pstate', linestyle='-')
-            ax103.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[2]]['data'], label='pstate', linestyle='-')
-            ax104.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[3]]['data'], label='pstate', linestyle='-')
-            ax105.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[4]]['data'], label='pstate', linestyle='-')
-            ax106.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[5]]['data'], label='pstate', linestyle='-')
+            ax101.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[0]]['data'],      label=fig_label, linestyle='-')
+            ax102.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[1]]['data'],      label=fig_label, linestyle='-')
+            ax103.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[2]]['data'],      label=fig_label, linestyle='-')
+            ax104.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[3]]['data'],      label=fig_label, linestyle='-')
+            ax105.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[4]]['data'],      label=fig_label, linestyle='-')
+            ax106.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[5]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax101.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[0]]['data'], label='iterdb', linestyle='--')
-            ax102.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[1]]['data'], label='iterdb', linestyle='--')
-            ax103.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[2]]['data'], label='iterdb', linestyle='--')
-            ax104.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[3]]['data'], label='iterdb', linestyle='--')
-            ax105.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[4]]['data'], label='iterdb', linestyle='--')
-            ax106.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[5]]['data'], label='iterdb', linestyle='--')
+            ax101.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[0]]['data'],      label=fig_label, linestyle='--')
+            ax102.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[1]]['data'],      label=fig_label, linestyle='--')
+            ax103.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[2]]['data'],      label=fig_label, linestyle='--')
+            ax104.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[3]]['data'],      label=fig_label, linestyle='--')
+            ax105.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[4]]['data'],      label=fig_label, linestyle='--')
+            ax106.plot(onetwodata['psir_grid']['data'], onetwodata[fields10[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax111.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[0]]['data'], label='pstate', linestyle='-')
-            ax112.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[1]]['data'], label='pstate', linestyle='-')
-            ax113.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[2]]['data'], label='pstate', linestyle='-')
-            ax114.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[3]]['data'], label='pstate', linestyle='-')
-            ax115.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[4]]['data'], label='pstate', linestyle='-')
-            ax116.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[5]]['data'], label='pstate', linestyle='-')
+            ax111.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[0]]['data'],      label=fig_label, linestyle='-')
+            ax112.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[1]]['data'],      label=fig_label, linestyle='-')
+            ax113.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[2]]['data'],      label=fig_label, linestyle='-')
+            ax114.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[3]]['data'],      label=fig_label, linestyle='-')
+            ax115.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[4]]['data'],      label=fig_label, linestyle='-')
+            ax116.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[5]]['data'],      label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax111.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[0]]['data'], label='iterdb', linestyle='--')
-            ax112.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[1]]['data'], label='iterdb', linestyle='--')
-            ax113.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[2]]['data'], label='iterdb', linestyle='--')
-            ax114.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[3]]['data'], label='iterdb', linestyle='--')
-            ax115.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[4]]['data'], label='iterdb', linestyle='--')
-            ax116.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[5]]['data'], label='iterdb', linestyle='--')
+            ax111.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[0]]['data'],      label=fig_label, linestyle='--')
+            ax112.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[1]]['data'],      label=fig_label, linestyle='--')
+            ax113.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[2]]['data'],      label=fig_label, linestyle='--')
+            ax114.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[3]]['data'],      label=fig_label, linestyle='--')
+            ax115.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[4]]['data'],      label=fig_label, linestyle='--')
+            ax116.plot(onetwodata['psir_grid']['data'], onetwodata[fields11[5]]['data'],      label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax121.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[0]]['data'], label='pstate', linestyle='-')
-            ax122.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[1]]['data'], label='pstate', linestyle='-')
-            ax123.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[2]]['data'], label='pstate', linestyle='-')
-            ax124.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[3]]['data'], label='pstate', linestyle='-')
-            ax125.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[4]]['data'], label='pstate', linestyle='-')
-            ax126.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[5]]['data'], label='pstate', linestyle='-')
+            ax121.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[0]]['data'],     label=fig_label, linestyle='-')
+            ax122.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[1]]['data'],     label=fig_label, linestyle='-')
+            ax123.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[2]]['data'],     label=fig_label, linestyle='-')
+            ax124.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[3]]['data'],     label=fig_label, linestyle='-')
+            ax125.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[4]]['data'],     label=fig_label, linestyle='-')
+            ax126.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields12[5]]['data'],     label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax121.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[0]]['data'], label='iterdb', linestyle='--')
-            ax122.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[1]]['data'], label='iterdb', linestyle='--')
-            ax123.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[2]]['data'], label='iterdb', linestyle='--')
-            ax124.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[3]]['data'], label='iterdb', linestyle='--')
-            ax125.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[4]]['data'], label='iterdb', linestyle='--')
-            ax126.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[5]]['data'], label='iterdb', linestyle='--')
+            ax121.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[0]]['data'],     label=fig_label, linestyle='--')
+            ax122.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[1]]['data'],     label=fig_label, linestyle='--')
+            ax123.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[2]]['data'],     label=fig_label, linestyle='--')
+            ax124.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[3]]['data'],     label=fig_label, linestyle='--')
+            ax125.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[4]]['data'],     label=fig_label, linestyle='--')
+            ax126.plot(onetwodata['psir_grid']['data'],  onetwodata[fields12[5]]['data'],     label=fig_label, linestyle='--')
             
         if fpstate_flag:
-            ax131.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[0]]['data'], label='pstate', linestyle='-')
-            ax132.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[1]]['data'], label='pstate', linestyle='-')
-            ax133.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[2]]['data'], label='pstate', linestyle='-')
-            ax134.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[3]]['data'], label='pstate', linestyle='-')
+            ax131.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[0]]['data'],     label=fig_label, linestyle='-')
+            ax132.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[1]]['data'],     label=fig_label, linestyle='-')
+            ax133.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[2]]['data'],     label=fig_label, linestyle='-')
+            ax134.plot(onetwodata['psivalnpsi']['data'], onetwodata[fields13[3]]['data'],     label=fig_label, linestyle='-')
 
         elif fiterdb_flag:
-            ax131.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[0]]['data'], label='iterdb', linestyle='--')
-            ax132.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[1]]['data'], label='iterdb', linestyle='--')
-            ax133.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[2]]['data'], label='iterdb', linestyle='--')
-            ax134.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[3]]['data'], label='iterdb', linestyle='--')
-        
-    ax011.legend()
-    ax021.legend()
-    ax031.legend()
-    ax041.legend()
-    ax051.legend()
-    ax061.legend()
-    ax071.legend()
-    ax081.legend()
-    ax091.legend()
-    ax101.legend()
-    ax111.legend()
-    ax121.legend()
-    ax131.legend()
+            ax131.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[0]]['data'],     label=fig_label, linestyle='--')
+            ax132.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[1]]['data'],     label=fig_label, linestyle='--')
+            ax133.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[2]]['data'],     label=fig_label, linestyle='--')
+            ax134.plot(onetwodata['psir_grid']['data'],  onetwodata[fields13[3]]['data'],     label=fig_label, linestyle='--')
+    
+
+    if ncases < 7:
+        ax011.legend(fontsize=7, ncol = 1)
+        ax021.legend(fontsize=7, ncol = 1)
+        ax031.legend(fontsize=7, ncol = 1)
+        ax041.legend(fontsize=7, ncol = 1)
+        ax051.legend(fontsize=7, ncol = 1)
+        ax061.legend(fontsize=7, ncol = 1)
+        ax071.legend(fontsize=7, ncol = 1)
+        ax081.legend(fontsize=7, ncol = 1)
+        ax091.legend(fontsize=7, ncol = 1)
+        ax101.legend(fontsize=7, ncol = 1)
+        ax111.legend(fontsize=7, ncol = 1)
+        ax121.legend(fontsize=7, ncol = 1)
+        ax131.legend(fontsize=7, ncol = 1)
+    elif ncases > 7 and ncases < 13:
+        ax011.legend(fontsize=7, ncol = 2)
+        ax021.legend(fontsize=7, ncol = 2)
+        ax031.legend(fontsize=7, ncol = 2)
+        ax041.legend(fontsize=7, ncol = 2)
+        ax051.legend(fontsize=7, ncol = 2)
+        ax061.legend(fontsize=7, ncol = 2)
+        ax071.legend(fontsize=7, ncol = 2)
+        ax081.legend(fontsize=7, ncol = 2)
+        ax091.legend(fontsize=7, ncol = 2)
+        ax101.legend(fontsize=7, ncol = 2)
+        ax111.legend(fontsize=7, ncol = 2)
+        ax121.legend(fontsize=7, ncol = 2)
+        ax131.legend(fontsize=7, ncol = 2)
+    elif ncases > 13 and ncases < 19:
+        ax011.legend(fontsize=7, ncol = 3)
+        ax021.legend(fontsize=7, ncol = 3)
+        ax031.legend(fontsize=7, ncol = 3)
+        ax041.legend(fontsize=7, ncol = 3)
+        ax051.legend(fontsize=7, ncol = 3)
+        ax061.legend(fontsize=7, ncol = 3)
+        ax071.legend(fontsize=7, ncol = 3)
+        ax081.legend(fontsize=7, ncol = 3)
+        ax091.legend(fontsize=7, ncol = 3)
+        ax101.legend(fontsize=7, ncol = 3)
+        ax111.legend(fontsize=7, ncol = 3)
+        ax121.legend(fontsize=7, ncol = 3)
+        ax131.legend(fontsize=7, ncol = 3)
         
     ax011.set_ylabel(fields01[0])
     ax012.set_ylabel(fields01[1])
@@ -654,10 +702,9 @@ def compare_data(fpathlist):
     return True
 
 if __name__ == "__main__":
-   #iterdbfname = []
-   #iterdbfname.append("statefile_2.026000E+00.nc")
-   #iterdbfname.append("iterdb.150139")
-    iterdbfname = "iterdb.150139"
-    compare_data(iterdbfname)
+   #iterdbfname = "iterdb.150139"
+    iterdbfname = []
+    iterdbfname.append("statefile_2.026000E+00.nc")
+    iterdbfname.append("iterdb.150139")
+    plot_onetwo_data(iterdbfname)
 
-sys.exit()
