@@ -510,16 +510,16 @@ def read_instate_file(fpath="",setParam={}):
        statedata['pressure']  = statedata['ne'] * statedata['Te'] + (statedata['ni'] + statedata['nz']) * statedata['Ti']
        statedata['pressure'] += (2.0/3.0) * 1.0e6*(statedata['wbeam'] + statedata['walpha'])
     else:
-        if instate['p_eq'] and npy.all(npy.array(instate['p_eq'])):
-           statedata['pressure'] = npy.array(instate['p_eq'])
-        elif instate['pmhd'] and npy.all(npy.array(instate['pmhd'])):
-           statedata['pressure'] = npy.array(instate['pmhd'])
-        elif instate['ptot_axis']:
-           statedata['pressure']  = (instate['ptot_axis'][0]-instate['ptot_sep'][0])
-           statedata['pressure'] *= (1.0 - statedata['rho']**instate['ptot_alpha'][0])**instate['ptot_beta'][0]
-           statedata['pressure'] += instate['ptot_sep'][0]
-        else:
-           statedata['pressure']  = npy.zeros(statedata['nrho'])
+       if instate['p_eq'] and npy.all(npy.array(instate['p_eq'])):
+          statedata['pressure'] = npy.array(instate['p_eq'])
+       elif instate['pmhd'] and npy.all(npy.array(instate['pmhd'])):
+          statedata['pressure'] = npy.array(instate['pmhd'])
+       elif instate['ptot_axis']:
+          statedata['pressure']  = (instate['ptot_axis'][0]-instate['ptot_sep'][0])
+          statedata['pressure'] *= (1.0 - statedata['rho']**instate['ptot_alpha'][0])**instate['ptot_beta'][0]
+          statedata['pressure'] += instate['ptot_sep'][0]
+       else:
+          statedata['pressure']  = npy.zeros(statedata['nrho'])
     if all(statedata['pressure'] < 0): statedata['pressure'] *= -1.0
 
     statedata['ne'] *= 1.0e19
