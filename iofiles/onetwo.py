@@ -1906,6 +1906,7 @@ def read_iterdb_file(fname):
             onetwo["q_value"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
+    if all(onetwo['q_value']['data'] >= 0.0): onetwo['q_value']['data'] *= -1.0
 
     onetwo["ene"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
@@ -2787,7 +2788,7 @@ def read_iterdb_file(fname):
     nplasbdry = int(line.strip())
     nblines = int(numpy.ceil((onetwo["nplasbdry"]['data'] / 5)))
 
-    onetwo["rplasbdry"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["rplasbdry"]['data'] = numpy.zeros(nplasbdry,dtype=float)
     fid.readline()
     for iline in range(nblines):
         line = fid.readline()
@@ -2800,8 +2801,9 @@ def read_iterdb_file(fname):
             onetwo["rplasbdry"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
+    if max(onetwo['rplasbdry']['data']) >= 100.0: onetwo['rplasbdry']['data'] /= 100.0
 
-    onetwo["zplasbdry"]['data'] = numpy.zeros(nrho,dtype=float)
+    onetwo["zplasbdry"]['data'] = numpy.zeros(nplasbdry,dtype=float)
     fid.readline()
     for iline in range(nblines):
         line = fid.readline()
@@ -2814,6 +2816,7 @@ def read_iterdb_file(fname):
             onetwo["zplasbdry"]['data'][iline*5+4] = float(linecontent[4])
         except:
             error = 'empty records'
+    if max(onetwo['zplasbdry']['data']) >= 100.0: onetwo['zplasbdry']['data'] /= 100.0
 
     onetwo["storqueb"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
@@ -2853,6 +2856,12 @@ def read_iterdb_file(fname):
     if type(onetwo['pprim']['data']) == type(None):
         onetwo["pprim"]['data'] = numpy.zeros(nrho,dtype=float)
 
+    if type(onetwo['z']['data']) == type(None):
+        onetwo["z"]['data'] = numpy.zeros((nion,nrho),dtype=float)
+        for i in range(onetwo["nion"]['data']):
+            if i == 0: onetwo['z']['data'][i,:] =       numpy.ones(nrho,dtype=float)
+            if i == 1: onetwo['z']['data'][i,:] = 6.0 * numpy.ones(nrho,dtype=float)
+
     ############################
 
     onetwo["pressb"]['data'] = numpy.zeros(nrho,dtype=float)
@@ -2871,9 +2880,9 @@ def read_iterdb_file(fname):
                error = 'empty records'
     else:
         if type(onetwo['walp']['data']) != type(None):
-            onetwo['pressb']['data'] += onetwo['walp']['data']
+            onetwo['pressb']['data'] += (2.0/3.0) * onetwo['walp']['data']
         if type(onetwo['wbeam']['data']) != type(None):
-            onetwo['pressb']['data'] += onetwo['wbeam']['data']
+            onetwo['pressb']['data'] += (2.0/3.0) * onetwo['wbeam']['data']
         onetwo['pressb']['data'] *= 1.0e-22
 
     onetwo["press"]['data'] = numpy.zeros(nrho,dtype=float)
@@ -2890,11 +2899,12 @@ def read_iterdb_file(fname):
                onetwo["press"]['data'][iline*5+4] = float(linecontent[4])
            except:
                error = 'empty records'
+
     if all(onetwo["press"]['data']) == 0.0:
         onetwo["press"]['data'] = onetwo["ene"]['data'] * onetwo["Te"]['data']
         for i in range(onetwo["nion"]['data']):
             onetwo["press"]['data'] += onetwo["enion"]['data'][i] * onetwo["Ti"]['data']
-        onetwo["press"]['data'] *= 1.0e3 * 1.6e-19
+        onetwo["press"]['data'] *= 1.0e3 * 1.0e-19
 
     onetwo["sscxl"]['data'] = numpy.zeros(nrho,dtype=float)
     infoline = fid.readline()
@@ -2952,8 +2962,8 @@ def read_state_file(fpath):
     if all(onetwo['qcx']['data']) > 0.0:   onetwo['qcx']['data'] *= -1.0
     if all(onetwo['qrad']['data']) > 0.0:  onetwo['qrad']['data'] *= -1.0
     if all(onetwo['qione']['data']) > 0.0: onetwo['qione']['data'] *= -1.0
-    onetwo['qdelt']['data']     = numpy.abs(onetwo['qdelt']['data'])
-    onetwo['q_value']['data']   = numpy.abs(onetwo['q_value']['data'])
+#   onetwo['qdelt']['data']     = numpy.abs(onetwo['qdelt']['data'])
+#   onetwo['q_value']['data']   = numpy.abs(onetwo['q_value']['data'])
     onetwo['dudtsv']['data']    = numpy.transpose(onetwo['dudtsv']['data'])
     onetwo['stsource']['data']  = numpy.transpose(onetwo['stsource']['data'])
 
@@ -3149,13 +3159,20 @@ def to_instate(fpath,gfpath={},setParam={}):
                 instate['ZLIM'].pop(-2)
                 instate['NLIM'] = [instate['NLIM'][0] - 1]
     else:
+        instate['NBDRY'] = [numpy.size(onetwo['rplasbdry']['data'])]
+       #if max(onetwo['rplasbdry']['data']) > 100.0:
+       #    instate['RBDRY'] = [round(i/100.0,7) for i in onetwo['rplasbdry']['data']]
+       #    instate['ZBDRY'] = [round(i/100.0,7) for i in onetwo['zplasbdry']['data']]
+       #else:
+       #    instate['RBDRY'] = [round(i,7) for i in onetwo['rplasbdry']['data']]
+       #    instate['ZBDRY'] = [round(i,7) for i in onetwo['zplasbdry']['data']]
         NBDRYmax = 85
         NBDRY = numpy.size(onetwo['rplasbdry']['data'])
         if NBDRY > NBDRYmax:
            RBDRY = onetwo['rplasbdry']['data']
            ZBDRY = onetwo['zplasbdry']['data']
            BDRY = zip(RBDRY,ZBDRY)
-           BDRYINDS = random.sample(range(NBDRY),NBDRYmax)
+           BDRYINDS = sorted(random.sample(range(NBDRY),NBDRYmax))
            instate['NBDRY'] = [NBDRYmax]
            instate['RBDRY'] = [round(i,7) for i in RBDRY[BDRYINDS]]
            instate['ZBDRY'] = [round(i,7) for i in ZBDRY[BDRYINDS]]
@@ -3198,10 +3215,10 @@ def to_instate(fpath,gfpath={},setParam={}):
                instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
                instate['NLIM'] = [len(instate['RLIM'])]
         else:
-            RLIM_MAX = max(onetwo['rplasbdry']['data']) + 0.5
-            RLIM_MIN = min(onetwo['rplasbdry']['data']) - 0.5
-            ZLIM_MAX = max(onetwo['zplasbdry']['data']) + 0.5
-            ZLIM_MIN = min(onetwo['zplasbdry']['data']) - 0.5
+            RLIM_MAX = max(instate['RBDRY']) + 0.10
+            RLIM_MIN = min(instate['RBDRY']) - 0.10
+            ZLIM_MAX = max(instate['ZBDRY']) + 0.10
+            ZLIM_MIN = min(instate['ZBDRY']) - 0.10
             instate['RLIM'] = [RLIM_MAX, RLIM_MIN, RLIM_MIN, RLIM_MAX, RLIM_MAX]
             instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
             instate['NLIM'] = [len(instate['RLIM'])]
