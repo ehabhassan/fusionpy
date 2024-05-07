@@ -4,6 +4,7 @@ from matplotlib.backends.backend_pdf  import PdfPages
 
 
 def to_pdf(figobjs,fname='',category=''):
+    if type(figobjs) not in [list,tuple]: figobjs = [figobjs]
 
     reportpath = os.path.join(os.path.abspath("."),"fusionpy_report")
     if not os.path.isdir(reportpath):
