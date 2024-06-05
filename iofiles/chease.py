@@ -8,7 +8,7 @@ import sys
 import numpy       as npy
 import traceback   as traceback
 
-from iofiles.Namelist       import Namelist
+from iofiles.Namelist import Namelist
 from iofiles.fastran  import read_fastran_outputs
 
 import maths.cheasetools  as cheasetools
