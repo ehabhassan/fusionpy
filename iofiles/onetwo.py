@@ -3323,7 +3323,7 @@ def calculate_nebar(ne,rho):
     nebar = 0.0
     for i in range(nrho-1):
         nebar += 0.5 * (ne[i+1] + ne[i]) * (rho[i+1] - rho[i])
-        nebar /= rho[-1]
+    nebar /= rho[-1]
     return nebar
 
 if __name__ == "__main__":
