@@ -20,10 +20,12 @@ def to_pdf(figobjs,fname='',category=''):
        os.system('mkdir %s' % figurepath)
     
     if not fname: fname = "fusionpy_plots"
-    pdffigs = PdfPages(os.path.join(figurepath,'%s.pdf' % fname))
+    if fname[-4:].lower() == '.pdf':
+       pdffigs = PdfPages(os.path.join(figurepath,fname))
+    else:
+       pdffigs = PdfPages(os.path.join(figurepath,'%s.pdf' % fname))
 
-
-    if type(figobjs) not in [list,tuple,set]: figobjs = list(figobjs)
+    if type(figobjs) not in [list,tuple]: figobjs = list(figobjs)
     for ifigobj in figobjs:
         pdffigs.savefig(ifigobj)
     pdffigs.close()
