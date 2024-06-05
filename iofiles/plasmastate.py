@@ -135,7 +135,12 @@ def get_instate_vars():
 
 def get_plasmastate(ifpath="",sfpath="",bfpath="",gfpath='',setParam={}):
     if   ifpath:
-         statedata = read_instate_file(fpath=ifpath,setParam={})
+         if os.path.isfile(ifpath):
+            statedata = read_instate_file(fpath=ifpath,setParam={})
+         else:
+            print('FILE DOES NOT EXISTS IN DESTINATION PATH:')
+            print(ifpath)
+            sys.exit()
     elif statefpath:
          statedata = read_state_file(fpath=sfpath,setParam={})
 
@@ -420,6 +425,16 @@ def read_instate_file(fpath="",setParam={}):
         statedata['wbeam']  = npy.array(instate['wbeam'])
     else:
         statedata['wbeam']  = npy.zeros(statedata['nrho'])
+
+    if instate['scale_sion']: 
+        statedata['scale_sion'] = instate['scale_sion']
+    else:
+        statedata['scale_sion'] = 0.0
+
+    if instate['sion']:
+        statedata['sion']  = npy.array(instate['sion'])
+    else:
+        statedata['sion']  = npy.zeros(statedata['nrho'])
 
     if instate['q']:
         statedata['q']  = npy.array(instate['q'])
