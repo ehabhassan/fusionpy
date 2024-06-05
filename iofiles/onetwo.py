@@ -3081,6 +3081,9 @@ def to_instate(fpath,gfpath={},setParam={}):
     RHOPSI = numpy.sqrt(PSIN)
     instate['RHOPSI']  = [round(i,7) for i in RHOPSI]
 
+    instate['SCALE_SION'] = [1]
+    instate['SION']       = [round(i,7) for i in (onetwo['sion']['data']*1.0e-19)]
+
     instate['Q']       = [round(i,7) for i in onetwo['q_value']['data']]
     instate['P_EQ']    = [round(i,7) for i in onetwo['press']['data']]
     if type(onetwo['pprim']['data']) != type(None):
@@ -3138,6 +3141,81 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['SI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['PE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['PI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+
+
+    if instate['NRHO'][0] != 101:
+        old_rho  = instate['RHO']
+        new_nrho = 101
+        new_rho  = numpy.linspace(0.0,1.0,new_nrho)
+
+        instate['NRHO'         ] = [101]
+        instate['RHO'          ] = [round(i,7) for i in new_rho                                               ]
+        instate['PSIPOL'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PSIPOL'       ])]
+        instate['NE'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['NE'           ])]
+        instate['TE'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TE'           ])]
+        instate['TI'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TI'           ])]
+        instate['ZEFF'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['ZEFF'         ])]
+        instate['OMEGA'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['OMEGA'        ])]
+
+        instate['Q'            ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['Q'            ])]
+        instate['P_EQ'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['P_EQ'         ])]
+        instate['PPRIME'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PPRIME'       ])]
+        instate['FFPRIME'      ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['FFPRIME'      ])]
+
+        PSI    = (onetwo['psibdry']['data']-onetwo['psiaxis']['data'])
+        PSI   *= numpy.arange(instate['NRHO'][0])/(instate['NRHO'][0]-1.0)
+        PSIN   = (PSI-PSI[0])/(PSI[-1]-PSI[0])
+        RHOPSI = numpy.sqrt(PSIN)
+        instate['RHOPSI'       ] = [round(i,7) for i in RHOPSI                                                ]
+
+        instate['J_RF'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_RF'         ])]
+        instate['J_OH'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_OH'         ])]
+        instate['J_NB'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_NB'         ])]
+        instate['J_BS'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_BS'         ])]
+        instate['J_EC'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_EC'         ])]
+        instate['J_IC'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_IC'         ])]
+        instate['J_LH'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_LH'         ])]
+        instate['J_HC'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_HC'         ])]
+        instate['J_TOT'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_TOT'        ])]
+
+        instate['PE_RF'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_RF'        ])]
+        instate['PE_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_NB'        ])]
+        instate['PE_EC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_EC'        ])]
+        instate['PE_IC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_IC'        ])]
+        instate['PE_LH'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_LH'        ])]
+        instate['PE_HC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_HC'        ])]
+        instate['PI_RF'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_RF'        ])]
+        instate['PI_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_NB'        ])]
+        instate['PI_EC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_EC'        ])]
+        instate['PI_IC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_IC'        ])]
+        instate['PI_LH'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_LH'        ])]
+        instate['PI_HC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_HC'        ])]
+        instate['SE_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['SE_NB'        ])]
+        instate['SI_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['SI_NB'        ])]
+
+        instate['P_EI'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['P_EI'         ])]
+        instate['P_RAD'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['P_RAD'        ])]
+        instate['P_OHM'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['P_OHM'        ])]
+        instate['PI_CX'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_CX'        ])]
+        instate['PI_FUS'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_FUS'       ])]
+        instate['PE_FUS'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_FUS'       ])]
+
+        instate['CHIE'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['CHIE'         ])]
+        instate['CHII'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['CHII'         ])]
+
+        instate['WBEAM'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['WBEAM'        ])]
+        instate['WALPHA'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['WALPHA'       ])]
+
+        instate['TORQUE_NB'    ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TORQUE_NB'    ])]
+        instate['TORQUE_IN'    ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TORQUE_IN'    ])]
+
+        instate['SE_IONIZATION'] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['SE_IONIZATION'])]
+        instate['SI_IONIZATION'] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['SI_IONIZATION'])]
+        instate['PE_IONIZATION'] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_IONIZATION'])]
+        instate['PI_IONIZATION'] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_IONIZATION'])]
+
+        instate['DENSITY_BEAM' ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['DENSITY_BEAM' ])]
+        instate['DENSITY_ALPHA'] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['DENSITY_ALPHA'])]
 
 
     if gfpath:
@@ -3240,6 +3318,13 @@ def to_instate(fpath,gfpath={},setParam={}):
 
     return instate
 
+def calculate_nebar(ne,rho): 
+    nrho = len(rho)
+    nebar = 0.0
+    for i in range(nrho-1):
+        nebar += 0.5 * (ne[i+1] + ne[i]) * (rho[i+1] - rho[i])
+        nebar /= rho[-1]
+    return nebar
 
 if __name__ == "__main__":
     onetwofname = "statefile_2.026000E+00.nc"
