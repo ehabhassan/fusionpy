@@ -3155,6 +3155,7 @@ def to_instate(fpath,gfpath={},setParam={}):
         instate['TE'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TE'           ])]
         instate['TI'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TI'           ])]
         instate['ZEFF'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['ZEFF'         ])]
+        instate['SION'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['SION'         ])]
         instate['OMEGA'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['OMEGA'        ])]
 
         instate['Q'            ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['Q'            ])]
