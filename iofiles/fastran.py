@@ -1521,7 +1521,7 @@ def read_fastran_outputs(fastranfpath):
 #tep(time, rho) : radial derivative of electron temperature with respect to rho [keV]
 #tip(time, rho) : radial derivative of ion temperature with respect to rho [keV]
 #nep(time, rho) : radial derivative of electron density with respect to rho [10^19/m^3]
-#nip(time, rho) : radial derivative of electron density with respect to rho [10^19/m^3]
+#nip(time, rho) : radial derivative of ion density with respect to rho [10^19/m^3]
 #j_tot(time, rho) : plasma current [MA/m^2]
 #j_bs(time, rho) : bootstrap current [MA/m^2]
 #j_bs_0(time, rho) : bootstrap current w/o smooth [MA/m^2]
@@ -1610,7 +1610,7 @@ def read_fastran(WORK_DIR):
         if WORK_FILES:
             for i in range(len(WORK_FILES)):
                 FASTRAN_FILEPATH = WORK_FILES[i]
-                print(FASTRAN_FILEPATH)
+#               print(FASTRAN_FILEPATH)
                 FASTRAN_FILENAME = FASTRAN_FILEPATH.replace(iWORK_DIR_PATH+'/','')
                 SHOT_NUMBER, TIME_ID = FASTRAN_FILENAME[1:].split('.')
                 shot = SHOT_NUMBER + '.' + TIME_ID
