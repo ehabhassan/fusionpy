@@ -1,3 +1,4 @@
+from numpy       import dot
 from plot.colors import CRED, CEND
 
 class zeff():
@@ -22,7 +23,11 @@ class zeff():
         return True
 
     def default(self, ps, ps_update=False):
-        zeff = (ps['zi']**2*ps['ni'] + ps['zz']**2*ps['nz'])/ps['ne'] # units [None]
+        if type(ps['zz']) in [list,tuple] and type(ps['nz']) in [list,tuple]:
+            if len(ps['zz']) == len(ps['nz']):    
+                zeff = (ps['zi']**2*ps['ni'] + dot(ps['zz']**2,*ps['nz']))/ps['ne'] # units [None]
+        else:
+                zeff = (ps['zi']**2*ps['ni'] + ps['zz']**2*ps['nz'])/ps['ne'] # units [None]
         if ps_update:
             ps['zeff'] = zeff
         return zeff
@@ -33,8 +38,8 @@ class zeff():
 
 if __name__=='__main__':
     ps = {}
-    ps['ne']   = 18.0
-    ps['ni']   = 16.0
+    ps['ne']   = 19.3
+    ps['ni']   = 19.3
     ps['zi']   =  2.0
     ps['zz']   =  5.0
     calc_zeff = zeff()

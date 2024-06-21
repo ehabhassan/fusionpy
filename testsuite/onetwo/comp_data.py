@@ -4,14 +4,37 @@ import netCDF4 as ncdf
 
 import matplotlib.pyplot as plt
 
-from iofiles.fastran.get_plasmastate import get_plasmastate
-
-ncfname = "statefile_2.630000E+00.nc"
-instate = "instate"
-
+ncfname = "onetwo_statefile_179454_04025.nc"
 ncfid = ncdf.Dataset(ncfname)
-
 ncfvars = ncfid.variables.keys()
+
+ncfvars = []
+ncfvars.append('bptor')
+ncfvars.append('fbcur')
+ncfvars.append('prompt_nb_pwr')
+ncfvars.append('fber')
+ncfvars.append('fb00')
+ncfvars.append('fb01')
+ncfvars.append('fb10')
+ncfvars.append('fb11')
+ncfvars.append('wb00')
+ncfvars.append('wb01')
+ncfvars.append('wb10')
+ncfvars.append('wb11')
+ncfvars.append('sb')
+ncfvars.append('spb')
+ncfvars.append('spbr')
+ncfvars.append('angmpf')
+ncfvars.append('pb0')
+ncfvars.append('hicme')
+ncfvars.append('hicmp1')
+ncfvars.append('hicmp2')
+ncfvars.append('rhog_beam')
+ncfvars.append('omega_pi_h')
+ncfvars.append('omega_ci_h')
+ncfvars.append('omega_lh_h')
+ncfvars.append('omega_uh_h')
+
 for ncfvar in ncfvars:
     print(ncfvar)
     try:
@@ -32,6 +55,9 @@ for ncfvar in ncfvars:
 #print(ncUnit,ncInfo)
 
 sys.exit()
+
+from iofiles.fastran.get_plasmastate import get_plasmastate
+instate = "instate"
 
 nrho = ncfid.variables['nj'][:]
 rho = (npy.arange(1.0,nrho+1) - 1.0)/(nrho - 1.0)
