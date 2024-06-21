@@ -3081,7 +3081,9 @@ def to_instate(fpath,gfpath={},setParam={}):
     RHOPSI = numpy.sqrt(PSIN)
     instate['RHOPSI']  = [round(i,7) for i in RHOPSI]
 
-    instate['SCALE_SION'] = [1]
+    instate['SCALE_NE'] = [1.0]
+
+    instate['SCALE_SION'] = [1.0]
     instate['SION']       = [round(i,7) for i in (onetwo['sion']['data']*1.0e-19)]
 
     instate['Q']       = [round(i,7) for i in onetwo['q_value']['data']]
