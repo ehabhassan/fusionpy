@@ -431,6 +431,11 @@ def read_instate_file(fpath="",setParam={}):
     else:
         statedata['scale_sion'] = 0.0
 
+    if instate['scale_ne']: 
+        statedata['scale_ne'] = instate['scale_ne']
+    else:
+        statedata['scale_ne'] = 0.0
+
     if instate['sion']:
         statedata['sion']  = npy.array(instate['sion'])
     else:
@@ -555,11 +560,11 @@ def read_state_file(fpath="",setParam={}):
 
     statedata = {}
 
-    if type(statefpath) == str:
+    if type(fpath) == str:
         ps = plasmastate('ips',1)
-        ps.read(statefpath)
+        ps.read(fpath)
     else:
-        ps = self.statefpath
+        ps = self.fpath
 
     if 'RMAX' not in statedata:
         statedata['RMAX']  = ps['R_axis']
@@ -584,11 +589,12 @@ def read_state_file(fpath="",setParam={}):
 
     n_ion = 0
     n_imp = 0
-    statedata['ni']   = npy.zeros(statedata['nrho'])
-    statedata['nz']   = npy.zeros(statedata['nrho'])
-    statedata['Ti']   = npy.zeros(statedata['nrho'])
-    statedata['Tz']   = npy.zeros(statedata['nrho'])
-    statedata['zeff'] = npy.zeros(statedata['nrho'])
+    statedata['ni']     = npy.zeros(statedata['nrho'])
+    statedata['nz']     = npy.zeros(statedata['nrho'])
+    statedata['Ti']     = npy.zeros(statedata['nrho'])
+    statedata['Tz']     = npy.zeros(statedata['nrho'])
+    statedata['zeff']   = npy.zeros(statedata['nrho'])
+    statedata['aminor'] = npy.zeros(statedata['nrho'])
     for s in range(npy.size(ps["q_s"])):
         if   species_name[s].strip().lower() in ['e']:
              statedata['Te']    = ps.cell2node(ps["Ts"][s,:]*1.602e3)
@@ -624,6 +630,7 @@ def read_state_file(fpath="",setParam={}):
     statedata['walpha'] += ps.dump_profile(statedata['rho'], "rho_fus", "epll_fusi",  k=0) * 1.602e3
     statedata['walpha'] *= statedata['nalpha']
 
+    statedata['aminor']  = ps['rminor']
     statedata['q']       = ps['q_eq']
     statedata['Vrot']    = ps["omegat"][:]
 

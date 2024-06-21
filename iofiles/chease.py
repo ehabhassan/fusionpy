@@ -19,7 +19,7 @@ from scipy.integrate   import trapz,simps
 from scipy.interpolate import interp1d,interp2d
 from scipy.interpolate import CubicSpline,RectBivariateSpline
 
-#from fastran.plasmastate.plasmastate import plasmastate
+from fastran.plasmastate.plasmastate import plasmastate
 
 if   sys.version_info.major == 3:
      PYTHON3 = True; PYTHON2 = False
