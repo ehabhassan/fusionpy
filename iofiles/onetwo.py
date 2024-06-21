@@ -3319,13 +3319,13 @@ def to_instate(fpath,gfpath={},setParam={}):
 
     return instate
 
-def calculate_nebar(ne,rho): 
-    nrho = len(rho)
-    nebar = 0.0
-    for i in range(nrho-1):
-        nebar += 0.5 * (ne[i+1] + ne[i]) * (rho[i+1] - rho[i])
-    nebar /= rho[-1]
-    return nebar
+def calculate_line_average(profile,grid): 
+    ngrid = len(grid)
+    line_average = 0.0
+    for i in range(ngrid-1):
+        line_average += 0.5 * (profile[i+1] + profile[i]) * (grid[i+1] - grid[i])
+    line_average /= grid[-1]
+    return line_average
 
 if __name__ == "__main__":
     onetwofname = "statefile_2.026000E+00.nc"
