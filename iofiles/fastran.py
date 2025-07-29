@@ -583,7 +583,7 @@ def plot_geqdsk_outputs(geqdskdata, plotparam={}):
         ax02 = fig.add_subplot(grds[0,3:])
         ax03 = fig.add_subplot(grds[1,3:])
 
-        contours = ax01.contour(geqdskdata[sim]['RR1D']['data'][:],geqdskdata[sim]['ZR1D']['data'][:],geqdskdata[sim]['psiRZ']['data'][:],20,colors='black')
+        contours = ax01.contour(geqdskdata[sim]['RR1D']['data'][:],geqdskdata[sim]['ZR1D']['data'][:],geqdskdata[sim]['psiRZ']['data'][:],40,colors='black')
         ax01.clabel(contours, inline=True, fontsize=8)
         ax01.set_xlabel("$R (m)$")
         ax01.set_ylabel("$Z (m)$")
@@ -607,6 +607,16 @@ def plot_geqdsk_outputs(geqdskdata, plotparam={}):
         geqdskfigs.savefig(fig)
         if savepng: fig.savefig(figurepath+"geqdsk_basics_%04d.png" % sims.index(sim))
         plt.close(fig)
+
+        fig = plt.figure("GEQDSK Magnetic Surfaces", dpi=200)
+        ax0 = fig.add_subplot(111)
+        ax0.plot(geqdskdata[sim]['rbound']['data'][:],geqdskdata[sim]['zbound']['data'][:])
+        ax0.set_xlabel("$R (m)$")
+        ax0.set_ylabel("$Z (m)$")
+        geqdskfigs.savefig(fig)
+        if savepng: fig.savefig(figurepath+"geqdsk_basics_%04d.png" % sims.index(sim))
+        plt.close(fig)
+
 
 
     geqdskfigs.close()
@@ -1612,7 +1622,7 @@ def read_fastran(WORK_DIR):
                 FASTRAN_FILEPATH = WORK_FILES[i]
 #               print(FASTRAN_FILEPATH)
                 FASTRAN_FILENAME = FASTRAN_FILEPATH.replace(iWORK_DIR_PATH+'/','')
-                SHOT_NUMBER, TIME_ID = FASTRAN_FILENAME[1:].split('.')
+                SHOT_NUMBER, TIME_ID = FASTRAN_FILENAME[0:].split('.')
                 shot = SHOT_NUMBER + '.' + TIME_ID
                 if shot == shotref:
                     CASE_ID += 1
@@ -1885,6 +1895,11 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
                                     llabel = ""
 
                             axs[isubfig].plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim][ifield]['data'][-1,:]/yfactor,color=lcolor,linestyle=lstyle,label=llabel)
+                            if jsonfdata["figures"][ifig]["subplots"][isubfig]["reffld"] and sim==sims[bgnsim]:
+                               llabel += "$_{,ref}$"
+                               lstyle  = ":"
+                               lcolor  = "k"
+                               axs[isubfig].plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim][ifield]['data'][0,:]/yfactor,color=lcolor,linestyle=lstyle,label=llabel)
 
                 if "legncol" in jsonfdata["figures"][ifig]["subplots"][isubfig] and jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol']:
                     legncol = int(jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol'])
@@ -1981,6 +1996,7 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
             lstyle = styles[0]
             llabel = sim
             Teaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['te']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+            Teaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['te']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
         Teaxs.set_title("Electron Temperature Profile")
         Teaxs.set_ylabel("$T_e$")
         Teaxs.set_xlabel("$\\rho$")
@@ -1996,6 +2012,7 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
             lstyle = styles[0]
             llabel = sim
             Tiaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ti']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+            Tiaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ti']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
         Tiaxs.set_title("Ion Temperature Profile")
         Tiaxs.set_ylabel("$T_i$")
         Tiaxs.set_xlabel("$\\rho$")
@@ -2012,6 +2029,7 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
             lstyle = styles[0]
             llabel = sim
             neaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ne']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+            neaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ne']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
         neaxs.set_title("Electron Density Profile")
         neaxs.set_ylabel("$n_e$")
         neaxs.set_xlabel("$\\rho$")
@@ -2027,6 +2045,7 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
             lsytle = styles[0]
             llabel = sim
             niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ni']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+            niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ni']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
         niaxs.set_title("Ion Density Profile")
         niaxs.set_ylabel("$n_i$")
         niaxs.set_xlabel("$\\rho$")
@@ -2034,6 +2053,21 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         fastranfigs.savefig(nifig)
         if savepng: nifig.savefig(figurepath+"fastran_ni.png")
         plt.close(nifig)
+
+        isfig = plt.figure("Ion SOURCE PROFILE",dpi=200)
+        isaxs = isfig.add_subplot(111)
+        for sim in sims:
+            lcolor = colors[sims.index(sim)]
+            lstyle = styles[0]
+            llabel = sim
+            isaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['sion']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+        isaxs.set_title("Ion Source Profile")
+        isaxs.set_ylabel("$n_{i,src}$")
+        isaxs.set_xlabel("$\\rho$")
+        isaxs.legend()
+        fastranfigs.savefig(isfig)
+        if savepng: isfig.savefig(figurepath+"fastran_is.png")
+        plt.close(isfig)
 
         nifig = plt.figure("BOOTSTRAP CURRENT PROFILE",dpi=200)
         niaxs = nifig.add_subplot(111)
@@ -2135,6 +2169,28 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         niaxs.set_title("Magnetic Shear Profile")
         niaxs.set_ylabel("$\\hat{s}$")
         niaxs.set_xlabel("$\\rho$")
+        niaxs.legend()
+        fastranfigs.savefig(nifig)
+        if savepng: nifig.savefig(figurepath+"fastran_shat.png")
+        plt.close(nifig)
+
+        theta = npy.linspace(-npy.pi,npy.pi,100)
+        minor = fastrandata[sim]['aminor']['data'][-1,-1]
+        major = fastrandata[sim]['rmajor']['data'][-1,-1]
+        delta = fastrandata[sim]['delta']['data'][-1,-1]
+        kappa = fastrandata[sim]['kappa']['data'][-1,-1]
+        r = major + minor * npy.cos(theta + delta * npy.sin(theta))
+        z = kappa * minor * npy.sin(theta)
+        nifig = plt.figure("Plasma Shape",dpi=200)
+        niaxs = nifig.add_subplot(111)
+        for sim in sims:
+            lcolor = colors[sims.index(sim)]
+            lsytle = styles[0]
+            llabel = sim
+            niaxs.plot(r,z,color=lcolor,linestyle=lstyle,label=llabel)
+        niaxs.set_title("Plasma Shape")
+        niaxs.set_xlabel("$R$")
+        niaxs.set_ylabel("$Z$")
         niaxs.legend()
         fastranfigs.savefig(nifig)
         if savepng: nifig.savefig(figurepath+"fastran_shat.png")

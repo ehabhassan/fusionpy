@@ -2040,7 +2040,7 @@ def read_iterdb_file(fname):
                 onetwo["sbcx"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
-    onetwo["sbcx"]["data"] = numpy.sum(onetwo["sbcx"]["data"],axis=0)
+   #onetwo["sbcx"]["data"] = numpy.sum(onetwo["sbcx"]["data"],axis=0)
 
 
     onetwo["stsource"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
@@ -2057,6 +2057,7 @@ def read_iterdb_file(fname):
                 onetwo["stsource"]['data'][i,iline*5+4] = float(linecontent[4])
             except:
                 error = 'empty records'
+   #onetwo['stsource']['data'] = onetwo['sion']['data']+onetwo['srecom']['data']+onetwo['scx']['data']+onetwo['sbcx']['data']
 
 
     onetwo["dudtsv"]['data'] = numpy.zeros((nprim,nrho),dtype=float)
@@ -3145,9 +3146,19 @@ def to_instate(fpath,gfpath={},setParam={}):
     RHOPSI = numpy.sqrt(PSIN)
     instate['RHOPSI']  = [round(i,7) for i in RHOPSI]
 
-    instate['SCALE_NE'] = [1.0]
+    instate['SCALE_NE']            = [1.0]
+    instate['SCALE_NI']            = [1.0]
+    instate['SCALE_TE']            = [1.0]
+    instate['SCALE_TI']            = [1.0]
+    instate['SCALE_SION']          = [1.0]
+    instate['SCALE_SE_NB']         = [1.0]
+    instate['SCALE_SI_NB']         = [1.0]
+    instate['SCALE_DENSITY_BEAM']  = [1.0]
+    instate['SCALE_SE_IONIZATION'] = [1.0]
+    instate['SCALE_SI_IONIZATION'] = [1.0]
+    instate['SCALE_PE_IONIZATION'] = [1.0]
+    instate['SCALE_PI_IONIZATION'] = [1.0]
 
-    instate['SCALE_SION'] = [1.0]
     instate['SION']       = [round(i,7) for i in (onetwo['sion']['data']*1.0e-19)]
 
     instate['Q']       = [round(i,7) for i in onetwo['q_value']['data']]
@@ -3171,8 +3182,6 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['PI_RF']  = [round(i,7) for i in (onetwo['qrfi']['data']   * 1.0e-6)]
     instate['PE_NB']  = [round(i,7) for i in (onetwo['qbeame']['data'] * 1.0e-6)]
     instate['PI_NB']  = [round(i,7) for i in (onetwo['qbeami']['data'] * 1.0e-6)]
-    instate['SE_NB']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
-    instate['SI_NB']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['PE_EC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['PI_EC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
     instate['PE_IC']  = [round(0.0,7) for i in range(instate['NRHO'][0])         ]
@@ -3202,8 +3211,11 @@ def to_instate(fpath,gfpath={},setParam={}):
     instate['TORQUE_IN']     = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['DENSITY_BEAM']  = [round(i,7) for i in (onetwo['enbeam']['data'][0]*1.0e-19)]
     if type(onetwo['enalp']['data']) != type(None):
-        instate['DENSITY_ALPHA'] = [round(i,7) for i in onetwo['enalp']['data']              ]
-    instate['SE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
+        instate['DENSITY_ALPHA'] = [round(i,7) for i in onetwo['enalp']['data']          ]
+    instate['SE_NB']         = [round(i,7) for i in (onetwo['sbeame']['data']      * 1.0e-19)]
+    instate['SI_NB']         = [round(i,7) for i in (onetwo['sbeam']['data']       * 1.0e-19)]
+    instate['SE_IONIZATION'] = [round(i,7) for i in (onetwo['stsource']['data'][0] * 1.0e-19)]
+
     instate['SI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['PE_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
     instate['PI_IONIZATION'] = [round(0.0,7) for i in range(instate['NRHO'][0])          ]
@@ -3317,10 +3329,14 @@ def to_instate(fpath,gfpath={},setParam={}):
            RBDRY = onetwo['rplasbdry']['data']
            ZBDRY = onetwo['zplasbdry']['data']
            BDRY = zip(RBDRY,ZBDRY)
-           BDRYINDS = sorted(random.sample(range(NBDRY),NBDRYmax))
+           BDRYINDS = sorted(random.sample(range(1,NBDRY),NBDRYmax))
            instate['NBDRY'] = [NBDRYmax]
            instate['RBDRY'] = [round(i,7) for i in RBDRY[BDRYINDS]]
+           instate['RBDRY'].insert(0,round(onetwo['rplasbdry']['data'][0],7))
+           instate['RBDRY'].insert(-1,round(onetwo['rplasbdry']['data'][-1],7))
            instate['ZBDRY'] = [round(i,7) for i in ZBDRY[BDRYINDS]]
+           instate['ZBDRY'].insert(0,round(onetwo['zplasbdry']['data'][0],7))
+           instate['ZBDRY'].insert(-1,round(onetwo['zplasbdry']['data'][-1],7))
         else:
            instate['NBDRY'] = [numpy.size(onetwo['rplasbdry']['data'])]
            instate['RBDRY'] = [round(i,7) for i in onetwo['rplasbdry']['data']]
@@ -3394,10 +3410,20 @@ def calculate_line_average(profile,grid):
     return line_average
 
 if __name__ == "__main__":
-    onetwofname = "statefile_2.026000E+00.nc"
+   #onetwofname = "iterdb.090765"
+    onetwofname = "iterdb.090752"
+    onetwo = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
+    sys.exit()
+    onetwo = read_onetwo_file(fpath=onetwofname)
+    print(onetwo['qbeame']['data'])
+    print(onetwo['qbeami']['data'])
+    sys.exit()
+
+    onetwofname = "onetwo_statefile_106748_13100.nc"
+   #onetwofname = "statefile_2.026000E+00.nc"
     instate_from_pstate = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
-    onetwofname = "iterdb.150139"
-    instate_from_iterdb = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
+   #onetwofname = "iterdb.150139"
+   #instate_from_iterdb = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
 
     sys.exit()
 
@@ -3407,7 +3433,8 @@ if __name__ == "__main__":
    #onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
    #onetwo = to_instate(fpath=onetwofname,gfpath=geqdskfname,setParam={"TOKAMAK_ID":"d3d"})
 
-    onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
+    onetwofname = "onetwo_statefile_106748_13100.nc"
+   #onetwofname = "../../Discharges/DIIID/DIIID150139/statefile_2.026000E+00.nc"
    #onetwo = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d"})
     onetwo = to_instate(fpath=onetwofname,setParam={"TOKAMAK_ID":"d3d","LIMITER_MODEL":2})
 

@@ -120,6 +120,7 @@ def get_instate_vars():
     instate['WBEAM']         = [None]
     instate['WALPHA']        = [None]
     instate['DENSITY_BEAM']  = [None]
+    instate['SCALE_DENSITY_BEAM']  = [None]
     instate['DENSITY_ALPHA'] = [None]
     instate['CHIE']          = [None]
     instate['CHII']          = [None]
@@ -268,7 +269,8 @@ def read_instate_file(fpath="",setParam={}):
                                                        cor_height = instate['ne_axis'][0],
                                                        cor_width  = 0)
     if instate['Te']:
-        statedata['Te']     = npy.array(instate['te'])*1.602e3
+       #statedata['Te']     = npy.array(instate['te'])*1.602e3
+        statedata['Te']     = npy.array(instate['te'])*1.0e3
     elif instate['Te_axis']:
         statedata['Te']     = cheaseprofit.snyder_fit(rho        = statedata['rho'],
                                                        alpha      = instate['te_alpha'][0],
@@ -280,7 +282,8 @@ def read_instate_file(fpath="",setParam={}):
                                                        cor_height = instate['te_axis'][0],
                                                        cor_width  = 0)*1.602e3
     if instate['Ti']:
-        statedata['Ti']     = npy.array(instate['ti'])*1.602e3
+       #statedata['Ti']     = npy.array(instate['ti'])*1.602e3
+        statedata['Ti']     = npy.array(instate['ti'])*1.0e3
     elif instate['Ti_axis']:
         statedata['Ti']     = cheaseprofit.snyder_fit(rho        = statedata['rho'],
                                                        alpha      = instate['ti_alpha'][0],
@@ -305,6 +308,16 @@ def read_instate_file(fpath="",setParam={}):
         statedata['pprime']= npy.array(instate['pprime'])
     else:
         statedata['pprime'] = npy.zeros(statedata['nrho'])
+
+    if instate['rminor']:
+        statedata['rminor']= instate['rminor'][0]
+    else:
+        statedata['rminor'] = npy.nan
+
+    if instate['aminor']:
+        statedata['aminor']= instate['aminor'][0]
+    else:
+        statedata['aminor'] = npy.nan
 
     if instate['j_tot']:
         statedata['jpar']   = npy.array(instate['j_tot'])
@@ -433,12 +446,12 @@ def read_instate_file(fpath="",setParam={}):
     if instate['scale_sion']: 
         statedata['scale_sion'] = instate['scale_sion']
     else:
-        statedata['scale_sion'] = 0.0
+        statedata['scale_sion'] = [0.0]
 
     if instate['scale_ne']: 
         statedata['scale_ne'] = instate['scale_ne']
     else:
-        statedata['scale_ne'] = 0.0
+        statedata['scale_ne'] = [0.0]
 
     if instate['sion']:
         statedata['sion']  = npy.array(instate['sion'])
@@ -469,6 +482,11 @@ def read_instate_file(fpath="",setParam={}):
         statedata['nbfast']+= instate['nbeam_sep'][0]
     else:
         statedata['nbfast'] = npy.zeros(statedata['nrho'])
+
+    if instate['scale_density_beam']:
+       statedata['scale_density_beam'] = instate['scale_density_beam']
+    else:
+       statedata['scale_density_beam'] = [1.0]
 
     if instate['omega']:
         statedata['omega']  = npy.array(instate['omega'])
