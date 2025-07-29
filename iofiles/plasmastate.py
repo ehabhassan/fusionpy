@@ -448,15 +448,60 @@ def read_instate_file(fpath="",setParam={}):
     else:
         statedata['scale_sion'] = [0.0]
 
+    if instate['scale_se_ionization']:
+        statedata['scale_se_ionization']  = npy.array(instate['scale_se_ionization'])
+    else:
+        statedata['scale_se_ionization']  = npy.zeros(statedata['nrho'])
+
+    if instate['scale_si_ionization']:
+        statedata['scale_si_ionization']  = npy.array(instate['scale_si_ionization'])
+    else:
+        statedata['scale_si_ionization']  = npy.zeros(statedata['nrho'])
+
+    if instate['scale_se_nb']:
+        statedata['scale_se_nb']  = npy.array(instate['scale_se_nb'])
+    else:
+        statedata['scale_se_nb']  = npy.zeros(statedata['nrho'])
+
+    if instate['scale_si_nb']:
+        statedata['scale_si_nb']  = npy.array(instate['scale_si_nb'])
+    else:
+        statedata['scale_si_nb']  = npy.zeros(statedata['nrho'])
+
     if instate['scale_ne']: 
         statedata['scale_ne'] = instate['scale_ne']
     else:
         statedata['scale_ne'] = [0.0]
 
+    if instate['scale_ni']: 
+        statedata['scale_ni'] = instate['scale_ni']
+    else:
+        statedata['scale_ni'] = [0.0]
+
+    if instate['scale_te']: 
+        statedata['scale_te'] = instate['scale_te']
+    else:
+        statedata['scale_te'] = [0.0]
+
+    if instate['scale_ti']: 
+        statedata['scale_ti'] = instate['scale_ti']
+    else:
+        statedata['scale_ti'] = [0.0]
+
     if instate['sion']:
         statedata['sion']  = npy.array(instate['sion'])
     else:
         statedata['sion']  = npy.zeros(statedata['nrho'])
+
+    if instate['se_nb']:
+        statedata['se_nb']  = npy.array(instate['se_nb'])
+    else:
+        statedata['se_nb']  = npy.zeros(statedata['nrho'])
+
+    if instate['si_nb']:
+        statedata['si_nb']  = npy.array(instate['si_nb'])
+    else:
+        statedata['si_nb']  = npy.zeros(statedata['nrho'])
 
     if instate['q']:
         statedata['q']  = npy.array(instate['q'])
