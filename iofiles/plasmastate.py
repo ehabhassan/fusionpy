@@ -9,7 +9,7 @@ import numpy       as npy
 #import iofiles.chease.cheaseprofit as cheaseprofit
 #import traceback   as traceback
 
-from maths.interp        import interp
+from maths.interp     import interp
 
 from iofiles.eqdsk    import qtor,jtot
 from iofiles.eqdsk    import read_eqdsk_file
@@ -18,7 +18,7 @@ from iofiles.eqdsk    import psigrids,phigrids
 from iofiles.fastran  import read_fastran
 from iofiles.Namelist import Namelist
 
-from maths.profile_fit import snyder_fit
+#from maths.profile_fit import snyder_fit
 
 #from scipy.optimize    import curve_fit
 #from scipy.integrate   import trapz,simps
@@ -229,6 +229,10 @@ def read_instate_file(fpath="",setParam={}):
         statedata['RCTR']   = instate["r0"][0]
     if 'BCTR' not in statedata:
         statedata['BCTR']   = abs(instate["b0"][0])
+    if 'RMAJOR' not in statedata:
+        statedata['rmajor']   = abs(instate["rmajor"][0])
+    if 'AMINOR' not in statedata:
+        statedata['aminor']   = abs(instate["aminor"][0])
     if 'nlim' not in statedata:
         if instate["nlim" ]:
             statedata['nlim']   = instate["nlim" ][0]

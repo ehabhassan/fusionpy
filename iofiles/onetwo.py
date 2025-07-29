@@ -9,10 +9,50 @@ from iofiles.Namelist    import Namelist
 from iofiles.eqdsk       import read_eqdsk_file
 from iofiles.plasmastate import get_instate_vars
 
-def get_iterdb_vars():
+
+def get_onetwo_vars():
     onetwo = {}
     
-    onetwo['file_type']               = None
+    onetwo['file_type']               = {}
+    onetwo['file_type']['data']       = None
+
+    onetwo['all_index']               = {}
+    onetwo['all_index']['data']       = None
+
+    onetwo['ALL_name']                = {}
+    onetwo['ALL_name']['data']        = None
+
+    onetwo['ALL_type']                = {}
+    onetwo['ALL_type']['data']        = None
+
+    onetwo['ALLA_name']               = {}
+    onetwo['ALLA_name']['data']       = None
+
+    onetwo['ALLA_type']               = {}
+    onetwo['ALLA_type']['data']       = None
+
+    onetwo['ALL_index']               = {}
+    onetwo['ALL_index']['data']       = None
+
+    onetwo['alla_index']              = {}
+    onetwo['alla_index']['data']      = None
+
+    onetwo['version_id']              = {}
+    onetwo['version_id']['data']      = None
+
+    onetwo['hash_codes']              = {}
+    onetwo['hash_codes']['data']      = None
+
+    onetwo['ANOM_Code_Info']          = {}
+    onetwo['ANOM_Code_Info']['data']  = None
+
+    onetwo['ant_model']               = {}
+    onetwo['ant_model']['data']       = None
+
+    onetwo['area']                     = {} 
+    onetwo['area']['data']             = None
+    onetwo['area']['unit']             = "m^2"
+    onetwo['area']['info']             = "Plasma Cross-Sectional Area"
 
     onetwo['shot']                    = {} 
     onetwo['shot']['data']            = None
@@ -1670,7 +1710,7 @@ def read_iterdb_file(fname):
     else:
         raise IOError("FILE %s DOES NOT EXIST!" % fname); sys.exit()
 
-    onetwo = get_iterdb_vars()
+    onetwo = get_onetwo_vars()
     onetwo['file_type'] = 'iterdb'
 
     onetwo_varnames = list(onetwo.keys())
@@ -1820,8 +1860,9 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
-    onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
+    if 'rho_grid'  in onetwo:
+        onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
+        onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
 
     onetwo["fcap"]['data'] = numpy.zeros(nrho,dtype=float)
     fid.readline()
@@ -2782,7 +2823,7 @@ def read_iterdb_file(fname):
         except:
             error = 'empty records'
 
-    fid.readline()
+    line = fid.readline()
     line = fid.readline()
     onetwo["nplasbdry"]['data'] = int(line.strip())
     nplasbdry = int(line.strip())
@@ -2939,8 +2980,31 @@ def read_iterdb_file(fname):
     return onetwo
 
 
+def test_state_file(fpath):
+    cdfid = ncdf.Dataset(fpath)
+    icount = 0
+    txtid = open("cdf_fields.txt",'w')
+    attrnames = ["units","section","long_name","component","specification"]
+    for name, variable in cdfid.variables.items():
+        icount += 1
+        text = "onetwo['%s'] = {}\n" % name
+        text += "onetwo['%s']['data'] = None\n" % name
+       #for attrname in variable.ncattrs():
+        for attrname in attrnames:
+            try:
+                text += "onetwo['%s']['%s'] = '%s'\n" % (name,attrname,getattr(variable, attrname))
+            except AttributeError:
+                text += "onetwo['%s']['units'] = None\n" % name
+           #print("{} -- {}".format(attrname, getattr(variable, attrname)))
+        text += "\n"
+        txtid.write(text)
+       #print(text)
+       #input("")
+    txtid.close()
+    return 1
+
 def read_state_file(fpath):
-    onetwo = get_iterdb_vars()
+    onetwo = get_onetwo_vars()
     onetwo['file_type'] = 'state'
 
     if os.path.isfile(fpath):
@@ -2949,19 +3013,19 @@ def read_state_file(fpath):
        raise IOError("ONETWO STATE FILE DOES NOT EXIST!" % fpath)
     fvars = fid.variables.keys()
     for fvar in fvars:
-        onetwo[fvar]['data'] = fid.variables[fvar][:]
         try:
            onetwo[fvar]['data'] = fid.variables[fvar][:]
         except KeyError:
             print(fvar)
             pass
 
-    onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
-    onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
+    if 'rho_grid' in onetwo and onetwo['rho_grid']['data']:
+        onetwo['rho']['data']  = (onetwo['rho_grid']['data']     - onetwo['rho_grid']['data'][0])
+        onetwo['rho']['data'] /= (onetwo['rho_grid']['data'][-1] - onetwo['rho_grid']['data'][0])
 
-    if all(onetwo['qcx']['data']) > 0.0:   onetwo['qcx']['data'] *= -1.0
-    if all(onetwo['qrad']['data']) > 0.0:  onetwo['qrad']['data'] *= -1.0
-    if all(onetwo['qione']['data']) > 0.0: onetwo['qione']['data'] *= -1.0
+    if onetwo['qcx']['data']   and all(onetwo['qcx']['data']) > 0.0:   onetwo['qcx']['data'] *= -1.0
+    if onetwo['qrad']['data']  and all(onetwo['qrad']['data']) > 0.0:  onetwo['qrad']['data'] *= -1.0
+    if onetwo['qione']['data'] and all(onetwo['qione']['data']) > 0.0: onetwo['qione']['data'] *= -1.0
 #   onetwo['qdelt']['data']     = numpy.abs(onetwo['qdelt']['data'])
 #   onetwo['q_value']['data']   = numpy.abs(onetwo['q_value']['data'])
     onetwo['dudtsv']['data']    = numpy.transpose(onetwo['dudtsv']['data'])

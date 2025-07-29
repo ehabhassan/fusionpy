@@ -1,3 +1,4 @@
+from sys               import argv,exit
 from numpy             import reshape,ceil,zeros
 from numpy             import argmin,abs
 from numpy             import linspace
@@ -474,8 +475,34 @@ class qtor():
         if self.model == 'default': return self.default(ps, ps_update)
 
 if __name__=='__main__':
-    efit_file_path = realpath('../testsuite/state_files/plasma_eq.efit')
-    efitdata = read_eqdsk_file(fpath=efit_file_path)
+    if len(argv) > 1:
+        efit_file_path = argv[1]
+        efitdata = read_eqdsk_file(fpath=efit_file_path)
+        calc_rzgrids = rzgrids()
+        calc_rzgrids(efitdata,ps_update=True)
+        Rmin = min(efitdata['R1D'])
+        Rmax = max(efitdata['R1D'])
+        Zmin = min(efitdata['Z1D'])
+        Zmax = max(efitdata['Z1D'])
+        R1DCAT = [Rmin,Rmin,Rmax,Rmax,Rmin]
+        Z1DCAT = [Zmin,Zmax,Zmax,Zmin,Zmin]
+        rminor = round(max(efitdata['rbound']) - efitdata['RCTR'],2)
+        rmajor = round(efitdata['RCTR'],2)
+        aspect = round(rmajor/rminor,2)
+       #print(rminor,rmajor,aspect,rmajor/3.)
+        psilcfs = [ (R, Z, 1.0) for R, Z in zip(efitdata['rbound'][::8], efitdata['zbound'][::8]) ]
+        print(psilcfs)
+
+       #import matplotlib.pyplot as plt
+       #plt.plot(R1DCAT,Z1DCAT)
+       #plt.plot(efitdata['rbound'],efitdata['zbound'])
+       #plt.plot(efitdata['rlimit'],efitdata['zlimit'])
+       #plt.show()
+    else:
+        efit_file_path = realpath('../testsuite/state_files/plasma_eq.efit')
+        efitdata = read_eqdsk_file(fpath=efit_file_path)
+
+    exit()
 
     calc_qtor = qtor()
     print(calc_qtor(efitdata,ps_update=True))
