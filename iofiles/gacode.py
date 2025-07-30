@@ -388,6 +388,13 @@ def read_gacode_file(fpath):
                            record = linecache.getline(fpath,iline).split()
                            for i in range(gacode['nion']['data']):
                                gacode[varname]['data'][i].append(float(record[i+1]))
+                  elif varname in ['q','qsync','qline','qbrem','qcxi','polflux']:
+                       gacode[varname]['data'] = []
+                       for irecord in range(gacode['nrho']['data']):
+                           iline += 1
+                           record = linecache.getline(fpath,iline).split()
+                           gacode[varname]['data'].append(-float(record[1]))
+                       if iline == nlines: return(gacode)
                   elif varname in fields:
                        gacode[varname]['data'] = []
                        for irecord in range(gacode['nrho']['data']):
@@ -505,13 +512,14 @@ def to_instate(fpath,setParam={}):
 
     instate['OMEGA']   = [round(i,7) for i in gacode['omega0']['data']]
 
-    instate['Q']       = [round(-i,7) for i in gacode['q']['data']     ]
+    instate['Q']       = [round(i,7) for i in gacode['q']['data']     ]
     instate['P_EQ']    = [round(i,7) for i in gacode['ptot']['data']  ]
 
     instate['SCALE_NE'           ] = [1.0]
     instate['SCALE_SION'         ] = [1.0]
     instate['SCALE_SE_NB'        ] = [1.0]
     instate['SCALE_SI_NB'        ] = [1.0]
+    instate['SCALE_DENSITY_BEAM' ] = [1.0]
     instate['SCALE_SE_IONIZATION'] = [1.0]
     instate['SCALE_SI_IONIZATION'] = [1.0]
 
@@ -519,20 +527,18 @@ def to_instate(fpath,setParam={}):
     gacode['qrad'] = {'data':qrad,'unit':'MA/m^3','Info':'Total Radiation'}
 
     instate['P_EI']   = [round(i,7) for i in (gacode['qei']['data'  ])]
-    instate['P_RAD']  = [round(-i,7) for i in (gacode['qrad']['data' ])]
+    instate['P_RAD']  = [round(i,7) for i in (gacode['qrad']['data' ])]
     instate['P_OHM']  = [round(i,7) for i in (gacode['qohme']['data'])]
     instate['PI_CX']  = [round(i,7) for i in (gacode['qcxi']['data' ])]
     instate['PI_FUS'] = [round(i,7) for i in (gacode['qfusi']['data'])]
     instate['PE_FUS'] = [round(i,7) for i in (gacode['qfuse']['data'])]
 
-    if type(gacode['qrfe']['data']) != type_none:
-       instate['PE_RF']  = [round(i,7) for i in (gacode['qrfe']['data']  )]
-    else:
-       instate['PE_RF']  = [round(0.0,7)      for i in range(gacode['nrho']['data'])]
-    if type(gacode['qrfi']['data']) != type_none:
-       instate['PI_RF']  = [round(i7) for i in (gacode['qrfi']['data']  )]
-    else:
-       instate['PI_RF']  = [round(0.0,7)      for i in range(gacode['nrho']['data'])]
+    if 'qrfe' in gacode and gacode['qrfe']['data']:
+       instate['PE_RF']  = [round(i,7) for i in (gacode['qrfe'  ]['data'])]
+       instate['PE_EC']  = [round(i,7) for i in (gacode['qrfe'  ]['data'])]
+    if 'qrfi' in gacode and gacode['qrfi']['data']:
+       instate['PI_RF']  = [round(i,7) for i in (gacode['qrfi'  ]['data'])]
+       instate['PI_IC']  = [round(i,7) for i in (gacode['qrfi'  ]['data'])]
     instate['PE_NB']  = [round(i,7) for i in (gacode['qbeame']['data'])]
     instate['PI_NB']  = [round(i,7) for i in (gacode['qbeami']['data'])]
 
@@ -607,6 +613,7 @@ def to_instate(fpath,setParam={}):
         instate['J_TOT'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_TOT'        ])]
 
         instate['PE_RF'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_RF'        ])]
+        instate['PE_EC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_EC'        ])]
         instate['PE_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_NB'        ])]
         instate['PI_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_NB'        ])]
 
