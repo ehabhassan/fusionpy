@@ -1900,18 +1900,7 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
                                lstyle  = ":"
                                lcolor  = "k"
                                axs[isubfig].plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim][ifield]['data'][0,:]/yfactor,color=lcolor,linestyle=lstyle,label=llabel)
-                            if "vline" in jsonfdata["figures"][ifig]["subplots"][isubfig] and jsonfdata["figures"][ifig]["subplots"][isubfig]["vline"]:
-                               if type(jsonfdata["figures"][ifig]["subplots"][isubfig]["vline"]) == str:
-                                  vline_value = float(jsonfdata["figures"][ifig]["subplots"][isubfig]["vline"])
-                               else:
-                                  vline_value = float(jsonfdata["figures"][ifig]["subplots"][isubfig]["vline"])
-                               axs[isubfig].axvline(x=vline_value, color='k', linestyle='--')
-                            if "hline" in jsonfdata["figures"][ifig]["subplots"][isubfig] and jsonfdata["figures"][ifig]["subplots"][isubfig]["hline"]:
-                               if type(jsonfdata["figures"][ifig]["subplots"][isubfig]["hline"]) == str:
-                                  hline_value = float(jsonfdata["figures"][ifig]["subplots"][isubfig]["hline"])
-                               else:
-                                  hline_value = float(jsonfdata["figures"][ifig]["subplots"][isubfig]["hline"])
-                               axs[isubfig].axhline(y=hline_value, color='k', linestyle='--')
+
                 if "legncol" in jsonfdata["figures"][ifig]["subplots"][isubfig] and jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol']:
                     legncol = int(jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol'])
                 else:                                                           
