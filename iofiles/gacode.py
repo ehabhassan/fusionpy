@@ -539,13 +539,18 @@ def to_instate(fpath,setParam={}):
     instate['Q']       = [round(i,7) for i in gacode['q']['data']     ]
     instate['P_EQ']    = [round(i,7) for i in gacode['ptot']['data']  ]
 
-    instate['SCALE_NE'           ] = [1.0]
-    instate['SCALE_SION'         ] = [1.0]
-    instate['SCALE_SE_NB'        ] = [1.0]
-    instate['SCALE_SI_NB'        ] = [1.0]
-    instate['SCALE_DENSITY_BEAM' ] = [1.0]
+    instate['SCALE_NE']            = [1.0]
+    instate['SCALE_NI']            = [1.0]
+    instate['SCALE_TE']            = [1.0]
+    instate['SCALE_TI']            = [1.0]
+    instate['SCALE_SION']          = [1.0]
+    instate['SCALE_SE_NB']         = [1.0]
+    instate['SCALE_SI_NB']         = [1.0]
+    instate['SCALE_DENSITY_BEAM']  = [1.0]
     instate['SCALE_SE_IONIZATION'] = [1.0]
     instate['SCALE_SI_IONIZATION'] = [1.0]
+    instate['SCALE_PE_IONIZATION'] = [1.0]
+    instate['SCALE_PI_IONIZATION'] = [1.0]
 
     qrad = [0.0 for i in range(gacode['nrho']['data'])]
 
