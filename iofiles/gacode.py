@@ -148,6 +148,11 @@ def get_gacode_variables():
     gacode['omega0']['unit']     = "rad/s"
     gacode['omega0']['info']     = "Rotation frequency"
 
+    gacode['w0']                 = {} 
+    gacode['w0']['data']         = None
+    gacode['w0']['unit']         = "rad/s"
+    gacode['w0']['info']         = "Rotation frequency"
+
     gacode['polflux']            = {} 
     gacode['polflux']['data']    = None
     gacode['polflux']['unit']    = "Wb/rad"
@@ -308,6 +313,16 @@ def get_gacode_variables():
     gacode['jrf']['unit']        = "MW/m^2"
     gacode['jrf']['info']        = "RF-driven current"
 
+    gacode['qione']          = {} 
+    gacode['qione']['data']  = None
+    gacode['qione']['unit']  = "MW/m^3"
+    gacode['qione']['info']  = "Recombination power to electrons"
+
+    gacode['qioni']          = {} 
+    gacode['qioni']['data']  = None
+    gacode['qioni']['unit']  = "MW/m^3"
+    gacode['qioni']['info']  = "Recombination power to ions"
+
     gacode['qpar_beam']          = {} 
     gacode['qpar_beam']['data']  = None
     gacode['qpar_beam']['unit']  = "1/m^3/s"
@@ -347,6 +362,9 @@ def read_gacode_file(fpath):
           elif 'shot' in record:
                iline += 1
                gacode['shotid']['data'] = int(linecache.getline(fpath,iline).strip())
+          elif 'time' in record:
+               iline += 1
+               gacode['timeid']['data'] = int(linecache.getline(fpath,iline).strip())
           elif 'masse' in record:
                iline += 1
                gacode['emass']['data'] = float(linecache.getline(fpath,iline).strip())
@@ -388,6 +406,14 @@ def read_gacode_file(fpath):
                            record = linecache.getline(fpath,iline).split()
                            for i in range(gacode['nion']['data']):
                                gacode[varname]['data'][i].append(float(record[i+1]))
+                  elif varname in ['omega','w0','q','qsync','qline','qbrem','qcxi','polflux']:
+                       gacode[varname]['data'] = []
+                       for irecord in range(gacode['nrho']['data']):
+                           iline += 1
+                           record = linecache.getline(fpath,iline).split()
+                           if float(record[1]) > 0.0: gacode[varname]['data'].append(-float(record[1]))
+                           else:                      gacode[varname]['data'].append( float(record[1]))
+                       if iline == nlines: return(gacode)
                   elif varname in fields:
                        gacode[varname]['data'] = []
                        for irecord in range(gacode['nrho']['data']):
@@ -404,7 +430,7 @@ def to_instate(fpath,setParam={}):
 
     type_none = type(None)
 
-    from iofiles.plasmastate import get_instate_vars
+    from fusionpy.iofiles.plasmastate import get_instate_vars
     instate = get_instate_vars()
 
     if   'SHOT_ID' in setParam:
@@ -419,7 +445,7 @@ def to_instate(fpath,setParam={}):
     elif 'time_id' in setParam:
           TIME_ID = setParam['time_id']
     else:
-          TIME_ID = "%05d" % (int(numpy.ceil(gacode['timeid']['data']*1.0e4)))
+          TIME_ID = "%05d" % (int(numpy.ceil(gacode['timeid']['data'])))
 
     if   'TOKAMAK_ID' in setParam:
           TOKAMAK_ID = setParam['TOKAMAK_ID']
@@ -498,56 +524,142 @@ def to_instate(fpath,setParam={}):
     instate['PSIPOL'] = [round(i,7) for i in gacode['polflux']['data']]
 
     instate['NE']      = [round(i,7) for i in gacode['ne']['data']                                     ]
-    instate['NI']      = [round(i,7) for i in sum(numpy.array(gacode['ni']['data'])[ion_inds])         ]
     instate['TE']      = [round(i,7) for i in gacode['te']['data']                                     ]
+    instate['NI']      = [round(i,7) for i in sum(numpy.array(gacode['ni']['data'])[ion_inds])         ]
     instate['TI']      = [round(i,7) for i in numpy.mean(numpy.array(gacode['ti']['data'])[ion_inds],0)]
+    instate['NZ']      = [round(i,7) for i in sum(numpy.array(gacode['ni']['data'])[imp_inds])         ]
+    instate['TZ']      = [round(i,7) for i in numpy.mean(numpy.array(gacode['ti']['data'])[imp_inds],0)]
     instate['ZEFF']    = [round(i,7) for i in gacode['z_eff']['data']                                  ]
 
-    instate['OMEGA']   = [round(i,7) for i in gacode['omega0']['data']]
+    if   'omega0' in gacode and gacode['omega0']['data']:
+         instate['OMEGA']   = [round(i,7) for i in gacode['omega0']['data']]
+    elif 'w0' in gacode and gacode['w0']['data']:
+       instate['OMEGA']   = [round(i,7) for i in gacode['w0']['data']]
 
-    instate['Q']       = [round(-i,7) for i in gacode['q']['data']     ]
+    instate['Q']       = [round(i,7) for i in gacode['q']['data']     ]
     instate['P_EQ']    = [round(i,7) for i in gacode['ptot']['data']  ]
 
     instate['SCALE_NE'           ] = [1.0]
     instate['SCALE_SION'         ] = [1.0]
     instate['SCALE_SE_NB'        ] = [1.0]
     instate['SCALE_SI_NB'        ] = [1.0]
+    instate['SCALE_DENSITY_BEAM' ] = [1.0]
     instate['SCALE_SE_IONIZATION'] = [1.0]
     instate['SCALE_SI_IONIZATION'] = [1.0]
 
-    qrad = [i+j+k for (i,j,k) in zip(gacode['qbrem']['data'],gacode['qsync']['data'],gacode['qline']['data'])]
+    qrad = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qbrem' in gacode and gacode['qbrem']['data']:
+        qrad = [i+j for (i,j) in zip(qrad,gacode['qbrem']['data'])]
+
+    if 'qsync' in gacode and gacode['qsync']['data']:
+        qrad = [i+j for (i,j) in zip(qrad,gacode['qsync']['data'])]
+
+    if 'qline' in gacode and gacode['qline']['data']:
+        qrad = [i+j for (i,j) in zip(qrad,gacode['qline']['data'])]
+
+    if gacode['qioni']['data'] and gacode['qione']['data']:
+       qres = [i+j for (i,j) in zip(gacode['qioni']['data'],gacode['qione']['data'])]
+       qrad = [i+j for (i,j) in zip(qrad,qres)]
     gacode['qrad'] = {'data':qrad,'unit':'MA/m^3','Info':'Total Radiation'}
 
-    instate['P_EI']   = [round(i,7) for i in (gacode['qei']['data'  ])]
-    instate['P_RAD']  = [round(-i,7) for i in (gacode['qrad']['data' ])]
-    instate['P_OHM']  = [round(i,7) for i in (gacode['qohme']['data'])]
-    instate['PI_CX']  = [round(i,7) for i in (gacode['qcxi']['data' ])]
-    instate['PI_FUS'] = [round(i,7) for i in (gacode['qfusi']['data'])]
-    instate['PE_FUS'] = [round(i,7) for i in (gacode['qfuse']['data'])]
-
-    if type(gacode['qrfe']['data']) != type_none:
-       instate['PE_RF']  = [round(i,7) for i in (gacode['qrfe']['data']  )]
+    if 'qei' in gacode and gacode['qei']['data']:
+       instate['P_EI'] = [round(i,7) for i in (gacode['qei']['data'  ])]
     else:
-       instate['PE_RF']  = [round(0.0,7)      for i in range(gacode['nrho']['data'])]
-    if type(gacode['qrfi']['data']) != type_none:
-       instate['PI_RF']  = [round(i7) for i in (gacode['qrfi']['data']  )]
-    else:
-       instate['PI_RF']  = [round(0.0,7)      for i in range(gacode['nrho']['data'])]
-    instate['PE_NB']  = [round(i,7) for i in (gacode['qbeame']['data'])]
-    instate['PI_NB']  = [round(i,7) for i in (gacode['qbeami']['data'])]
+       instate['P_EI'] = [0.0 for i in range(gacode['nrho']['data'])]
 
-    jtot = [i+j+k+m for (i,j,k,m) in zip(gacode['jbs']['data'],gacode['johm']['data'],gacode['jnb']['data'],gacode['jrf']['data'])]
+    if 'qrad' in gacode and gacode['qrad']['data']:
+       instate['P_RAD'] = [round(i,7) for i in (gacode['qrad']['data' ])]
+    else:
+       instate['P_RAD'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qohme' in gacode and gacode['qohme']['data']:
+       instate['P_OHM']  = [round(i,7) for i in (gacode['qohme']['data'])]
+    else:
+       instate['P_OHM'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qcxi' in gacode and gacode['qcxi']['data']:
+       instate['PI_CX']  = [round(i,7) for i in (gacode['qcxi']['data' ])]
+    else:
+       instate['PI_CX'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qfusi' in gacode and gacode['qfusi']['data']:
+       instate['PI_FUS'] = [round(i,7) for i in (gacode['qfusi']['data'])]
+    else:
+       instate['PI_FUS'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qfuse' in gacode and gacode['qfuse']['data']:
+       instate['PE_FUS'] = [round(i,7) for i in (gacode['qfuse']['data'])]
+    else:
+       instate['PE_FUS'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qrfe' in gacode and gacode['qrfe']['data']:
+       instate['PE_RF']  = [round(i,7) for i in (gacode['qrfe'  ]['data'])]
+       instate['PE_EC']  = [round(i,7) for i in (gacode['qrfe'  ]['data'])]
+    else:
+       instate['PE_RF'] = [0.0 for i in range(gacode['nrho']['data'])]
+       instate['PE_EC'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qrfi' in gacode and gacode['qrfi']['data']:
+       instate['PI_RF']  = [round(i,7) for i in (gacode['qrfi'  ]['data'])]
+       instate['PI_IC']  = [round(i,7) for i in (gacode['qrfi'  ]['data'])]
+    else:
+       instate['PI_RF'] = [0.0 for i in range(gacode['nrho']['data'])]
+       instate['PI_IC'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'nbeame' in gacode and gacode['nbeame']['data']:
+       instate['PE_NB']  = [round(i,7) for i in (gacode['qbeame']['data'])]
+    else:
+       instate['PE_NB'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'nbeami' in gacode and gacode['nbeami']['data']:
+       instate['PI_NB']  = [round(i,7) for i in (gacode['qbeami']['data'])]
+    else:
+       instate['PI_NB'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    jtot = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'jrf' in gacode and gacode['jrf']['data']:
+       instate['J_RF']  = [round(i,7) for i in gacode['jrf' ]['data']]
+       jtot = [i+j for (i,j) in zip(jtot,gacode['jrf' ]['data'])]
+    else:
+       instate['J_RF'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'johm' in gacode and gacode['johm']['data']:
+       instate['J_OH']  = [round(i,7) for i in (gacode['johm']['data'])]
+       jtot = [i+j for (i,j) in zip(jtot,gacode['johm' ]['data'])]
+    else:
+       instate['J_OH'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'jnb' in gacode and gacode['jnb']['data']:
+       instate['J_NB']  = [round(i,7) for i in (gacode['jnb' ]['data'])]
+       jtot = [i+j for (i,j) in zip(jtot,gacode['jnb' ]['data'])]
+    else:
+       instate['J_NB'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'jbs' in gacode and gacode['jbs']['data']:
+       instate['J_BS']  = [round(i,7) for i in (gacode['jbs' ]['data'])]
+       jtot = [i+j for (i,j) in zip(jtot,gacode['jbs' ]['data'])]
+    else:
+       instate['J_BS'] = [0.0 for i in range(gacode['nrho']['data'])]
+
     gacode['jtot'] = {'data':jtot,'unit':'MA/m^2','Info':'Total parallel (inductive + non-inductive) current'}
-
-    instate['J_RF']  = [round(i,7) for i in (gacode['jrf' ]['data'])]
-    instate['J_OH']  = [round(i,7) for i in (gacode['johm']['data'])]
-    instate['J_NB']  = [round(i,7) for i in (gacode['jnb' ]['data'])]
-    instate['J_BS']  = [round(i,7) for i in (gacode['jbs' ]['data'])]
     instate['J_TOT'] = [round(i,7) for i in (gacode['jtot']['data'])]
 
-    instate['TORQUE_NB']     = [round(i,7) for i in gacode['qmom']['data']                  ]
-    instate['DENSITY_BEAM']  = [round(i*1.0e-19,7) for i in (gacode['qpar_beam']['data'])]
-    instate['SE_IONIZATION'] = [round(i*1.0e-19,7) for i in (gacode['qpar_wall']['data'])]
+    if 'qmom' in gacode and gacode['qmom']['data']:
+       instate['TORQUE_NB']     = [round(i,7) for i in gacode['qmom']['data']                  ]
+    else:
+       instate['TORQUE_NB'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qpar_beam' in gacode and gacode['qpar_beam']['data']:
+       instate['DENSITY_BEAM']  = [round(i*1.0e-19,7) for i in (gacode['qpar_beam']['data'])]
+    else:
+       instate['DENSITY_BEAM'] = [0.0 for i in range(gacode['nrho']['data'])]
+
+    if 'qpar_wall' in gacode and gacode['qpar_wall']['data']:
+       instate['SE_IONIZATION'] = [round(i*1.0e-19,7) for i in (gacode['qpar_wall']['data'])]
+    else:
+       instate['SE_IONIZATION'] = [0.0 for i in range(gacode['nrho']['data'])]
 
     if 'J_EC'          in instate and type(instate['J_EC'         ][0]) == type_none: del instate['J_EC'         ]
     if 'J_IC'          in instate and type(instate['J_IC'         ][0]) == type_none: del instate['J_IC'         ]
@@ -584,8 +696,11 @@ def to_instate(fpath,setParam={}):
         instate['RHO'          ] = [round(i,7) for i in new_rho                                               ]
         instate['PSIPOL'       ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PSIPOL'       ])]
         instate['NE'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['NE'           ])]
+        instate['NI'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['NI'           ])]
+        instate['NZ'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['NZ'           ])]
         instate['TE'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TE'           ])]
         instate['TI'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TI'           ])]
+        instate['TZ'           ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['TZ'           ])]
         instate['ZEFF'         ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['ZEFF'         ])]
         instate['OMEGA'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['OMEGA'        ])]
 
@@ -607,6 +722,9 @@ def to_instate(fpath,setParam={}):
         instate['J_TOT'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['J_TOT'        ])]
 
         instate['PE_RF'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_RF'        ])]
+        instate['PI_RF'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_RF'        ])]
+        instate['PE_EC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_EC'        ])]
+        instate['PI_IC'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_IC'        ])]
         instate['PE_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PE_NB'        ])]
         instate['PI_NB'        ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['PI_NB'        ])]
 
@@ -624,13 +742,44 @@ def to_instate(fpath,setParam={}):
 
         instate['DENSITY_BEAM' ] = [round(i,7) for i in numpy.interp(new_rho,old_rho,instate['DENSITY_BEAM' ])]
 
-    from tokamak.plasma.get_plasma_shape import get_plasma_shape
+    from fusionpy.tokamak.plasma.get_plasma_shape import get_plasma_shape
     rmajor = gacode['rmaj' ]['data'][-1]
     rminor = gacode['rmin' ]['data'][-1]
     kappa  = gacode['kappa']['data'][-1]
     delta  = gacode['delta']['data'][-1]
+    zmag   = gacode['zmag' ]['data'][-1]
     zeta   = gacode['zeta' ]['data'][-1]
-    Rlcfs,Zlcfs = get_plasma_shape(rmajor,rminor,delta,kappa,zeta)
+
+    if "shape_cos0" in gacode: c_cos0 = gacode['shape_cos0']['data'][-1]
+    else:                      c_cos0 = 0.0
+    if "shape_cos1" in gacode: c_cos1 = gacode['shape_cos1']['data'][-1]
+    else:                      c_cos1 = 0.0
+    if "shape_cos2" in gacode: c_cos2 = gacode['shape_cos2']['data'][-1]
+    else:                      c_cos2 = 0.0
+    if "shape_cos3" in gacode: c_cos3 = gacode['shape_cos3']['data'][-1]
+    else:                      c_cos3 = 0.0
+    if "shape_cos4" in gacode: c_cos4 = gacode['shape_cos4']['data'][-1]
+    else:                      c_cos4 = 0.0
+    if "shape_cos5" in gacode: c_cos5 = gacode['shape_cos5']['data'][-1]
+    else:                      c_cos5 = 0.0
+    c_cos = {"c_cos0":c_cos0,"c_cos1":c_cos1,"c_cos2":c_cos2,"c_cos3":c_cos3,"c_cos4":c_cos4,"c_cos5":c_cos5}
+
+    if "shape_sin0" in gacode: c_sin0 = gacode['shape_sin0']['data'][-1]
+    else:                      c_sin0 = 0.0
+    if "shape_sin1" in gacode: c_sin1 = gacode['shape_sin1']['data'][-1]
+    else:                      c_sin1 = 0.0
+    if "shape_sin2" in gacode: c_sin2 = gacode['shape_sin2']['data'][-1]
+    else:                      c_sin2 = 0.0
+    if "shape_sin3" in gacode: c_sin3 = gacode['shape_sin3']['data'][-1]
+    else:                      c_sin3 = 0.0
+    if "shape_sin4" in gacode: c_sin4 = gacode['shape_sin4']['data'][-1]
+    else:                      c_sin4 = 0.0
+    if "shape_sin5" in gacode: c_sin5 = gacode['shape_sin5']['data'][-1]
+    else:                      c_sin5 = 0.0
+    c_sin = {"c_sin0":c_sin0,"c_sin1":c_sin1,"c_sin2":c_sin2,"c_sin3":c_sin3,"c_sin4":c_sin4,"c_sin5":c_sin5}
+
+   #Rlcfs,Zlcfs = get_plasma_shape(rmajor,rminor,zmag,delta,kappa,zeta)
+    Rlcfs,Zlcfs = get_plasma_shape(rmajor,rminor,zmag,c_cos,c_sin)
 
     gacode['Rlcfs'] = {'data':Rlcfs,'unit':None,'Info':None}
     gacode['Zlcfs'] = {'data':Zlcfs,'unit':None,'Info':None}
@@ -658,7 +807,15 @@ def to_instate(fpath,setParam={}):
        instate['ZLIM'] = [ZLIM_MAX, ZLIM_MAX, ZLIM_MIN, ZLIM_MIN, ZLIM_MAX]
        instate['NLIM'] = [len(instate['RLIM'])]
 
-    from iofiles.Namelist    import Namelist
+    from collections import Counter
+    counts = Counter(instate['RBDRY'])
+    non_repeated_items = [item for item, count in counts.items() if count == 1]
+    non_repeated_items_indices = [numpy.where(instate['RBDRY'] == item)[0][0] for item in non_repeated_items]
+    instate['RBDRY'] = list(numpy.delete(instate['RBDRY'],non_repeated_items_indices))
+    instate['ZBDRY'] = list(numpy.delete(instate['ZBDRY'],non_repeated_items_indices))
+    instate['NBDRY'] = [numpy.size(instate['RBDRY'])]
+
+    from fusionpy.iofiles.Namelist    import Namelist
     INSTATE = Namelist()
     INSTATE['instate'] = {}
     INSTATE['instate'].update(instate)
@@ -669,6 +826,8 @@ def to_instate(fpath,setParam={}):
 
 if __name__ == "__main__":
    fpath = sys.argv[1]
+   setParam={'TOKAMAK_ID':"DIIID"}
+  #setParam={'TOKAMAK_ID':"DIIID","SHOT_ID":193870,"TIME_ID":4300}
   #gacode = read_gacode_file(fpath)
   #import matplotlib.pyplot as plt
   #plt.plot(gacode['rho']['data'],gacode['ni']['data'][0],label="T")
@@ -677,5 +836,5 @@ if __name__ == "__main__":
   #plt.plot(gacode['rho']['data'],gacode['ni']['data'][3],label='N')
   #plt.legend()
   #plt.show()
-   gacode = to_instate(fpath)
+   gacode = to_instate(fpath,setParam=setParam)
 
