@@ -1,7 +1,7 @@
 from numpy       import dot,zeros,pi
 from numpy       import cos,linspace
-from plot.colors import CRED, CEND
 from matplotlib.pyplot import plot,legend,show
+from fusionpy.plot.colors import CRED, CEND
 
 class fd_d1_o4():
     def __init__(self, model='default'):

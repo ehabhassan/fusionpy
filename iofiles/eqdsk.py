@@ -1,17 +1,17 @@
-from sys               import argv,exit
-from numpy             import reshape,ceil,zeros
-from numpy             import argmin,abs
-from numpy             import linspace
-from numpy             import arange,sqrt
-from numpy             import linspace,size
-from numpy             import empty_like,trapz
-from os.path           import isfile,realpath
-from traceback         import extract_stack
-from plot.colors       import CRED, CEND
-from maths.interp      import interp
-from maths.fd_d1_o4    import fd_d1_o4
-from scipy.interpolate import interp1d
-from scipy.interpolate import CubicSpline
+from sys                        import argv,exit
+from numpy                      import reshape,ceil,zeros
+from numpy                      import argmin,abs
+from numpy                      import linspace
+from numpy                      import arange,sqrt
+from numpy                      import linspace,size
+from numpy                      import empty_like,trapz
+from os.path                    import isfile,realpath
+from traceback                  import extract_stack
+from scipy.interpolate          import interp1d
+from scipy.interpolate          import CubicSpline
+from fusionpy.plot.colors       import CRED, CEND
+from fusionpy.maths.interp      import interp
+from fusionpy.maths.fd_d1_o4    import fd_d1_o4
 
 def read_eqdsk_file(fpath):
    #Developed by Ehab Hassan on 2019-02-27

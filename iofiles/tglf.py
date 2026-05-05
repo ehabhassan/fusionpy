@@ -247,7 +247,7 @@ def read_crossphase_spectrum(fpath):
     return crossphase
 
 def read_ql_flux_spectrum(fpath):
-    if os.path.isdir(fpath):    fpath = os.path.join(fpath,"out.tglf.ql_flux_spectrum")
+    if os.path.isdir(fpath):    fpath = os.path.join(fpath,"out.tglf.QL_flux_spectrum")
     elif os.path.isfile(fpath): fpath = os.path.join(".",fpath)
     path_to_file = os.path.dirname(fpath)
 

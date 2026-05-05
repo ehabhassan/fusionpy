@@ -13,7 +13,7 @@ import matplotlib.pyplot   as plt
 import matplotlib.colors   as clr
 import matplotlib.gridspec as gds
 
-import iofiles.eqdsk as efit_eqdsk
+import fusionpy.iofiles.eqdsk as efit_eqdsk
 
 from glob                            import glob
 from netCDF4                         import Dataset
@@ -23,7 +23,7 @@ from scipy.interpolate               import CubicSpline
 from matplotlib.lines                import Line2D
 from matplotlib.backends.backend_pdf import PdfPages
 
-from iofiles.Namelist                import Namelist
+from fusionpy.iofiles.Namelist       import Namelist
 
 CEND    = '\033[0m'
 CRED    = '\33[31m'
@@ -58,9 +58,9 @@ def listndims(mylist):
 
 def read_dcon(fn_log):
     for line in open(fn_log,"r").readlines():
-        if re.compile("\s*betaN_ideal-nowall").search(line):
+        if re.compile("\\s*betaN_ideal-nowall").search(line):
             betan_ideal_nowall = float(line.split(":")[-1])
-        if re.compile("\s*betaN_ideal-wall").search(line):
+        if re.compile("\\s*betaN_ideal-wall").search(line):
             betan_ideal_wall = float(line.split(":")[-1])
     if "betan_ideal_nowall" not in locals(): betan_ideal_nowall = 0.0
     if "betan_ideal_wall"   not in locals(): betan_ideal_wall = 0.0
@@ -920,7 +920,7 @@ def plot_eped_outputs(epeddata, plotparam={}):
                 gammaTepedaxs[n].axvline(teped[k_EPED_0], ls="--", color="g")
             gammaTepedaxs[n].set_yscale("symlog")
             if n+1 in [1,4,7]:
-                gammaTepedaxs[n].set_ylabel("$\gamma/(\omega_{*}/2)$")
+                gammaTepedaxs[n].set_ylabel("$\\gamma/(\\omega_{*}/2)$")
             if n+1 in [7,8,9]:
                 gammaTepedaxs[n].set_xlabel("$T_{e,ped} (eV)$")
             if n+1 in [2,3,5,6,8,9]:
@@ -1002,7 +1002,7 @@ def plot_eped_outputs(epeddata, plotparam={}):
 
             gammaBetanaxs.set_yscale("symlog")
             gammaBetanaxs.set_xlabel("$\\beta_n$")
-            gammaBetanaxs.set_ylabel("$\gamma/(\omega_{*}/2)$")
+            gammaBetanaxs.set_ylabel("$\\gamma/(\\omega_{*}/2)$")
 
            #gammaBetanfig.suptitle("GAMMA PROFILES\n%s\n%s\n%s" % (title_txt_01,title_txt_02,title_txt_03), fontsize = "10")
             gammaBetanfig.tight_layout(rect=[0.0, 0.0, 1.0, 1.0])
@@ -1074,7 +1074,7 @@ def plot_eped_outputs(epeddata, plotparam={}):
 
         gammaBetanaxs.set_yscale("symlog")
         gammaBetanaxs.set_xlabel("$\\beta_n$")
-        gammaBetanaxs.set_ylabel("$\gamma/(\omega_{*}/2)$")
+        gammaBetanaxs.set_ylabel("$\\gamma/(\\omega_{*}/2)$")
 
        #gammaBetanfig.suptitle("GAMMA PROFILES\n%s\n%s\n%s" % (title_txt_01,title_txt_02,title_txt_03), fontsize = "10")
         gammaBetanfig.tight_layout(rect=[0.0, 0.0, 1.0, 1.0])
@@ -1505,7 +1505,7 @@ def read_fastran_outputs(fastranfpath):
         elif name == 'chieneo':            fastran[name]['symbol']    = "$D_{e_{neo}}$"
         elif name == 'chiineo':            fastran[name]['symbol']    = "$D_{i_{neo}}$"
         elif name == 'chie_exp':           fastran[name]['symbol']    = "$D_{e,{balance}}$"
-        elif name == 'chii_exp':           fastran[name]['symbol']    = "$D_{i,{balance}}}$"
+        elif name == 'chii_exp':           fastran[name]['symbol']    = "$D_{i,{balance}}$"
         elif name == 'fluxe_exp':          fastran[name]['symbol']    = "$Q_{e,{balance}}$"
         elif name == 'fluxi_exp':          fastran[name]['symbol']    = "$Q_{i,{balance}}$"
     return fastran
@@ -1900,6 +1900,8 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
                                lstyle  = ":"
                                lcolor  = "k"
                                axs[isubfig].plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim][ifield]['data'][0,:]/yfactor,color=lcolor,linestyle=lstyle,label=llabel)
+                               if ifield == "q":
+                                  axs[isubfig].axhline(1.0,fastrandata[sim]['rho']['data'][0],fastrandata[sim]['rho']['data'][-1],color='k',linestyle="--")
 
                 if "legncol" in jsonfdata["figures"][ifig]["subplots"][isubfig] and jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol']:
                     legncol = int(jsonfdata["figures"][ifig]["subplots"][isubfig]['legncol'])
@@ -1993,10 +1995,11 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         Teaxs = Tefig.add_subplot(111)
         for sim in sims:
             lcolor = colors[sims.index(sim)]
+            lcolor2= colors[sims.index(sim)+1]
             lstyle = styles[0]
             llabel = sim
             Teaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['te']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
-            Teaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['te']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
+            Teaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['te']['data'][0,:],color=lcolor2,linestyle="--",label=llabel+"-ref")
         Teaxs.set_title("Electron Temperature Profile")
         Teaxs.set_ylabel("$T_e$")
         Teaxs.set_xlabel("$\\rho$")
@@ -2009,10 +2012,11 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         Tiaxs = Tifig.add_subplot(111)
         for sim in sims:
             lcolor = colors[sims.index(sim)]
+            lcolor2= colors[sims.index(sim)+1]
             lstyle = styles[0]
             llabel = sim
             Tiaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ti']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
-            Tiaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ti']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
+            Tiaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ti']['data'][0,:],color=lcolor2,linestyle="--",label=llabel+"-ref")
         Tiaxs.set_title("Ion Temperature Profile")
         Tiaxs.set_ylabel("$T_i$")
         Tiaxs.set_xlabel("$\\rho$")
@@ -2026,10 +2030,11 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         neaxs = nefig.add_subplot(111)
         for sim in sims:
             lcolor = colors[sims.index(sim)]
+            lcolor2= colors[sims.index(sim)+1]
             lstyle = styles[0]
             llabel = sim
             neaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ne']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
-            neaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ne']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
+            neaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ne']['data'][0,:],color=lcolor2,linestyle="--",label=llabel+"-ref")
         neaxs.set_title("Electron Density Profile")
         neaxs.set_ylabel("$n_e$")
         neaxs.set_xlabel("$\\rho$")
@@ -2042,10 +2047,11 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
         niaxs = nifig.add_subplot(111)
         for sim in sims:
             lcolor = colors[sims.index(sim)]
+            lcolor2= colors[sims.index(sim)+1]
             lsytle = styles[0]
             llabel = sim
             niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ni']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
-            niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ni']['data'][0,:],color=lcolor,linestyle="--",label=llabel)
+            niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['ni']['data'][0,:],color=lcolor2,linestyle="--",label=llabel+"-ref")
         niaxs.set_title("Ion Density Profile")
         niaxs.set_ylabel("$n_i$")
         niaxs.set_xlabel("$\\rho$")
@@ -2151,6 +2157,19 @@ def plot_fastran_outputs(fastrandata,plotparam={},**kwargs):
             lsytle = styles[0]
             llabel = sim
             niaxs.plot(fastrandata[sim]['rho']['data'][:],fastrandata[sim]['q']['data'][-1,:],color=lcolor,linestyle=lstyle,label=llabel)
+            q_min_ind = npy.argmin(fastrandata[sim]['q']['data'][-1,:])
+            q_min = fastrandata[sim]['q']['data'][-1,q_min_ind]
+            rho_q_min = fastrandata[sim]['rho']['data'][q_min_ind]
+            q_max_ind = npy.argmax(fastrandata[sim]['q']['data'][-1,:])
+            q_max = fastrandata[sim]['q']['data'][-1,q_max_ind]
+            q_avg = (q_max - q_min) / 2.0
+            niaxs.axvline(rho_q_min, color='red', linestyle='--')
+            niaxs.text(rho_q_min, q_avg, '$q_{min} =$ %3.2f' % q_min, rotation='vertical', va='center', ha='right', color='red')
+            rho_0p95_ind = npy.argmin(abs(fastrandata[sim]['rho']['data'][:]-0.95))
+            rho_0p95 = fastrandata[sim]['rho']['data'][rho_0p95_ind]
+            q_0p95 = fastrandata[sim]['q']['data'][-1,rho_0p95_ind]
+            niaxs.axvline(rho_0p95, color='green', linestyle='--')
+            niaxs.text(rho_0p95, q_avg, '$q_{95} =$ %3.2f' % q_0p95, rotation='vertical', va='center', ha='right', color='green')
         niaxs.set_title("Safety Factor Profile")
         niaxs.set_ylabel("$q$")
         niaxs.set_xlabel("$\\rho$")

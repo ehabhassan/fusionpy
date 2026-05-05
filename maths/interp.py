@@ -1,8 +1,8 @@
-from numpy             import dot,zeros,pi
-from numpy             import cos,linspace
-from plot.colors       import CRED, CEND
-from scipy.interpolate import splrep,splev
-from matplotlib.pyplot import plot,legend,show
+from numpy                import dot,zeros,pi
+from numpy                import cos,linspace
+from scipy.interpolate    import splrep,splev
+from matplotlib.pyplot    import plot,legend,show
+from fusionpy.plot.colors import CRED, CEND
 
 class interp():
     def __init__(self, model='default'):
