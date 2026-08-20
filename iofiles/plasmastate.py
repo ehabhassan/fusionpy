@@ -9,14 +9,12 @@ import numpy       as npy
 #import iofiles.chease.cheaseprofit as cheaseprofit
 #import traceback   as traceback
 
-from maths.interp     import interp
-
-from iofiles.eqdsk    import qtor,jtot
-from iofiles.eqdsk    import read_eqdsk_file
-from iofiles.eqdsk    import psigrids,phigrids
-
-from iofiles.fastran  import read_fastran
-from iofiles.Namelist import Namelist
+from fusionpy.maths.interp     import interp
+from fusionpy.iofiles.eqdsk    import qtor,jtot
+from fusionpy.iofiles.eqdsk    import read_eqdsk_file
+from fusionpy.iofiles.eqdsk    import psigrids,phigrids
+from fusionpy.iofiles.fastran  import read_fastran
+from fusionpy.iofiles.Namelist import Namelist
 
 #from maths.profile_fit import snyder_fit
 
@@ -206,7 +204,7 @@ def get_plasmastate(ifpath="",sfpath="",bfpath="",gfpath='',setParam={}):
 
 def read_instate_file(fpath="",setParam={}):
     if os.path.isfile(fpath):
-       instate = Namelist(fpath)['instate']
+       instate = Namelist(fpath,case='lower')['instate']
     else:
        raise IOError("INSTATE FILE (%s) DOES NOT EXIST!" % fpath)
 
@@ -215,14 +213,17 @@ def read_instate_file(fpath="",setParam={}):
 
     statedata = {}
 
-    if instate['SHOT_ID']: 
-        statedata['SHOT_ID'] = instate['SHOT_ID']
+    if instate['shot_id']: 
+        statedata['shot_id'] = instate['shot_id']
 
-    if instate['TIME_ID' ]:
-        statedata['TIME_ID'] = instate['TIME_ID']
+    if instate['time_id' ]:
+        statedata['time_id'] = instate['time_id']
 
-    if instate['TOKAMAK_ID']:
-        statedata['TOKAMAK_ID'] = instate['TOKAMAK_ID']
+    if instate['tokamak_id']:
+        statedata['tokamak_id'] = instate['tokamak_id']
+
+    if instate['scale_se_ionization']:
+        statedata['scale_se_ionization'] = instate['scale_se_ionization']
 
     if 'ip' not in statedata:
         statedata['ip']     = instate["ip"][0]*1.0e6

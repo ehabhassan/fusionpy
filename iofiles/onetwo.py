@@ -4,10 +4,10 @@ import numpy
 import random
 import netCDF4 as ncdf
 
-from maths.interp        import interp
-from iofiles.Namelist    import Namelist
-from iofiles.eqdsk       import read_eqdsk_file
-from iofiles.plasmastate import get_instate_vars
+from fusionpy.maths.interp        import interp
+from fusionpy.iofiles.Namelist    import Namelist
+from fusionpy.iofiles.eqdsk       import read_eqdsk_file
+from fusionpy.iofiles.plasmastate import get_instate_vars
 
 
 def get_onetwo_vars():
@@ -3049,6 +3049,13 @@ def read_onetwo_file(fpath):
 
 def to_instate(fpath,gfpath={},setParam={}):
     onetwo = read_onetwo_file(fpath)
+   #for item in onetwo.keys():
+   #    print(item)
+    print(onetwo['qrfe']['data'])
+    print(onetwo['qrfi']['data'])
+    print(onetwo['currf']['data'])
+    sys.exit()
+
     if onetwo['file_type'] == 'state':
         fpstate_flag = True
         fiterdb_flag = False
